@@ -15,46 +15,79 @@ CollectorVerse vuole diventare la piattaforma universale di riferimento per il c
 L'obiettivo è consentire ai collezionisti di tutto il mondo di:
 
 catalogare
+
 organizzare
+
 completare
+
 condividere
+
 acquistare
+
 vendere
+
 scambiare
+
 qualsiasi tipologia di oggetto collezionabile attraverso un unico ecosistema digitale.
 
 Mission
+
 Creare il più grande ecosistema digitale dedicato al collezionismo.
 
 CollectorVerse deve permettere agli utenti di:
 
 gestire le proprie collezioni
+
 creare wishlist
+
 scansionare oggetti
+
 riconoscere oggetti
+
 trovare altri collezionisti
+
 trovare commercianti specializzati
+
 contribuire al catalogo globale
+
 condividere la propria esperienza
+
 Obiettivi Principali
+
 CollectorVerse deve offrire:
 
 Catalogo Universale
+
 Catalogazione Personale
+
 Wishlist
+
 Marketplace
+
 Chat
+
 Matching
+
 Geolocalizzazione
+
 Scansione Oggetti
+
 Catalogo Collaborativo
+
 Versioni
+
 Varianti
+
 Community
+
 Gamification
+
 Dashboard Amministratore
+
 Monetizzazione sostenibile
+
 Filosofia del Progetto
+
 CollectorVerse NON è:
 
 un sito di aste
