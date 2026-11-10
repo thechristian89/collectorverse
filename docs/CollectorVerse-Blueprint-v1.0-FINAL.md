@@ -2954,30 +2954,39 @@ Utilizzo
 Permette di bloccare temporaneamente l'utilizzo dell'app.
 
 Sicurezza
+
 Configurare:
 
 tentativi login
 obbligatorietà 2FA
 verifiche email
+
 Notifiche Sistema
+
 Configurare:
 
 template
 categorie
 frequenza
+
 Statistiche Avanzate
+
 Visualizzare:
 
 categorie più seguite
 collezioni più seguite
 serie più seguite
 oggetti più visualizzati
+
 Contributori Catalogo
+
 Visualizzare:
 
 migliori revisori
 revisioni effettuate
 reputazione
 affidabilità revisori
+
 Obiettivo Finale
+
 Consentire agli amministratori di gestire CollectorVerse senza modificare il codice applicativo e senza pubblicare aggiornamenti non necessari.
