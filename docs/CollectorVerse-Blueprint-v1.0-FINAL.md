@@ -1,5 +1,7 @@
 CollectorVerse Blueprint v1.0 FINAL
+
 Stato Documento
+
 Versione ufficiale e definitiva del progetto CollectorVerse.
 
 Questo documento rappresenta la fonte ufficiale delle specifiche funzionali dell'applicazione.
@@ -7,6 +9,7 @@ Questo documento rappresenta la fonte ufficiale delle specifiche funzionali dell
 Tutte le future decisioni di progettazione, sviluppo, database e infrastruttura dovranno essere coerenti con quanto definito in questo Blueprint.
 
 Vision
+
 CollectorVerse vuole diventare la piattaforma universale di riferimento per il collezionismo.
 
 L'obiettivo è consentire ai collezionisti di tutto il mondo di:
