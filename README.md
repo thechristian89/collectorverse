@@ -1,0 +1,2 @@
+# collectorverse
+Universal collecting platform.
