@@ -468,6 +468,739 @@ Tutte le definizioni contenute nella presente sezione devono essere considerate 
 
 # BR-001 - Utenti e Ruoli
 
+# Scopo
+
+Definire le regole operative relative a:
+
+- account utente
+- ruoli
+- piani
+- permessi
+- profili
+- richieste di contatto
+- blocchi utente
+- stato account
+- visibilità operativa
+
+---
+
+# Principi Generali
+
+# BR-001.001
+
+Ogni persona fisica o giuridica che utilizza CollectorVerse deve possedere un account.
+
+---
+
+# BR-001.002
+
+Ogni account deve essere identificato da un identificativo interno permanente.
+
+---
+
+# BR-001.003
+
+L'identificativo interno non deve essere modificabile.
+
+---
+
+# BR-001.004
+
+La modifica dello username non deve alterare:
+
+- identificativo interno
+- collegamenti interni
+- QR Code
+- dati storici
+
+---
+
+# Modello Account
+
+# BR-001.005
+
+CollectorVerse distingue:
+
+```text
+Piano
+
+e
+
+Ruolo
+```
+
+---
+
+# BR-001.006
+
+Il Piano determina le funzionalità commerciali disponibili.
+
+---
+
+# BR-001.007
+
+Il Ruolo determina i privilegi operativi e amministrativi.
+
+---
+
+# BR-001.008
+
+Un account possiede sempre:
+
+```text
+1 Piano
+
++
+
+1 Ruolo
+```
+
+---
+
+# Piani Disponibili
+
+# BR-001.009
+
+I piani supportati sono:
+
+```text
+Free
+
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+---
+
+# BR-001.010
+
+Un account può possedere un solo Piano attivo alla volta.
+
+---
+
+# BR-001.011
+
+La gestione economica dei Piani è definita nella sezione Monetizzazione.
+
+---
+
+# Ruoli Disponibili
+
+# BR-001.012
+
+I ruoli supportati sono:
+
+```text
+Utente
+
+Moderatore
+
+Amministratore
+```
+
+---
+
+# BR-001.013
+
+Il ruolo Utente rappresenta il ruolo standard.
+
+---
+
+# BR-001.014
+
+Il ruolo Moderatore possiede privilegi di moderazione limitati.
+
+---
+
+# BR-001.015
+
+Il ruolo Amministratore possiede privilegi completi.
+
+---
+
+# BR-001.016
+
+I privilegi derivanti dal ruolo prevalgono sui permessi derivanti dal Piano.
+
+---
+
+# Registrazione
+
+# BR-001.017
+
+CollectorVerse deve supportare la registrazione tramite:
+
+```text
+Email
+
+Google
+```
+
+---
+
+# BR-001.018
+
+Ogni account deve possedere una data di registrazione.
+
+---
+
+# BR-001.019
+
+Ogni indirizzo email può essere associato ad un solo account attivo.
+
+---
+
+# BR-001.020
+
+Lo username deve essere univoco.
+
+---
+
+# BR-001.021
+
+Il sistema deve impedire la creazione di username duplicati.
+
+---
+
+# Profilo Utente
+
+# BR-001.022
+
+Ogni account deve possedere un Profilo Utente.
+
+---
+
+# BR-001.023
+
+Il Profilo deve mostrare almeno:
+
+- Avatar
+- Username
+- Piano
+- Livello
+- CollectorScore
+- Badge
+- Affidabilità
+- Data Iscrizione
+
+---
+
+# BR-001.024
+
+Le informazioni visualizzate devono rispettare le regole Privacy.
+
+---
+
+# BR-001.025
+
+Il tipo di Piano deve essere visibile nel Profilo Pubblico quando consentito dalle regole Privacy.
+
+---
+
+# Piano Free
+
+# BR-001.026
+
+Un utente Free può:
+
+- creare Collezioni
+- creare Wishlist
+- effettuare Scansioni
+- seguire entità della piattaforma
+- utilizzare il Catalogo Universale
+- ricevere Richieste di Contatto
+- ricevere Messaggi
+- rispondere a Conversazioni esistenti
+
+---
+
+# BR-001.027
+
+Un utente Free non può:
+
+- avviare nuove Conversazioni
+- creare Annunci Marketplace
+- utilizzare il Matching
+- comparire nella Mappa Utenti
+
+---
+
+# Piano Premium
+
+# BR-001.028
+
+Il piano Premium eredita tutte le funzionalità del piano Free.
+
+---
+
+# BR-001.029
+
+Il piano Premium può:
+
+- avviare Conversazioni
+- utilizzare la Chat completa
+- utilizzare il Matching
+- creare Annunci Marketplace
+
+---
+
+# Piano Premium Plus
+
+# BR-001.030
+
+Il piano Premium Plus eredita tutte le funzionalità del piano Premium.
+
+---
+
+# BR-001.031
+
+Il piano Premium Plus può:
+
+- utilizzare la Mappa Utenti
+- utilizzare la geolocalizzazione avanzata
+- utilizzare filtri Matching avanzati
+- comparire pubblicamente sulla mappa secondo le impostazioni Privacy
+
+---
+
+# Piano Commerciante
+
+# BR-001.032
+
+Il piano Commerciante è destinato ad attività professionali operanti nel settore del collezionismo.
+
+---
+
+# BR-001.033
+
+Il piano Commerciante eredita tutte le funzionalità del piano Premium Plus.
+
+---
+
+# BR-001.034
+
+Il piano Commerciante aggiunge funzionalità professionali dedicate.
+
+---
+
+# BR-001.035
+
+Ogni account Commerciante possiede un Profilo Negozio.
+
+---
+
+# BR-001.036
+
+Il Profilo Negozio può mostrare:
+
+- Logo
+- Banner
+- Descrizione attività
+- Sito Web
+- Orari
+- Indirizzo
+- Recapiti pubblici
+- Categorie trattate
+
+---
+
+# BR-001.037
+
+Il Commerciante può comparire nella Mappa Commercianti.
+
+---
+
+# BR-001.038
+
+Il Commerciante può utilizzare statistiche professionali dedicate.
+
+---
+
+# BR-001.039
+
+Il Commerciante può pubblicare il numero di annunci consentito dalla configurazione amministrativa.
+
+---
+
+# Commerciante Verificato
+
+# BR-001.040
+
+Commerciante Verificato rappresenta uno stato aggiuntivo applicabile esclusivamente agli account Commerciante.
+
+---
+
+# BR-001.041
+
+Lo stato Commerciante Verificato può essere assegnato esclusivamente da un Amministratore.
+
+---
+
+# BR-001.042
+
+La perdita della verifica non modifica il Piano Commerciante.
+
+---
+
+# BR-001.043
+
+Gli account verificati devono mostrare il badge:
+
+```text
+✅ Commerciante Verificato
+```
+
+---
+
+# Moderatori
+
+# BR-001.044
+
+I Moderatori possono gestire:
+
+- segnalazioni utenti
+- segnalazioni annunci
+- segnalazioni immagini
+- segnalazioni recensioni
+- contenuti segnalati
+- chat segnalate
+
+---
+
+# BR-001.045
+
+I Moderatori non possono:
+
+- modificare monetizzazione
+- modificare configurazioni globali
+- nominare amministratori
+- gestire infrastruttura
+
+---
+
+# Amministratori
+
+# BR-001.046
+
+Gli Amministratori possiedono accesso completo alla Dashboard Admin.
+
+---
+
+# BR-001.047
+
+Gli Amministratori possono gestire qualsiasi risorsa della piattaforma.
+
+---
+
+# Richieste di Contatto
+
+# BR-001.048
+
+L'apertura di una nuova Conversazione richiede una Richiesta di Contatto preventiva.
+
+---
+
+# BR-001.049
+
+La Richiesta di Contatto deve mostrare:
+
+- Username
+- Piano
+- Affidabilità
+- Media Recensioni
+- Numero Recensioni
+- CollectorScore
+- Badge Principali
+
+---
+
+# BR-001.050
+
+Una Richiesta di Contatto può assumere i seguenti stati:
+
+```text
+In Attesa
+
+Accettata
+
+Rifiutata
+
+Bloccata
+
+Scaduta
+```
+
+---
+
+# BR-001.051
+
+Solo una Richiesta Accettata può generare una Conversazione.
+
+---
+
+# BR-001.052
+
+Il destinatario deve poter:
+
+```text
+Accettare
+
+Rifiutare
+
+Bloccare
+```
+
+la richiesta.
+
+---
+
+# Anti-Spam
+
+# BR-001.053
+
+Dopo un rifiuto non deve essere possibile inviare immediatamente una nuova richiesta.
+
+---
+
+# BR-001.054
+
+Il tempo di attesa deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-001.055
+
+Valore iniziale consigliato:
+
+```text
+1 giorno
+```
+
+---
+
+# Permessi Contatto
+
+# BR-001.056
+
+Ogni utente deve poter configurare chi può inviargli Richieste di Contatto.
+
+---
+
+# BR-001.057
+
+Le opzioni disponibili sono:
+
+```text
+Tutti
+
+Solo Premium
+
+Solo Commercianti
+
+Nessuno
+```
+
+---
+
+# BR-001.058
+
+Se l'impostazione è:
+
+```text
+Nessuno
+```
+
+non devono essere accettate nuove Richieste di Contatto.
+
+---
+
+# Blocchi Utente
+
+# BR-001.059
+
+Ogni utente deve poter bloccare un altro utente.
+
+---
+
+# BR-001.060
+
+Il blocco deve essere immediato.
+
+---
+
+# BR-001.061
+
+Il blocco rimane attivo fino alla sua rimozione manuale.
+
+---
+
+# BR-001.062
+
+Se l'Utente A blocca l'Utente B:
+
+l'Utente B non può interagire con l'Utente A.
+
+---
+
+# BR-001.063
+
+L'Utente B non può visualizzare il Profilo dell'Utente A.
+
+---
+
+# BR-001.064
+
+L'Utente B non può visualizzare Collezioni o Wishlist dell'Utente A se soggette al blocco.
+
+---
+
+# BR-001.065
+
+L'Utente B non può visualizzare gli Annunci dell'Utente A.
+
+---
+
+# BR-001.066
+
+L'Utente B non può inviare Richieste di Contatto all'Utente A.
+
+---
+
+# BR-001.067
+
+L'Utente B non può avviare Conversazioni con l'Utente A.
+
+---
+
+# BR-001.068
+
+L'Utente B non può seguire l'Utente A.
+
+---
+
+# Stato Account
+
+# BR-001.069
+
+Ogni account possiede uno stato.
+
+---
+
+# BR-001.070
+
+Gli stati disponibili sono:
+
+```text
+Attivo
+
+Sospeso
+
+Bloccato
+
+Eliminato
+```
+
+---
+
+# BR-001.071
+
+Un account Attivo può utilizzare normalmente la piattaforma.
+
+---
+
+# BR-001.072
+
+Un account Sospeso possiede accesso limitato secondo le regole amministrative.
+
+---
+
+# BR-001.073
+
+Un account Bloccato non può accedere alla piattaforma.
+
+---
+
+# BR-001.074
+
+Un account Eliminato segue le procedure GDPR definite nella sezione Privacy.
+
+---
+
+# Valuta Preferita
+
+# BR-001.075
+
+Ogni utente può configurare una Valuta Preferita.
+
+---
+
+# BR-001.076
+
+La Valuta Preferita viene utilizzata automaticamente durante la creazione dei prezzi.
+
+---
+
+# BR-001.077
+
+La modifica della Valuta Preferita non deve modificare i prezzi già esistenti.
+
+---
+
+# Eliminazione Account
+
+# BR-001.078
+
+L'utente può richiedere l'eliminazione del proprio account.
+
+---
+
+# BR-001.079
+
+L'eliminazione deve rispettare le regole Privacy e GDPR della piattaforma.
+
+---
+
+# BR-001.080
+
+L'eliminazione dell'account non deve eliminare i contributi catalografici approvati.
+
+---
+
+# BR-001.081
+
+I contributi approvati diventano patrimonio permanente di CollectorVerse.
+
+---
+
+# BR-001.082
+
+Dopo l'eliminazione dell'account:
+
+- l'autore deve essere anonimizzato
+- i contributi devono essere conservati
+
+---
+
+# BR-001.083
+
+I contributi preservabili includono:
+
+- Oggetti
+- Versioni
+- Varianti
+- Immagini
+- Correzioni approvate
+
+---
+
+# Regola Finale
+
+# BR-001.084
+
+Tutte le funzionalità della piattaforma devono verificare Piano, Ruolo, Stato Account e permessi effettivi prima di consentire qualsiasi operazione.
 
 # BR-002 - Privacy
 
@@ -1038,6 +1771,761 @@ L'Audit Log non deve essere modificabile dagli utenti standard.
 Qualsiasi nuova funzionalità introdotta nella piattaforma deve rispettare le regole di privacy definite nella presente sezione.
 
 # BR-003 - Monetizzazione
+
+# Scopo
+
+Definire le regole operative relative a:
+
+- modello economico
+- piani di abbonamento
+- periodo di prova
+- Commerciante
+- bundle
+- pacchetti
+- pacchetti congelati
+- pubblicità
+- video reward
+- funzionalità premium
+- gestione commerciale
+
+---
+
+# Principi Generali
+
+# BR-003.001
+
+CollectorVerse utilizza un modello economico:
+
+```text
+Freemium
+```
+
+---
+
+# BR-003.002
+
+Le funzionalità essenziali di catalogazione devono essere accessibili gratuitamente.
+
+---
+
+# BR-003.003
+
+Le funzionalità avanzate possono richiedere un Piano attivo.
+
+---
+
+# BR-003.004
+
+La monetizzazione non deve compromettere l'utilizzo fondamentale della piattaforma.
+
+---
+
+# Piani Disponibili
+
+# BR-003.005
+
+I piani supportati sono:
+
+```text
+Free
+
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+---
+
+# BR-003.006
+
+Ogni account può possedere un solo Piano attivo alla volta.
+
+---
+
+# BR-003.007
+
+Ogni Piano deve possedere:
+
+- Nome
+- Prezzo
+- Durata
+- Benefici
+- Stato
+
+---
+
+# BR-003.008
+
+Le caratteristiche dei Piani devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# Piano Free
+
+# BR-003.009
+
+Il piano Free rappresenta il livello di accesso standard della piattaforma.
+
+---
+
+# BR-003.010
+
+Le funzionalità del piano Free sono definite nella sezione Utenti e Ruoli.
+
+---
+
+# BR-003.011
+
+Gli utenti Free possono visualizzare contenuti pubblicitari secondo le configurazioni amministrative.
+
+---
+
+# Piano Premium
+
+# BR-003.012
+
+Il piano Premium eredita tutte le funzionalità del piano Free.
+
+---
+
+# BR-003.013
+
+Il piano Premium abilita le funzionalità Premium definite nelle Business Rules.
+
+---
+
+# Piano Premium Plus
+
+# BR-003.014
+
+Il piano Premium Plus eredita tutte le funzionalità del piano Premium.
+
+---
+
+# BR-003.015
+
+Il piano Premium Plus abilita le funzionalità avanzate definite nelle Business Rules.
+
+---
+
+# Piano Commerciante
+
+# BR-003.016
+
+Il piano Commerciante è destinato ad attività professionali operanti nel settore del collezionismo.
+
+---
+
+# BR-003.017
+
+Il piano Commerciante eredita tutte le funzionalità del piano Premium Plus.
+
+---
+
+# BR-003.018
+
+Il piano Commerciante aggiunge funzionalità professionali dedicate.
+
+---
+
+# BR-003.019
+
+Ogni account Commerciante deve possedere un Profilo Negozio.
+
+---
+
+# BR-003.020
+
+Il Profilo Negozio può mostrare:
+
+- logo
+- banner
+- descrizione attività
+- sito web
+- indirizzo
+- orari
+- recapiti pubblici
+- categorie trattate
+
+---
+
+# BR-003.021
+
+Il Commerciante può comparire nella Mappa Commercianti.
+
+---
+
+# BR-003.022
+
+Il Commerciante può configurare:
+
+- indirizzo attività
+- città
+- nazione
+- coordinate geografiche
+
+---
+
+# BR-003.023
+
+Il numero massimo di annunci attivi per il piano Commerciante deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.024
+
+Valore iniziale consigliato:
+
+```text
+100 annunci attivi
+```
+
+---
+
+# BR-003.025
+
+Il Commerciante dispone di statistiche professionali dedicate.
+
+---
+
+# BR-003.026
+
+Le statistiche professionali possono includere:
+
+- visualizzazioni profilo
+- visualizzazioni annunci
+- click contatti
+- richieste ricevute
+- conversioni marketplace
+
+---
+
+# BR-003.027
+
+Il limite scansioni del piano Commerciante deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.028
+
+Valore iniziale consigliato:
+
+```text
+100 scansioni giornaliere
+```
+
+---
+
+# BR-003.029
+
+Gli account Commerciante non devono visualizzare banner pubblicitari.
+
+---
+
+# BR-003.030
+
+Gli account Commerciante non devono essere obbligati alla visualizzazione dei Video Reward.
+
+---
+
+# BR-003.031
+
+Gli account Commerciante possono richiedere la verifica amministrativa.
+
+---
+
+# BR-003.032
+
+La verifica può richiedere:
+
+- documentazione attività
+- partita IVA
+- sito web
+- presenza commerciale verificabile
+
+---
+
+# Durata Abbonamenti
+
+# BR-003.033
+
+CollectorVerse deve supportare differenti durate di abbonamento.
+
+---
+
+# BR-003.034
+
+Le durate iniziali supportate sono:
+
+```text
+Mensile
+
+Trimestrale
+
+Annuale
+```
+
+---
+
+# BR-003.035
+
+Le durate disponibili devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# BR-003.036
+
+Gli Amministratori possono creare ulteriori durate personalizzate.
+
+---
+
+# BR-003.037
+
+Le durate personalizzate possono essere applicate a:
+
+- Premium
+- Premium Plus
+- Commerciante
+
+---
+
+# Periodo di Prova
+
+# BR-003.038
+
+CollectorVerse deve supportare un Periodo di Prova gratuito.
+
+---
+
+# BR-003.039
+
+Il Periodo di Prova deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.040
+
+Valore iniziale consigliato:
+
+```text
+7 giorni
+```
+
+---
+
+# BR-003.041
+
+Durante il Periodo di Prova l'utente può utilizzare le funzionalità previste dal piano assegnato alla prova.
+
+---
+
+# BR-003.042
+
+Gli Amministratori possono decidere quale piano assegnare durante il Periodo di Prova.
+
+---
+
+# BR-003.043
+
+Alla scadenza del Periodo di Prova l'account deve tornare automaticamente alle funzionalità del piano effettivamente posseduto.
+
+---
+
+# BR-003.044
+
+La conclusione del Periodo di Prova non deve causare perdita di dati.
+
+---
+
+# BR-003.045
+
+CollectorVerse può inviare notifiche automatiche relative alla scadenza del Periodo di Prova.
+
+---
+
+# Prezzi
+
+# BR-003.046
+
+Tutti i prezzi devono essere gestiti tramite Dashboard Admin.
+
+---
+
+# BR-003.047
+
+La modifica dei prezzi non deve richiedere aggiornamenti applicativi.
+
+---
+
+# BR-003.048
+
+La modifica dei prezzi non deve alterare acquisti già completati salvo differenti politiche commerciali.
+
+---
+
+# Stato Abbonamento
+
+# BR-003.049
+
+Ogni abbonamento deve possedere uno stato.
+
+---
+
+# BR-003.050
+
+Gli stati disponibili sono:
+
+```text
+Attivo
+
+Scaduto
+
+Sospeso
+
+Annullato
+```
+
+---
+
+# BR-003.051
+
+Un abbonamento Attivo abilita tutti i benefici previsti.
+
+---
+
+# BR-003.052
+
+Un abbonamento Scaduto disabilita i benefici previsti dal Piano.
+
+---
+
+# BR-003.053
+
+Un abbonamento Sospeso interrompe temporaneamente i benefici.
+
+---
+
+# BR-003.054
+
+Un abbonamento Annullato non può essere utilizzato.
+
+---
+
+# Scadenza Piano
+
+# BR-003.055
+
+La scadenza di un Piano non deve comportare la cancellazione dei dati utente.
+
+---
+
+# BR-003.056
+
+La scadenza di un Piano Premium, Premium Plus o Commerciante deve comportare la sospensione automatica dei benefici non più consentiti.
+
+---
+
+# BR-003.057
+
+Gli annunci sospesi devono essere conservati.
+
+---
+
+# BR-003.058
+
+Gli annunci sospesi devono poter essere riattivati dopo il rinnovo.
+
+---
+
+# Pacchetti
+
+# BR-003.059
+
+CollectorVerse deve supportare Pacchetti acquistabili separatamente dagli abbonamenti.
+
+---
+
+# BR-003.060
+
+I Pacchetti possono fornire risorse aggiuntive.
+
+---
+
+# BR-003.061
+
+Esempi iniziali:
+
+```text
+Scansioni aggiuntive
+
+Annunci aggiuntivi
+```
+
+---
+
+# BR-003.062
+
+I Pacchetti devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# Stato Pacchetto
+
+# BR-003.063
+
+Ogni Pacchetto deve possedere uno stato.
+
+---
+
+# BR-003.064
+
+Gli stati disponibili sono:
+
+```text
+Attivo
+
+Congelato
+
+Scaduto
+```
+
+---
+
+# BR-003.065
+
+Un Pacchetto Attivo può essere utilizzato normalmente.
+
+---
+
+# BR-003.066
+
+Un Pacchetto Congelato conserva integralmente il tempo residuo.
+
+---
+
+# BR-003.067
+
+Un Pacchetto Scaduto non è più utilizzabile.
+
+---
+
+# BR-003.068
+
+Il ripristino dei requisiti necessari deve riattivare automaticamente il Pacchetto Congelato.
+
+---
+
+# Bundle
+
+# BR-003.069
+
+CollectorVerse deve supportare Bundle commerciali.
+
+---
+
+# BR-003.070
+
+Un Bundle può includere:
+
+- abbonamenti
+- scansioni
+- annunci
+- pacchetti
+- funzionalità promozionali
+
+---
+
+# BR-003.071
+
+I Bundle devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# Pubblicità
+
+# BR-003.072
+
+CollectorVerse può mostrare contenuti pubblicitari.
+
+---
+
+# BR-003.073
+
+La pubblicità deve essere completamente configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.074
+
+Le tipologie pubblicitarie iniziali supportate sono:
+
+```text
+Banner
+
+Video Reward
+```
+
+---
+
+# BR-003.075
+
+La frequenza pubblicitaria deve essere configurabile.
+
+---
+
+# BR-003.076
+
+Gli utenti Premium e Premium Plus possono essere esclusi dalla pubblicità secondo le configurazioni amministrative.
+
+---
+
+# Video Reward
+
+# BR-003.077
+
+I Video Reward possono fornire ricompense agli utenti.
+
+---
+
+# BR-003.078
+
+Le ricompense devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# BR-003.079
+
+Valore iniziale consigliato:
+
+```text
++3 scansioni
+```
+
+---
+
+# BR-003.080
+
+Le scansioni ottenute tramite Video Reward devono essere aggiunte immediatamente al saldo disponibile.
+
+---
+
+# BR-003.081
+
+Il numero massimo di Video Reward giornalieri deve essere configurabile.
+
+---
+
+# BR-003.082
+
+Valore iniziale consigliato:
+
+```text
+5 Video Reward al giorno
+```
+
+---
+
+# BR-003.083
+
+Il cooldown tra due Video Reward consecutivi deve essere configurabile.
+
+---
+
+# BR-003.084
+
+Valore iniziale consigliato:
+
+```text
+15 minuti
+```
+
+---
+
+# Area Commerciale Utente
+
+# BR-003.085
+
+Ogni utente deve poter visualizzare la propria situazione commerciale.
+
+---
+
+# BR-003.086
+
+La sezione commerciale deve mostrare almeno:
+
+- Piano Attivo
+- Data Scadenza
+- Pacchetti Attivi
+- Pacchetti Congelati
+- Bundle Attivi
+- Periodo di Prova
+- Tempo residuo
+
+---
+
+# Notifiche Commerciali
+
+# BR-003.087
+
+CollectorVerse può inviare notifiche commerciali.
+
+---
+
+# BR-003.088
+
+Le notifiche commerciali possono riguardare:
+
+- attivazione abbonamento
+- scadenza abbonamento
+- rinnovo abbonamento
+- fine periodo di prova
+- bundle
+- pacchetti
+
+---
+
+# BR-003.089
+
+Le notifiche devono rispettare le preferenze definite dall'utente.
+
+---
+
+# Dashboard Admin
+
+# BR-003.090
+
+Gli Amministratori devono poter configurare:
+
+- prezzi
+- durate
+- piani
+- periodo di prova
+- bundle
+- pacchetti
+- pubblicità
+- video reward
+
+---
+
+# BR-003.091
+
+Gli Amministratori devono poter attivare o disattivare specifici piani commerciali.
+
+---
+
+# BR-003.092
+
+Tutte le configurazioni commerciali devono essere modificabili senza aggiornamenti applicativi.
+
+---
+
+# Regola Finale
+
+# BR-003.093
+
+Tutte le funzionalità commerciali della piattaforma devono essere determinate esclusivamente in base al Piano attivo, allo stato dell'abbonamento e alle configurazioni definite tramite Dashboard Admin.
 
 # BR-004 - Marketplace
 
