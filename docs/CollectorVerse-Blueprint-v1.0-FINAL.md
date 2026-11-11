@@ -3899,6 +3899,40 @@ CollectorVerse opera esclusivamente come piattaforma di incontro tra domanda e o
 
 ---
 
+# Chat
+
+CollectorVerse utilizza un sistema di Chat privata tra utenti.
+
+L'apertura di una Conversazione richiede una Richiesta di Contatto preventiva.
+
+Gli utenti Free possono rispondere ai messaggi ricevuti ma non avviare nuove Conversazioni.
+
+Premium, Premium Plus e Commercianti possono avviare nuove Conversazioni secondo le impostazioni Privacy degli utenti.
+
+Le Conversazioni non sono pubbliche.
+
+Le Conversazioni rispettano:
+- Privacy
+- Blocchi Utente
+- Segnalazioni Moderazione
+
+---
+
+# Recensioni
+
+Gli utenti possono rilasciare recensioni dopo un'interazione avvenuta tramite CollectorVerse.
+
+Le recensioni contribuiscono a:
+
+- Affidabilità
+- Matching
+- Profilo Utente
+- Profilo Commerciante
+
+Le recensioni possono essere segnalate e revisionate dagli Amministratori.
+
+---
+
 # Disponibilità Oggetti
 
 Ogni oggetto presente nella Collezione Personale può essere contrassegnato come:
