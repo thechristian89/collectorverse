@@ -2475,6 +2475,8 @@ Provvisorio
 ```text
 Provvisorio
 
+In Revisione
+
 Verificato
 
 Rifiutato
