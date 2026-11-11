@@ -13,6 +13,8 @@
 8. Gamification
 9. Esperienza Utente
 10. Dashboard Amministratore
+11. Strategia di Lancio e Crescita
+
 
 ---
 
@@ -5155,7 +5157,7 @@ Visualizzare:
 
 ---
 
-# Tipologia Account
+# Badge Profilo
 
 Possibili valori:
 
