@@ -1771,6 +1771,631 @@ L'Audit Log non deve essere modificabile dagli utenti standard.
 Qualsiasi nuova funzionalità introdotta nella piattaforma deve rispettare le regole di privacy definite nella presente sezione.
 
 # BR-003 - Monetizzazione
+
+# Scopo
+
+Definire le regole operative relative a:
+
+- modello economico
+- piani di abbonamento
+- periodo di prova
+- acquisti digitali
+- pubblicità
+- video reward
+- bundle
+- pacchetti
+- monetizzazione professionale
+- gestione commerciale
+
+---
+
+# Principi Generali
+
+# BR-003.001
+
+CollectorVerse utilizza un modello economico:
+
+```text
+Freemium
+```
+
+---
+
+# BR-003.002
+
+Le funzionalità essenziali di catalogazione devono essere disponibili gratuitamente.
+
+---
+
+# BR-003.003
+
+Le funzionalità avanzate possono richiedere un Piano attivo.
+
+---
+
+# BR-003.004
+
+La monetizzazione non deve compromettere l'utilizzo fondamentale della piattaforma.
+
+---
+
+# BR-003.005
+
+CollectorVerse non deve gestire direttamente:
+
+- carte di pagamento
+- dati di pagamento
+- conti bancari degli utenti
+
+---
+
+# BR-003.006
+
+I pagamenti devono essere gestiti tramite i sistemi ufficiali degli Store supportati.
+
+---
+
+# Piani Disponibili
+
+# BR-003.007
+
+I piani supportati sono:
+
+```text
+Free
+
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+---
+
+# BR-003.008
+
+Un account può possedere un solo Piano attivo alla volta.
+
+---
+
+# BR-003.009
+
+Ogni Piano deve possedere:
+
+- nome
+- prezzo
+- durata
+- benefici
+- stato
+
+---
+
+# Piano Free
+
+# BR-003.010
+
+Il Piano Free rappresenta il livello di accesso standard.
+
+---
+
+# BR-003.011
+
+Le funzionalità del Piano Free sono definite nella sezione BR-001 Utenti e Ruoli.
+
+---
+
+# Piano Premium
+
+# BR-003.012
+
+Il Piano Premium eredita le funzionalità del Piano Free.
+
+---
+
+# Piano Premium Plus
+
+# BR-003.013
+
+Il Piano Premium Plus eredita le funzionalità del Piano Premium.
+
+---
+
+# Piano Commerciante
+
+# BR-003.014
+
+Il Piano Commerciante è destinato ad attività professionali operanti nel settore del collezionismo.
+
+---
+
+# BR-003.015
+
+Il Piano Commerciante eredita tutte le funzionalità del Piano Premium Plus.
+
+---
+
+# BR-003.016
+
+Il Piano Commerciante dispone di funzionalità professionali dedicate.
+
+---
+
+# BR-003.017
+
+Il Piano Commerciante dispone di un Profilo Negozio.
+
+---
+
+# BR-003.018
+
+Il Profilo Negozio può mostrare:
+
+- logo
+- banner
+- descrizione attività
+- indirizzo
+- sito web
+- orari
+- recapiti pubblici
+- categorie trattate
+
+---
+
+# BR-003.019
+
+Il Piano Commerciante può comparire nella Mappa Commercianti.
+
+---
+
+# BR-003.020
+
+Il numero massimo di annunci del Piano Commerciante deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.021
+
+Il numero massimo di scansioni del Piano Commerciante deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.022
+
+Il Piano Commerciante può accedere a statistiche professionali dedicate.
+
+---
+
+# BR-003.023
+
+Gli account Commerciante non devono visualizzare pubblicità.
+
+---
+
+# Durata Abbonamenti
+
+# BR-003.024
+
+CollectorVerse deve supportare differenti durate di abbonamento.
+
+---
+
+# BR-003.025
+
+Le durate iniziali supportate sono:
+
+```text
+Mensile
+
+Trimestrale
+
+Annuale
+```
+
+---
+
+# BR-003.026
+
+Gli Amministratori possono creare ulteriori durate personalizzate.
+
+---
+
+# BR-003.027
+
+Le durate disponibili devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# Periodo di Prova
+
+# BR-003.028
+
+CollectorVerse deve supportare un Periodo di Prova gratuito.
+
+---
+
+# BR-003.029
+
+La durata del Periodo di Prova deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.030
+
+Valore iniziale consigliato:
+
+```text
+7 giorni
+```
+
+---
+
+# BR-003.031
+
+Durante il Periodo di Prova l'utente può accedere alle funzionalità previste dal piano assegnato alla prova.
+
+---
+
+# BR-003.032
+
+Il piano utilizzato durante il Periodo di Prova deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.033
+
+Alla scadenza del Periodo di Prova l'account deve tornare automaticamente alle funzionalità del piano effettivamente posseduto.
+
+---
+
+# BR-003.034
+
+La conclusione del Periodo di Prova non deve causare la perdita dei dati dell'utente.
+
+---
+
+# Acquisti Digitali
+
+# BR-003.035
+
+CollectorVerse deve supportare acquisti digitali tramite i sistemi ufficiali degli Store supportati.
+
+---
+
+# BR-003.036
+
+Per Android il sistema iniziale di acquisto deve essere:
+
+```text
+Google Play Billing
+```
+
+---
+
+# BR-003.037
+
+Lo stato degli abbonamenti deve essere verificato tramite i servizi ufficiali forniti dallo Store utilizzato.
+
+---
+
+# BR-003.038
+
+CollectorVerse non deve memorizzare i dati delle carte di pagamento degli utenti.
+
+---
+
+# Prezzi
+
+# BR-003.039
+
+Tutti i prezzi devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# BR-003.040
+
+La modifica dei prezzi non deve richiedere aggiornamenti applicativi.
+
+---
+
+# BR-003.041
+
+La modifica dei prezzi non deve alterare gli acquisti già completati salvo diverse politiche commerciali.
+
+---
+
+# Stato Abbonamento
+
+# BR-003.042
+
+Ogni abbonamento deve possedere uno stato.
+
+---
+
+# BR-003.043
+
+Gli stati disponibili sono:
+
+```text
+Attivo
+
+Scaduto
+
+Sospeso
+
+Annullato
+```
+
+---
+
+# BR-003.044
+
+Un Piano Attivo abilita tutte le funzionalità associate.
+
+---
+
+# BR-003.045
+
+Un Piano Scaduto disabilita le funzionalità non più consentite.
+
+---
+
+# BR-003.046
+
+La scadenza di un Piano non deve eliminare alcun dato utente.
+
+---
+
+# Pubblicità
+
+# BR-003.047
+
+CollectorVerse può utilizzare sistemi pubblicitari esterni.
+
+---
+
+# BR-003.048
+
+Il provider pubblicitario deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-003.049
+
+L'implementazione iniziale prevista utilizza:
+
+```text
+Google AdMob
+```
+
+---
+
+# BR-003.050
+
+Le tipologie pubblicitarie supportate sono:
+
+```text
+Banner
+
+Rewarded Video
+```
+
+---
+
+# Banner
+
+# BR-003.051
+
+I Banner devono essere discreti e non invasivi.
+
+---
+
+# BR-003.052
+
+La frequenza dei Banner deve essere configurabile.
+
+---
+
+# BR-003.053
+
+Gli account Free possono visualizzare Banner.
+
+---
+
+# BR-003.054
+
+Gli account Premium, Premium Plus e Commerciante possono essere esclusi dai Banner secondo le configurazioni amministrative.
+
+---
+
+# Rewarded Video
+
+# BR-003.055
+
+CollectorVerse può utilizzare Video Reward.
+
+---
+
+# BR-003.056
+
+La visualizzazione del Video Reward deve essere volontaria.
+
+---
+
+# BR-003.057
+
+La ricompensa deve essere concessa esclusivamente dopo il completamento della visualizzazione.
+
+---
+
+# BR-003.058
+
+Le ricompense devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# BR-003.059
+
+Le ricompense possono includere:
+
+- scansioni bonus
+- bonus temporanei
+- altri benefici configurabili
+
+---
+
+# BR-003.060
+
+Il numero massimo giornaliero di Video Reward deve essere configurabile.
+
+---
+
+# Bundle
+
+# BR-003.061
+
+CollectorVerse deve supportare Bundle commerciali.
+
+---
+
+# BR-003.062
+
+Un Bundle può includere:
+
+- abbonamenti
+- scansioni
+- pacchetti
+- benefici promozionali
+
+---
+
+# BR-003.063
+
+I Bundle devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# Pacchetti
+
+# BR-003.064
+
+CollectorVerse deve supportare Pacchetti acquistabili separatamente dagli abbonamenti.
+
+---
+
+# BR-003.065
+
+I Pacchetti possono fornire risorse aggiuntive.
+
+---
+
+# BR-003.066
+
+I Pacchetti devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# Stato Pacchetto
+
+# BR-003.067
+
+Gli stati disponibili sono:
+
+```text
+Attivo
+
+Congelato
+
+Scaduto
+```
+
+---
+
+# BR-003.068
+
+Un Pacchetto Congelato deve conservare integralmente il tempo residuo.
+
+---
+
+# Area Commerciale Utente
+
+# BR-003.069
+
+L'utente deve poter visualizzare la propria situazione commerciale.
+
+---
+
+# BR-003.070
+
+La sezione commerciale deve mostrare almeno:
+
+- Piano Attivo
+- stato abbonamento
+- data scadenza
+- Periodo di Prova
+- Bundle Attivi
+- Pacchetti Attivi
+- Pacchetti Congelati
+
+---
+
+# Notifiche Commerciali
+
+# BR-003.071
+
+CollectorVerse può inviare notifiche commerciali.
+
+---
+
+# BR-003.072
+
+Le notifiche possono riguardare:
+
+- attivazione piano
+- rinnovo piano
+- scadenza piano
+- fine prova gratuita
+- Bundle
+- Pacchetti
+
+---
+
+# Dashboard Admin
+
+# BR-003.073
+
+Gli Amministratori devono poter configurare:
+
+- piani
+- prezzi
+- durate
+- periodo di prova
+- provider di pagamento
+- provider pubblicitari
+- bundle
+- pacchetti
+- reward video
+
+---
+
+# BR-003.074
+
+Gli Amministratori devono poter attivare o disattivare specifici piani commerciali.
+
+---
+
+# BR-003.075
+
+Tutte le configurazioni commerciali devono essere modificabili senza aggiornamenti applicativi.
+
+---
+
+# Regola Finale
+
+# BR-003.076
+
+Tutte le funzionalità commerciali della piattaforma devono essere determinate esclusivamente dal Piano attivo, dallo stato dell'abbonamento e dalle configurazioni definite tramite Dashboard Admin.
+
 # BR-004 - Marketplace
 
 # Scopo
