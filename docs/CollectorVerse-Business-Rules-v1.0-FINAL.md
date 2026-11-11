@@ -6026,6 +6026,265 @@ Tutte le configurazioni immagini devono essere modificabili tramite Dashboard Ad
 
 Il sistema Immagini Collaborative deve garantire qualità, tracciabilità, riutilizzabilità e coerenza visiva del Catalogo Universale senza compromettere l'integrità dei dati catalografici.
 
+# BR-009A - Recensioni Esterne Commercianti (Google Business Profile)
+
+# Scopo
+
+Definire le regole operative relative a:
+
+- recensioni esterne commercianti
+- Google Business Profile
+- Google Maps
+- visualizzazione recensioni pubbliche
+- sincronizzazione recensioni
+- profili attività commerciali
+- reputazione esterna
+
+---
+
+# Principi Generali
+
+# BR-009A.001
+
+CollectorVerse può integrare informazioni pubbliche provenienti da Google Business Profile.
+
+---
+
+# BR-009A.002
+
+Le recensioni provenienti da Google Business Profile rappresentano recensioni esterne alla piattaforma.
+
+---
+
+# BR-009A.003
+
+Le recensioni esterne devono avere finalità esclusivamente informative.
+
+---
+
+# BR-009A.004
+
+Le recensioni esterne non sostituiscono il sistema recensioni interno di CollectorVerse.
+
+---
+
+# BR-009A.005
+
+Le recensioni interne e le recensioni esterne devono essere mantenute separate.
+
+---
+
+# Associazione Profilo Google
+
+# BR-009A.006
+
+Un account Commerciante può associare il proprio profilo Google Business Profile.
+
+---
+
+# BR-009A.007
+
+L'associazione deve riguardare esclusivamente un'attività appartenente al titolare dell'account.
+
+---
+
+# BR-009A.008
+
+L'associazione può richiedere verifica amministrativa.
+
+---
+
+# BR-009A.009
+
+La validazione finale dell'associazione spetta agli Amministratori.
+
+---
+
+# Informazioni Esterne
+
+# BR-009A.010
+
+CollectorVerse può acquisire e visualizzare informazioni pubblicamente disponibili provenienti da Google Business Profile.
+
+---
+
+# BR-009A.011
+
+Le informazioni visualizzabili possono includere:
+
+- nome attività
+- valutazione media
+- numero recensioni
+- indirizzo
+- sito web
+- link Google Maps
+
+---
+
+# BR-009A.012
+
+La disponibilità delle informazioni dipende dai dati resi pubblici da Google.
+
+---
+
+# Recensioni Google
+
+# BR-009A.013
+
+CollectorVerse può visualizzare recensioni provenienti da Google Business Profile.
+
+---
+
+# BR-009A.014
+
+Ogni recensione Google deve essere chiaramente identificata come contenuto esterno.
+
+---
+
+# BR-009A.015
+
+Le recensioni Google devono riportare l'origine della piattaforma.
+
+---
+
+# BR-009A.016
+
+Le recensioni Google non devono poter essere modificate dagli utenti tramite CollectorVerse.
+
+---
+
+# BR-009A.017
+
+Le recensioni Google non devono poter essere eliminate dai Commercianti tramite CollectorVerse.
+
+---
+
+# Profilo Commerciante
+
+# BR-009A.018
+
+Il Profilo Commerciante può mostrare:
+
+- valutazione Google
+- numero recensioni Google
+- link Google Maps
+- recensioni Google
+
+---
+
+# BR-009A.019
+
+Le recensioni Google possono essere visualizzate in una sezione dedicata del Profilo Negozio.
+
+---
+
+# BR-009A.020
+
+La visualizzazione delle recensioni Google può essere configurata tramite Dashboard Admin.
+
+---
+
+# Relazione con i Sistemi Interni
+
+# BR-009A.021
+
+Le recensioni Google non devono influenzare direttamente il sistema Affidabilità interno di CollectorVerse.
+
+---
+
+# BR-009A.022
+
+Le recensioni Google non devono modificare automaticamente il CollectorScore.
+
+---
+
+# BR-009A.023
+
+Le recensioni Google non devono modificare automaticamente il Livello dell'utente.
+
+---
+
+# BR-009A.024
+
+Le recensioni Google non devono modificare automaticamente il Ranking del Marketplace.
+
+---
+
+# BR-009A.025
+
+Le recensioni Google possono essere visualizzate come informazione aggiuntiva a supporto della valutazione di un Commerciante.
+
+---
+
+# Aggiornamento Dati
+
+# BR-009A.026
+
+Le informazioni provenienti da Google Business Profile possono essere aggiornate periodicamente.
+
+---
+
+# BR-009A.027
+
+La frequenza di aggiornamento deve essere configurabile tramite Dashboard Admin.
+
+---
+
+# BR-009A.028
+
+L'indisponibilità temporanea dei servizi Google non deve compromettere il funzionamento di CollectorVerse.
+
+---
+
+# Notifiche
+
+# BR-009A.029
+
+CollectorVerse può generare notifiche relative alle recensioni Google.
+
+---
+
+# BR-009A.030
+
+Le notifiche possono riguardare:
+
+- nuova recensione Google
+- variazione della valutazione media
+- raggiungimento di soglie recensioni
+
+---
+
+# BR-009A.031
+
+Le notifiche devono rispettare le preferenze configurate dall'utente.
+
+---
+
+# Dashboard Admin
+
+# BR-009A.032
+
+Gli Amministratori devono poter configurare:
+
+- attivazione integrazione Google Business Profile
+- frequenza aggiornamento
+- dati visualizzabili
+- notifiche associate
+
+---
+
+# BR-009A.033
+
+Gli Amministratori devono poter attivare o disattivare l'integrazione senza aggiornamenti applicativi.
+
+---
+
+# Regola Finale
+
+# BR-009A.034
+
+Le recensioni Google Business Profile rappresentano una fonte informativa esterna destinata a fornire ulteriore contesto sui Commercianti senza sostituire i sistemi reputazionali, le recensioni interne e le metriche proprietarie di CollectorVerse.
+
 # BR-010 - Versioni
 
 # Scopo
