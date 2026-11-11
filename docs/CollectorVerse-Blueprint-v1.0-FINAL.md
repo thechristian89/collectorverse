@@ -381,9 +381,1424 @@ La Versione 1.0 deve consentire:
 
 senza necessità di modifiche strutturali all'architettura del sistema.
 
-# Parte 2 - Utenti • Privacy • Sicurezza • Recensioni • Gestione Account
+# Parte 2 - Utenti • Privacy • Sicurezza • Recensioni • Gestione Account • Ruoli • Profili
+
+# Modello Account
+
+CollectorVerse distingue chiaramente tra:
+
+```text
+Piano
+
+e
+
+Ruolo
+```
+
+Ogni account possiede sempre:
+
+```text
+1 Piano
+
++
+
+1 Ruolo
+```
+
+Il Piano determina le funzionalità disponibili all'interno della piattaforma.
+
+Il Ruolo determina i privilegi operativi e amministrativi.
+
+---
+
+# Piani Disponibili
+
+CollectorVerse supporta i seguenti piani:
+
+```text
+Free
+
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+Ogni account può possedere un solo Piano attivo alla volta.
+
+---
+
+# Ruoli Disponibili
+
+CollectorVerse supporta i seguenti ruoli:
+
+```text
+Utente
+
+Moderatore
+
+Amministratore
+```
+
+I privilegi derivanti dal Ruolo prevalgono sempre su quelli derivanti dal Piano.
+
+---
+
+# Esempi di Account
+
+Esempi validi:
+
+```text
+Free + Utente
+
+Premium + Utente
+
+Premium Plus + Utente
+
+Commerciante + Utente
+
+Free + Moderatore
+
+Premium + Amministratore
+```
+
+---
+
+# Registrazione
+
+CollectorVerse supporta la registrazione tramite:
+
+```text
+Email
+
+Google
+```
+
+Ogni account possiede:
+
+- Identificativo interno permanente
+- Username univoco
+- Data di registrazione
+- Profilo personale
+
+L'identificativo interno non è modificabile.
+
+La modifica dello username non altera:
+
+- identità account
+- collegamenti interni
+- QR Code
+- storico attività
+- dati catalogati
+
+---
+
+# Profilo Utente
+
+Ogni account dispone di un Profilo Utente.
+
+Il profilo può mostrare:
+
+- Avatar
+- Username
+- Piano attivo
+- Livello
+- CollectorScore
+- Badge
+- Affidabilità
+- Data di iscrizione
+
+La visibilità delle informazioni dipende dalle impostazioni Privacy dell'utente.
+
+---
+
+# Piano Free
+
+Il Piano Free consente:
+
+- utilizzo del Catalogo Universale
+- gestione Collezioni Personali
+- gestione Wishlist
+- utilizzo del sistema Follow
+- utilizzo delle Scansioni giornaliere disponibili
+- partecipazione al Catalogo Collaborativo
+- visualizzazione Marketplace
+- ricezione Richieste di Contatto
+- ricezione Messaggi
+- risposta alle Conversazioni esistenti
+- accesso alla Mappa Commercianti
+
+---
+
+## Limitazioni Piano Free
+
+Non può:
+
+```text
+❌ avviare nuove Conversazioni
+
+❌ creare Annunci Marketplace
+
+❌ utilizzare il Matching
+
+❌ comparire nella Mappa Utenti
+```
+
+---
+
+# Piano Premium
+
+Include tutte le funzionalità del Piano Free.
+
+---
+
+## Funzionalità Aggiuntive
+
+```text
+✅ avviare Conversazioni
+
+✅ utilizzare la Chat completa
+
+✅ creare Annunci Marketplace
+
+✅ utilizzare il Matching
+```
+
+---
+
+# Piano Premium Plus
+
+Include tutte le funzionalità del Piano Premium.
+
+---
+
+## Funzionalità Aggiuntive
+
+```text
+✅ Mappa Utenti
+
+✅ Geolocalizzazione avanzata
+
+✅ Matching avanzato
+
+✅ Filtri geografici avanzati
+
+✅ Visibilità geografica configurabile
+```
+
+---
+
+# Piano Commerciante
+
+Il Piano Commerciante è destinato a:
+
+- negozi
+- fumetterie
+- card shop
+- rivenditori professionali
+- attività commerciali specializzate nel collezionismo
+
+Il Piano Commerciante include tutte le funzionalità del Piano Premium Plus.
+
+---
+
+## Profilo Negozio
+
+Ogni account Commerciante dispone di una pagina negozio dedicata.
+
+Il Profilo Negozio può mostrare:
+
+- Logo
+- Banner
+- Descrizione attività
+- Sito web
+- Indirizzo
+- Orari di apertura
+- Recapiti pubblici
+- Categorie trattate
+
+---
+
+## Mappa Commercianti
+
+I Commercianti possono comparire nella Mappa Commercianti.
+
+La presenza sulla mappa è controllata dal titolare dell'attività ed è soggetta alle impostazioni privacy.
+
+---
+
+## Statistiche Professionali
+
+I Commercianti possono accedere a statistiche dedicate.
+
+Esempi:
+
+- visualizzazioni profilo
+- visualizzazioni annunci
+- click sui recapiti
+- richieste ricevute
+- conversioni marketplace
+
+---
+
+## Funzionalità Professionali
+
+I Commercianti possono:
+
+- pubblicare un numero maggiore di annunci
+- usufruire di limiti scansione dedicati
+- comparire nella Mappa Commercianti
+- gestire un Profilo Negozio completo
+
+Tutti i limiti sono configurabili dalla Dashboard Admin.
+
+---
+
+# Commerciante Verificato
+
+Gli Amministratori possono assegnare lo stato:
+
+```text
+Commerciante Verificato
+```
+
+agli account Commerciante.
+
+---
+
+## Requisiti Possibili
+
+La verifica può richiedere:
+
+- documentazione aziendale
+- partita IVA
+- sito web
+- presenza commerciale verificabile
+- ulteriori verifiche definite dagli amministratori
+
+---
+
+## Badge Verifica
+
+Gli account verificati mostrano il badge:
+
+```text
+✅ Commerciante Verificato
+```
+
+La perdita della verifica non modifica il Piano Commerciante.
+
+---
+
+# Moderatori
+
+I Moderatori possono gestire:
+
+- segnalazioni utenti
+- segnalazioni annunci
+- segnalazioni immagini
+- segnalazioni recensioni
+- contenuti segnalati
+- chat segnalate
+
+---
+
+## Limitazioni Moderatore
+
+Non possono:
+
+```text
+❌ modificare monetizzazione
+
+❌ modificare configurazioni globali
+
+❌ nominare Amministratori
+
+❌ accedere all'infrastruttura
+```
+
+---
+
+# Amministratori
+
+Gli Amministratori possiedono accesso completo alla Dashboard Admin.
+
+Possono gestire:
+
+- utenti
+- catalogo
+- marketplace
+- matching
+- monetizzazione
+- notifiche
+- sicurezza
+- configurazioni globali
+
+---
+
+# Richieste di Contatto
+
+L'apertura di una nuova Conversazione richiede una Richiesta di Contatto preventiva.
+
+La richiesta mostra:
+
+- Username
+- Piano attivo
+- Affidabilità
+- Media Recensioni
+- Numero Recensioni
+- CollectorScore
+- Badge Principali
+
+---
+
+# Stati Richiesta di Contatto
+
+```text
+In Attesa
+
+Accettata
+
+Rifiutata
+
+Bloccata
+
+Scaduta
+```
+
+Solo una richiesta Accettata genera una Conversazione.
+
+---
+
+# Anti-Spam
+
+Dopo un rifiuto non è possibile inviare immediatamente una nuova richiesta.
+
+Valore iniziale consigliato:
+
+```text
+1 giorno
+```
+
+Il valore è configurabile tramite Dashboard Admin.
+
+---
+
+# Permessi di Contatto
+
+Ogni utente può definire chi può inviargli Richieste di Contatto.
+
+---
+
+## Opzioni Disponibili
+
+```text
+Tutti
+
+Solo Premium
+
+Solo Commercianti
+
+Nessuno
+```
+
+---
+
+# Blocchi Utente
+
+Ogni utente può bloccare un altro utente.
+
+Il blocco impedisce:
+
+- visualizzazione del profilo
+- visualizzazione annunci
+- invio richieste di contatto
+- apertura conversazioni
+- follow
+- comparsa reciproca nei risultati
+
+Il blocco resta attivo fino alla sua rimozione manuale.
+
+---
+
+# Privacy
+
+Ogni profilo può essere configurato come:
+
+```text
+Pubblico
+
+Privato
+```
+
+Le Collezioni e le Wishlist possono avere impostazioni privacy indipendenti dal profilo.
+
+---
+
+# Valuta Preferita
+
+Ogni utente può configurare una Valuta Preferita.
+
+Esempi:
+
+```text
+EUR €
+
+USD $
+
+GBP £
+
+JPY ¥
+
+CHF
+```
+
+La modifica della valuta preferita non modifica i prezzi già inseriti.
+
+---
+
+# Stato Account
+
+Ogni account può trovarsi in uno dei seguenti stati:
+
+```text
+Attivo
+
+Sospeso
+
+Bloccato
+
+Eliminato
+```
+
+---
+
+## Attivo
+
+L'utente può utilizzare normalmente la piattaforma.
+
+---
+
+## Sospeso
+
+L'utente dispone di accesso limitato secondo le regole amministrative.
+
+---
+
+## Bloccato
+
+L'utente non può accedere alla piattaforma.
+
+---
+
+## Eliminato
+
+L'account segue le procedure GDPR e Privacy previste dalla piattaforma.
+
+---
+
+# Eliminazione Account
+
+L'utente può richiedere l'eliminazione del proprio account.
+
+L'eliminazione deve rispettare le normative Privacy e GDPR applicabili.
+
+I contributi approvati al Catalogo Universale:
+
+- vengono conservati
+- vengono anonimizzati
+- diventano patrimonio permanente della piattaforma
+
+Esempi:
+
+- Oggetti
+- Versioni
+- Varianti
+- Immagini
+- Correzioni approvate
+
+---
+
+# Obiettivo del Sistema Utenti
+
+Il sistema Utenti di CollectorVerse deve consentire la gestione di collezionisti privati, utenti avanzati, attività commerciali e personale amministrativo attraverso una separazione chiara tra Piani, Ruoli, Privacy e Permessi operativi.
 
 # Parte 3 - Abbonamenti • Monetizzazione • Pubblicità • Scansioni • Bundle • Pacchetti
+
+# Modello Economico
+
+CollectorVerse utilizza un modello **Freemium**.
+
+L'accesso alle funzionalità fondamentali di catalogazione deve essere gratuito, mentre le funzionalità avanzate possono essere abilitate tramite piani di abbonamento.
+
+La monetizzazione non deve compromettere l'utilizzo essenziale della piattaforma da parte dei collezionisti.
+
+---
+
+# Piani Disponibili
+
+CollectorVerse supporta i seguenti piani:
+
+```text
+Free
+
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+Ogni account può possedere un solo Piano attivo alla volta.
+
+---
+
+# Piano Free
+
+Il Piano Free consente l'utilizzo delle funzionalità fondamentali della piattaforma.
+
+## Funzionalità Incluse
+
+- Catalogo Universale
+- Collezioni Personali
+- Wishlist
+- Ricerca Utenti
+- Visualizzazione Profili Pubblici
+- Visualizzazione Collezioni Pubbliche
+- Visualizzazione Wishlist Pubbliche
+- Follow Categorie
+- Follow Collezioni
+- Follow Serie
+- Follow Oggetti
+- Follow Utenti
+- Follow Commercianti
+- Mappa Commercianti
+- Scansioni giornaliere
+- Catalogo Collaborativo
+- Ricezione Richieste di Contatto
+- Ricezione Messaggi
+- Risposta alle Conversazioni ricevute
+
+## Limitazioni
+
+Non può:
+
+```text
+❌ avviare nuove Conversazioni
+
+❌ pubblicare Annunci Marketplace
+
+❌ utilizzare il Matching
+
+❌ comparire nella Mappa Utenti
+```
+
+---
+
+# Piano Premium
+
+Include tutte le funzionalità del Piano Free.
+
+## Funzionalità Aggiuntive
+
+```text
+✅ avviare Conversazioni
+
+✅ utilizzare la Chat completa
+
+✅ creare Annunci Marketplace
+
+✅ utilizzare il Matching
+```
+
+---
+
+# Piano Premium Plus
+
+Include tutte le funzionalità del Piano Premium.
+
+## Funzionalità Aggiuntive
+
+```text
+✅ Mappa Utenti
+
+✅ Geolocalizzazione avanzata
+
+✅ Matching avanzato
+
+✅ Filtri geografici avanzati
+
+✅ Ricerca geografica avanzata
+```
+
+---
+
+# Piano Commerciante
+
+Il Piano Commerciante è destinato a:
+
+- negozi
+- fumetterie
+- card shop
+- rivenditori professionali
+- attività commerciali specializzate nel collezionismo
+
+Include tutte le funzionalità del Piano Premium Plus.
+
+---
+
+## Profilo Negozio
+
+Ogni account Commerciante dispone di una pagina negozio dedicata.
+
+Il Profilo Negozio può mostrare:
+
+- Logo
+- Banner
+- Descrizione attività
+- Sito Web
+- Indirizzo
+- Orari di apertura
+- Recapiti pubblici
+- Categorie trattate
+
+---
+
+## Mappa Commercianti
+
+I Commercianti possono apparire nella Mappa Commercianti.
+
+La presenza sulla mappa è controllata dal titolare dell'attività e soggetta alle impostazioni Privacy.
+
+---
+
+## Statistiche Professionali
+
+I Commercianti possono accedere a statistiche dedicate.
+
+Esempi:
+
+- visualizzazioni profilo
+- visualizzazioni annunci
+- click sui recapiti
+- richieste ricevute
+- conversioni marketplace
+
+---
+
+## Commerciante Verificato
+
+Gli Amministratori possono assegnare lo stato:
+
+```text
+✅ Commerciante Verificato
+```
+
+La verifica può richiedere:
+
+- documentazione aziendale
+- partita IVA
+- sito web
+- presenza commerciale verificabile
+
+La perdita della verifica non modifica il Piano Commerciante.
+
+---
+
+# Durata Abbonamenti
+
+CollectorVerse supporta inizialmente:
+
+```text
+Mensile
+
+Trimestrale
+
+Annuale
+```
+
+Le durate disponibili sono configurabili tramite Dashboard Admin.
+
+È possibile aggiungere nuove durate senza modificare il codice dell'applicazione.
+
+---
+
+# Periodo di Prova Gratuito
+
+CollectorVerse supporta un periodo di prova gratuito.
+
+Valore iniziale consigliato:
+
+```text
+7 giorni
+```
+
+La durata deve essere configurabile tramite Dashboard Admin.
+
+---
+
+## Funzionamento
+
+Durante il periodo di prova l'utente può accedere alle funzionalità del piano associato alla prova.
+
+Alla scadenza:
+
+```text
+✅ nessuna perdita dati
+
+✅ ritorno automatico al piano posseduto
+
+✅ conservazione completa dell'account
+```
+
+---
+
+# Sistema di Pagamento
+
+CollectorVerse non gestisce direttamente:
+
+- carte di credito
+- IBAN
+- conti bancari
+- dati di pagamento degli utenti
+
+I pagamenti devono essere effettuati tramite i sistemi ufficiali degli Store supportati.
+
+---
+
+## Implementazione Iniziale
+
+```text
+Google Play Billing
+```
+
+per:
+
+- Premium
+- Premium Plus
+- Commerciante
+
+Lo stato degli abbonamenti viene verificato tramite i servizi ufficiali dello Store.
+
+---
+
+# Scansioni
+
+CollectorVerse utilizza un sistema di scansioni giornaliere.
+
+Tutti i valori devono essere configurabili tramite Dashboard Admin.
+
+---
+
+## Quantità Scansioni Iniziali
+
+### Free
+
+```text
+3 scansioni al giorno
+```
+
+### Premium
+
+```text
+20 scansioni al giorno
+```
+
+### Premium Plus
+
+```text
+40 scansioni al giorno
+```
+
+### Commerciante
+
+```text
+100 scansioni al giorno
+```
+
+---
+
+# Consumo Scansione
+
+La scansione viene consumata immediatamente dopo l'acquisizione dell'immagine.
+
+Flusso:
+
+```text
+Foto
+
+↓
+
+Consumo di 1 scansione
+
+↓
+
+Analisi
+```
+
+---
+
+# Area Scansioni
+
+L'utente deve poter visualizzare:
+
+```text
+Scansioni disponibili
+
+Scansioni utilizzate
+
+Scansioni ottenute tramite Reward
+
+Video disponibili
+
+Reset giornaliero
+```
+
+---
+
+# Pubblicità
+
+CollectorVerse può utilizzare sistemi pubblicitari esterni.
+
+Implementazione iniziale prevista:
+
+```text
+Google AdMob
+```
+
+---
+
+## Tipologie Supportate
+
+```text
+Banner
+
+Rewarded Video
+```
+
+---
+
+# Banner
+
+I Banner devono essere mostrati in modo discreto e non invasivo.
+
+La frequenza è configurabile dalla Dashboard Admin.
+
+Gli utenti Free possono visualizzare Banner.
+
+Premium, Premium Plus e Commerciante possono essere esclusi dalla pubblicità secondo le configurazioni amministrative.
+
+---
+
+# Rewarded Video
+
+Gli utenti possono ottenere benefici guardando volontariamente video pubblicitari.
+
+---
+
+## Ricompensa Iniziale Consigliata
+
+```text
++3 scansioni
+```
+
+---
+
+## Limite Giornaliero Consigliato
+
+```text
+5 video al giorno
+```
+
+---
+
+## Cooldown Consigliato
+
+```text
+15 minuti
+```
+
+---
+
+Tutti i valori devono essere configurabili tramite Dashboard Admin.
+
+---
+
+# Marketplace
+
+L'accesso al Marketplace dipende dal Piano attivo.
+
+---
+
+# Disponibilità Oggetti
+
+Ogni oggetto presente nella Collezione Personale può essere marcato come:
+
+```text
+In Vendita
+
+In Scambio
+```
+
+Le due opzioni possono coesistere.
+
+---
+
+# Utente Free
+
+Può:
+
+```text
+✅ contrassegnare oggetti In Vendita
+
+✅ contrassegnare oggetti In Scambio
+```
+
+Può inoltre mostrare tali disponibilità nel proprio profilo pubblico.
+
+Non può:
+
+```text
+❌ creare Annunci Marketplace
+```
+
+---
+
+# Utente Premium
+
+Può:
+
+```text
+✅ creare Annunci Marketplace
+
+✅ creare annunci di vendita
+
+✅ creare annunci di scambio
+```
+
+---
+
+# Utente Premium Plus
+
+Può utilizzare tutte le funzionalità Marketplace del Piano Premium.
+
+---
+
+# Utente Commerciante
+
+Può utilizzare tutte le funzionalità Marketplace del Piano Premium Plus.
+
+Dispone inoltre di limiti annunci dedicati.
+
+Valore iniziale consigliato:
+
+```text
+100 annunci attivi
+```
+
+---
+
+# Annunci Marketplace
+
+Ogni annuncio può contenere:
+
+```text
+Oggetto
+
+Versione
+
+Variante
+
+Condizione
+
+Prezzo
+
+Valuta
+
+Descrizione
+```
+
+---
+
+# Condizione
+
+La Condizione appartiene esclusivamente alla copia posseduta dall'utente.
+
+Non appartiene:
+
+```text
+❌ all'Oggetto
+
+❌ alla Versione
+
+❌ alla Variante
+
+❌ al Catalogo Universale
+```
+
+---
+
+# Valuta
+
+Ogni utente possiede una Valuta Preferita configurabile nel profilo.
+
+Esempi:
+
+```text
+EUR €
+
+USD $
+
+GBP £
+
+JPY ¥
+
+CHF
+```
+
+---
+
+## Utilizzo
+
+Tutti i prezzi vengono registrati nella valuta scelta dall'utente.
+
+---
+
+## Visualizzazione
+
+Gli altri utenti visualizzano sempre:
+
+```text
+Prezzo originale
+
++
+
+Valuta originale
+```
+
+Esempio:
+
+```text
+120 €
+
+150 USD
+
+20.000 JPY
+```
+
+CollectorVerse non effettua conversioni automatiche tra valute.
+
+---
+
+# Stati Annuncio
+
+Ogni annuncio può assumere uno dei seguenti stati.
+
+---
+
+## Attivo
+
+Visibile nel Marketplace.
+
+---
+
+## Sospeso
+
+Non visibile ma conservato.
+
+---
+
+## Chiuso
+
+Venduto, scambiato o rimosso.
+
+---
+
+# Scadenza Abbonamento
+
+Se il Piano Premium, Premium Plus o Commerciante termina:
+
+```text
+Gli annunci vengono automaticamente sospesi.
+```
+
+---
+
+## Effetti
+
+```text
+✅ annunci conservati
+
+✅ annunci recuperabili
+
+❌ annunci visibili
+
+❌ annunci inclusi nel Matching
+```
+
+---
+
+# Riattivazione
+
+Al rinnovo di un piano compatibile:
+
+```text
+Gli annunci vengono riattivati automaticamente.
+```
+
+---
+
+# Limiti Annunci
+
+Configurabili tramite Dashboard Admin.
+
+Valori iniziali consigliati:
+
+### Premium
+
+```text
+10 annunci
+```
+
+### Premium Plus
+
+```text
+30 annunci
+```
+
+### Commerciante
+
+```text
+100 annunci
+```
+
+---
+
+# Superamento Limite
+
+Se un utente supera il numero massimo di annunci consentiti:
+
+mostrare un Wizard di selezione.
+
+Esempio:
+
+```text
+Hai 57 oggetti disponibili.
+
+Con il tuo piano puoi pubblicarne 10.
+
+Seleziona gli annunci da mantenere attivi.
+```
+
+---
+
+# Pacchetti
+
+CollectorVerse supporta Pacchetti opzionali acquistabili separatamente.
+
+---
+
+## Esempi
+
+```text
+Scansioni Extra
+
+Annunci Extra
+```
+
+---
+
+# Stato Pacchetti
+
+## Attivo
+
+Utilizzabile.
+
+---
+
+## Congelato
+
+Temporaneamente sospeso.
+
+---
+
+## Scaduto
+
+Terminato.
+
+---
+
+# Congelamento Pacchetti
+
+Se un utente perde i requisiti necessari all'utilizzo del pacchetto:
+
+```text
+Il pacchetto viene congelato.
+
+Il tempo residuo viene conservato.
+```
+
+---
+
+## Esempio
+
+```text
+Premium
+
++
+
+Pacchetto 100 Annunci
+
+↓
+
+Scadenza Premium
+
+↓
+
+Pacchetto Congelato
+```
+
+---
+
+# Riattivazione Pacchetto
+
+Quando l'utente torna ad avere un piano compatibile:
+
+```text
+Il pacchetto riprende dal tempo residuo rimanente.
+```
+
+---
+
+# Bundle
+
+CollectorVerse supporta Bundle commerciali.
+
+---
+
+## Premium Collector
+
+```text
+Premium Annuale
+
++
+
+250 Scansioni
+
++
+
+50 Annunci
+```
+
+---
+
+## Premium Plus Collector
+
+```text
+Premium Plus Annuale
+
++
+
+1000 Scansioni
+
++
+
+100 Annunci
+```
+
+---
+
+# Fonti di Monetizzazione
+
+CollectorVerse prevede:
+
+```text
+Abbonamenti
+
+Bundle
+
+Pacchetti
+
+Banner Pubblicitari
+
+Rewarded Video
+```
+
+---
+
+# Gestione Admin
+
+Tutti i valori devono essere configurabili senza modificare il codice.
+
+---
+
+## Configurazioni Abbonamenti
+
+- piani
+- prezzi
+- durate
+- periodo di prova
+- vantaggi
+
+---
+
+## Configurazioni Provider
+
+- provider pagamenti
+- provider pubblicitari
+- reward video
+
+---
+
+## Configurazioni Scansioni
+
+- scansioni giornaliere
+- scansioni reward
+- cooldown
+- limiti giornalieri
+
+---
+
+## Configurazioni Marketplace
+
+- limiti annunci
+- durata annunci
+- visibilità annunci
+
+---
+
+## Configurazioni Pubblicità
+
+- banner
+- rewarded video
+- frequenza
+
+---
+
+## Configurazioni Bundle
+
+- contenuto
+- durata
+- prezzo
+
+---
+
+## Configurazioni Pacchetti
+
+- quantità
+- durata
+- prezzo
+
+---
+
+# Obiettivo della Monetizzazione
+
+L'obiettivo della monetizzazione di CollectorVerse è:
+
+- sostenere i costi operativi della piattaforma
+- finanziare l'evoluzione del Catalogo Universale
+- mantenere accessibili gratuitamente le funzionalità fondamentali per l'intera community dei collezionisti
 
 # Parte 4 - Catalogo Universale • Categorie • Collezioni • Serie • Oggetti • Versioni • Varianti
 
@@ -2464,7 +3879,611 @@ Disattivato
 
 tramite Dashboard Admin.
 
-# Parte 7 - Marketplace • Chat • Matching • Geolocalizzazione
+# Parte 7 - Marketplace • Chat • Matching • Geolocalizzazione • Commercianti
+
+# Marketplace
+
+CollectorVerse include un Marketplace dedicato all'incontro tra collezionisti e commercianti.
+
+La piattaforma non gestisce direttamente:
+
+- pagamenti
+- spedizioni
+- incassi
+- rimborsi
+- controversie commerciali
+
+Le transazioni avvengono direttamente tra gli utenti.
+
+CollectorVerse opera esclusivamente come piattaforma di incontro tra domanda e offerta.
+
+---
+
+# Disponibilità Oggetti
+
+Ogni oggetto presente nella Collezione Personale può essere contrassegnato come:
+
+```text
+In Vendita
+
+In Scambio
+```
+
+Le due opzioni possono coesistere.
+
+La disponibilità non genera automaticamente un Annuncio Marketplace.
+
+---
+
+# Tipologie di Disponibilità
+
+## In Vendita
+
+L'utente è disposto a vendere l'oggetto.
+
+---
+
+## In Scambio
+
+L'utente è disposto a scambiare l'oggetto con altri collezionisti.
+
+---
+
+# Accesso al Marketplace
+
+L'accesso dipende dal Piano attivo dell'utente.
+
+---
+
+## Piano Free
+
+Può:
+
+```text
+✅ contrassegnare oggetti In Vendita
+
+✅ contrassegnare oggetti In Scambio
+
+✅ mostrare tali disponibilità nel proprio profilo
+```
+
+Non può:
+
+```text
+❌ creare Annunci Marketplace
+```
+
+---
+
+## Piano Premium
+
+Può:
+
+```text
+✅ creare Annunci Marketplace
+
+✅ creare annunci di vendita
+
+✅ creare annunci di scambio
+```
+
+---
+
+## Piano Premium Plus
+
+Può utilizzare tutte le funzionalità Marketplace del Piano Premium.
+
+---
+
+## Piano Commerciante
+
+Può utilizzare tutte le funzionalità Marketplace del Piano Premium Plus.
+
+Dispone inoltre di:
+
+- limiti annunci dedicati
+- Profilo Negozio
+- statistiche professionali
+- Mappa Commercianti
+- stato Commerciante Verificato
+
+---
+
+# Annunci Marketplace
+
+Gli annunci sono pubblicazioni visibili all'interno del Marketplace.
+
+Un annuncio può essere creato esclusivamente per un oggetto presente nella Collezione Personale dell'utente.
+
+---
+
+# Contenuto Annuncio
+
+Ogni annuncio può contenere:
+
+```text
+Oggetto
+
+Versione
+
+Variante
+
+Condizione
+
+Prezzo
+
+Valuta
+
+Descrizione
+```
+
+---
+
+# Prezzo
+
+Gli annunci di vendita devono possedere un prezzo.
+
+Gli annunci di scambio possono non avere alcun prezzo.
+
+Il prezzo viene sempre salvato nella valuta originale inserita dall'utente.
+
+---
+
+# Valute
+
+Ogni utente possiede una Valuta Preferita configurabile.
+
+Esempi:
+
+```text
+EUR €
+
+USD $
+
+GBP £
+
+JPY ¥
+
+CHF
+```
+
+CollectorVerse non effettua conversioni automatiche tra valute.
+
+Gli utenti visualizzano sempre:
+
+```text
+Prezzo originale
+
++
+
+Valuta originale
+```
+
+---
+
+# Condizione
+
+La Condizione appartiene esclusivamente alla copia posseduta dall'utente.
+
+Non appartiene:
+
+```text
+❌ all'Oggetto
+
+❌ alla Versione
+
+❌ alla Variante
+
+❌ al Catalogo Universale
+```
+
+---
+
+# Stati Annuncio
+
+Ogni annuncio può assumere uno dei seguenti stati.
+
+---
+
+## Attivo
+
+Visibile nel Marketplace.
+
+---
+
+## Sospeso
+
+Non visibile ma conservato.
+
+---
+
+## Chiuso
+
+Venduto, scambiato o rimosso dal proprietario.
+
+---
+
+# Limiti Annunci
+
+I limiti sono configurabili tramite Dashboard Admin.
+
+Valori iniziali consigliati:
+
+### Premium
+
+```text
+10 annunci attivi
+```
+
+### Premium Plus
+
+```text
+30 annunci attivi
+```
+
+### Commerciante
+
+```text
+100 annunci attivi
+```
+
+---
+
+# Superamento Limite
+
+Se il numero di annunci supera il limite consentito dal Piano:
+
+mostrare un Wizard di selezione.
+
+Esempio:
+
+```text
+Hai 57 oggetti disponibili.
+
+Con il tuo piano puoi pubblicarne 10.
+
+Seleziona gli annunci da mantenere attivi.
+```
+
+---
+
+# Scadenza Piano
+
+Se il Piano Premium, Premium Plus o Commerciante termina:
+
+```text
+Gli annunci vengono automaticamente sospesi.
+```
+
+---
+
+## Effetti
+
+```text
+✅ annunci conservati
+
+✅ annunci recuperabili
+
+❌ annunci visibili
+
+❌ annunci inclusi nel Matching
+```
+
+---
+
+# Riattivazione
+
+Al rinnovo di un piano compatibile:
+
+```text
+Gli annunci vengono riattivati automaticamente.
+```
+
+---
+
+# Ricerca Marketplace
+
+Il Marketplace deve supportare:
+
+- ricerca testuale
+- ricerca catalografica
+- filtri avanzati
+- ordinamenti personalizzati
+
+---
+
+# Filtri Disponibili
+
+Filtri minimi:
+
+- Categoria
+- Collezione
+- Serie
+- Oggetto
+- Versione
+- Variante
+
+---
+
+# Filtri Avanzati
+
+- Prezzo
+- Condizione
+- Distanza
+- Tipologia annuncio
+- Tipologia account
+
+---
+
+# Ordinamenti
+
+Ordinamenti iniziali consigliati:
+
+- Compatibilità
+- Data pubblicazione
+- Prezzo
+- Distanza
+- Affidabilità
+- CollectorScore
+- Recensioni
+
+---
+
+# Matching
+
+Il Matching rappresenta il sistema automatico che individua opportunità rilevanti tra utenti.
+
+---
+
+# Accesso al Matching
+
+Disponibile per:
+
+```text
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+Non disponibile per utenti Free.
+
+---
+
+# Dati Utilizzati
+
+Il Matching può utilizzare:
+
+- Wishlist
+- Collezioni Personali
+- Disponibili per Vendita
+- Disponibili per Scambio
+- Annunci Marketplace
+- Affidabilità
+- Recensioni
+- CollectorScore
+
+---
+
+# Matching Acquisto
+
+Individua:
+
+```text
+Oggetti desiderati
+
+↓
+
+presenti presso altri utenti
+```
+
+Può utilizzare:
+
+- Wishlist
+- prezzo massimo desiderato
+- condizione minima accettata
+- distanza geografica
+
+---
+
+# Matching Vendita
+
+Individua:
+
+```text
+Utenti interessati
+
+↓
+
+agli oggetti disponibili
+```
+
+Può utilizzare:
+
+- Wishlist compatibili
+- distanza
+- Affidabilità
+- Recensioni
+
+---
+
+# Matching Scambio
+
+Identifica situazioni in cui:
+
+```text
+Utente A possiede qualcosa
+desiderato da Utente B
+
+e
+
+Utente B possiede qualcosa
+desiderato da Utente A
+```
+
+---
+
+# Geolocalizzazione
+
+Il Matching può utilizzare la distanza geografica.
+
+---
+
+## Distanza Iniziale Consigliata
+
+```text
+25 km
+```
+
+---
+
+## Estensioni Disponibili
+
+```text
+50 km
+
+100 km
+
+250 km
+
+500 km
+
+Nazionale
+
+Europa
+
+Mondo
+```
+
+---
+
+# Filtri Geografici
+
+Il Matching può filtrare per:
+
+- Regione
+- Nazione
+- Continente
+
+---
+
+# Affidabilità
+
+L'Affidabilità può influenzare il ranking dei risultati.
+
+Gli utenti con Affidabilità superiore possono ottenere una priorità maggiore.
+
+---
+
+# Recensioni
+
+Le recensioni possono influenzare:
+
+- ranking
+- ordinamento
+- priorità dei risultati
+
+---
+
+# CollectorScore
+
+Il CollectorScore può contribuire al ranking dei risultati.
+
+---
+
+# Versioni e Varianti
+
+Il Matching deve supportare:
+
+- Versioni specifiche
+- Varianti specifiche
+
+Una Wishlist che richiede una Variante specifica deve privilegiare risultati compatibili.
+
+---
+
+# Matching Professionale
+
+Il Piano Commerciante dispone di funzionalità professionali dedicate.
+
+---
+
+## Opportunità Commerciali
+
+Il sistema può individuare:
+
+- utenti interessati agli oggetti del commerciante
+- Wishlist compatibili
+- aree geografiche con elevata domanda
+- nuove opportunità commerciali
+
+---
+
+# Visualizzazione Risultati
+
+Ogni risultato può mostrare:
+
+- Oggetto
+- Versione
+- Variante
+- Condizione
+- Prezzo
+- Valuta
+- Distanza
+- Affidabilità
+- CollectorScore
+- Recensioni
+
+---
+
+# Utenti Bloccati
+
+Gli utenti bloccati non devono comparire nei risultati reciproci.
+
+Non deve essere generato Matching tra utenti che hanno attivato un blocco reciproco.
+
+---
+
+# Contatto
+
+Quando un Matching viene considerato interessante:
+
+l'utente può avviare una Richiesta di Contatto.
+
+L'apertura della Conversazione segue le regole previste dal sistema Chat.
+
+---
+
+# Notifiche Matching
+
+CollectorVerse può inviare notifiche relative a:
+
+- nuovi Match Acquisto
+- nuovi Match Vendita
+- nuovi Match Scambio
+- nuovi annunci compatibili
+- nuove opportunità professionali
+
+Le notifiche rispettano le preferenze dell'utente.
+
+---
+
+# Statistiche
+
+CollectorVerse può mantenere statistiche relative a:
+
+- Matching generati
+- Matching visualizzati
+- Matching convertiti in contatto
+- Matching convertiti in recensione
+- Matching convertiti in transazione
+
+---
+
+# Obiettivo del Marketplace e del Matching
+
+L'obiettivo del Marketplace e del Matching è facilitare l'incontro tra collezionisti e commercianti, aumentare la probabilità di completamento delle collezioni e favorire scambi e vendite rilevanti senza che CollectorVerse intervenga direttamente nelle transazioni economiche.
 
 # Parte 8 - Gamification • CollectorScore • Livelli • Badge • Cornici Profilo • Obiettivi
 
@@ -3679,6 +5698,782 @@ Configurazioni modificabili senza aggiornare il codice.
 - limiti importazione
 
 # Parte 10 - Dashboard Amministratore • Configurazioni Globali • Moderazione • Asset Grafici • Statistiche
+
+# Obiettivo
+
+La Dashboard Amministratore rappresenta il centro di controllo operativo di CollectorVerse.
+
+Tutte le configurazioni dinamiche della piattaforma devono essere gestite attraverso la Dashboard senza richiedere modifiche al codice applicativo.
+
+La Dashboard deve consentire il monitoraggio, la gestione e la configurazione completa dell'ecosistema CollectorVerse.
+
+---
+
+# Ruoli Amministrativi
+
+L'accesso alla Dashboard è consentito esclusivamente ai ruoli autorizzati.
+
+```text
+Moderatore
+
+Amministratore
+```
+
+---
+
+# Moderatore
+
+Può gestire:
+
+- segnalazioni utenti
+- segnalazioni immagini
+- segnalazioni recensioni
+- segnalazioni annunci
+- contenuti segnalati
+- chat segnalate
+
+Non può:
+
+```text
+❌ modificare monetizzazione
+
+❌ modificare configurazioni globali
+
+❌ gestire infrastruttura
+
+❌ nominare amministratori
+```
+
+---
+
+# Amministratore
+
+Possiede accesso completo alla Dashboard.
+
+Può gestire:
+
+- utenti
+- catalogo
+- marketplace
+- matching
+- monetizzazione
+- notifiche
+- sicurezza
+- configurazioni globali
+- feature flags
+- statistiche
+
+---
+
+# Dashboard Home
+
+La Dashboard deve fornire una vista riassuntiva dello stato della piattaforma.
+
+---
+
+## Indicatori Principali
+
+Visualizzare almeno:
+
+- utenti registrati
+- utenti attivi
+- nuovi utenti
+- nuovi Premium
+- nuovi Premium Plus
+- nuovi Commercianti
+- Commercianti Verificati
+- annunci attivi
+- scansioni giornaliere
+- revisioni catalogo in attesa
+- segnalazioni aperte
+- notifiche inviate
+
+---
+
+# Gestione Utenti
+
+Gli Amministratori devono poter ricercare qualsiasi account.
+
+---
+
+## Ricerca
+
+Supportare almeno:
+
+```text
+Username
+
+Email
+
+ID Utente
+```
+
+---
+
+## Scheda Utente
+
+La scheda deve mostrare:
+
+- Profilo
+- Piano
+- Ruolo
+- Stato Account
+- CollectorScore
+- Livello
+- Affidabilità
+- Storico attività
+- Segnalazioni ricevute
+- Storico abbonamenti
+
+---
+
+## Operazioni Disponibili
+
+```text
+Sospendi
+
+Riattiva
+
+Blocca
+
+Sblocca
+
+Elimina
+
+Modifica Piano
+
+Modifica Ruolo
+```
+
+---
+
+# Gestione Piani
+
+La Dashboard deve consentire la gestione completa dei Piani.
+
+---
+
+## Piani Supportati
+
+```text
+Free
+
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+---
+
+## Operazioni Disponibili
+
+```text
+Crea
+
+Modifica
+
+Attiva
+
+Disattiva
+
+Archivia
+```
+
+---
+
+# Gestione Prezzi
+
+Gli Amministratori devono poter configurare:
+
+- prezzi
+- promozioni
+- sconti
+- offerte temporanee
+
+senza modificare il codice.
+
+---
+
+# Gestione Durate
+
+Durate iniziali:
+
+```text
+Mensile
+
+Trimestrale
+
+Annuale
+```
+
+---
+
+## Durate Personalizzate
+
+La Dashboard deve consentire la creazione di durate aggiuntive.
+
+Esempi:
+
+```text
+30 giorni
+
+90 giorni
+
+180 giorni
+
+24 mesi
+```
+
+---
+
+# Gestione Periodo di Prova
+
+CollectorVerse supporta un periodo di prova gratuito.
+
+---
+
+## Configurazioni Disponibili
+
+- attivazione/disattivazione
+- durata
+- piano associato
+- regole di utilizzo
+
+---
+
+## Valore Iniziale Consigliato
+
+```text
+7 giorni
+```
+
+---
+
+# Gestione Commercianti
+
+La Dashboard deve supportare la gestione completa dei Commercianti.
+
+---
+
+## Operazioni Disponibili
+
+```text
+Verifica
+
+Revoca Verifica
+
+Sospendi
+
+Riattiva
+
+Elimina
+```
+
+---
+
+# Commerciante Verificato
+
+Gli Amministratori possono assegnare il badge:
+
+```text
+✅ Commerciante Verificato
+```
+
+---
+
+## Verifica
+
+La verifica può richiedere:
+
+- documentazione aziendale
+- partita IVA
+- sito web
+- attività verificabile
+
+---
+
+# Gestione Catalogo
+
+Gli Amministratori devono poter gestire:
+
+```text
+Categorie
+
+Collezioni
+
+Serie
+
+Oggetti
+
+Versioni
+
+Varianti
+```
+
+---
+
+# Categorie
+
+Stati supportati:
+
+```text
+In Sviluppo
+
+Attiva
+
+Nascosta
+
+Archiviata
+```
+
+---
+
+## Operazioni
+
+```text
+Crea
+
+Modifica
+
+Attiva
+
+Nascondi
+
+Archivia
+```
+
+---
+
+# Revisioni Catalogo
+
+La Dashboard deve includere un Centro Revisioni.
+
+---
+
+## Revisione Elementi
+
+Revisionabili:
+
+- Oggetti
+- Versioni
+- Varianti
+- Immagini
+- Correzioni
+
+---
+
+## Azioni Disponibili
+
+```text
+Approva
+
+Correggi
+
+Rifiuta
+
+Unifica
+```
+
+---
+
+# Gestione Immagini
+
+Gli Amministratori devono poter gestire tutte le immagini catalogo.
+
+---
+
+## Operazioni
+
+```text
+Approva
+
+Rifiuta
+
+Archivia
+
+Imposta Ufficiale
+
+Sostituisci Immagine Ufficiale
+```
+
+---
+
+# Asset Grafici
+
+La Dashboard deve gestire:
+
+- loghi categoria
+- banner categoria
+- loghi collezione
+- banner collezione
+- badge
+- cornici profilo
+- immagini placeholder
+
+---
+
+# Placeholder
+
+Placeholder iniziali:
+
+```text
+Categoria
+
+Collezione
+
+Oggetto
+
+Profilo
+
+Immagine Mancante
+```
+
+---
+
+# Configurazioni Monetizzazione
+
+La Dashboard deve consentire la gestione completa della monetizzazione.
+
+---
+
+## Configurazioni Disponibili
+
+- piani
+- prezzi
+- durate
+- periodo di prova
+- bundle
+- pacchetti
+- reward video
+- scansioni bonus
+
+---
+
+# Provider Pagamenti
+
+La piattaforma deve supportare provider di pagamento configurabili.
+
+---
+
+## Provider Iniziale
+
+```text
+Google Play Billing
+```
+
+---
+
+# Provider Pubblicitari
+
+La piattaforma deve supportare provider pubblicitari configurabili.
+
+---
+
+## Provider Iniziale
+
+```text
+Google AdMob
+```
+
+---
+
+# Gestione Pubblicità
+
+Configurazioni disponibili:
+
+- banner
+- rewarded video
+- frequenza
+- limiti giornalieri
+- cooldown
+
+---
+
+# Gestione Marketplace
+
+Configurazioni disponibili:
+
+- limiti annunci
+- durata annunci
+- visibilità annunci
+- stati annunci
+
+---
+
+## Limiti Annunci Consigliati
+
+### Premium
+
+```text
+10 annunci
+```
+
+### Premium Plus
+
+```text
+30 annunci
+```
+
+### Commerciante
+
+```text
+100 annunci
+```
+
+---
+
+# Gestione Scansioni
+
+Configurazioni disponibili:
+
+- scansioni giornaliere
+- scansioni reward
+- cooldown
+- limiti giornalieri
+- provider OCR
+- provider AI
+
+---
+
+## Limiti Iniziali Consigliati
+
+### Free
+
+```text
+3 scansioni
+```
+
+### Premium
+
+```text
+20 scansioni
+```
+
+### Premium Plus
+
+```text
+40 scansioni
+```
+
+### Commerciante
+
+```text
+100 scansioni
+```
+
+---
+
+# Gestione Matching
+
+Configurazioni disponibili:
+
+- pesi matching
+- formule matching
+- distanza geografica
+- filtri geografici
+- soglie compatibilità
+
+---
+
+# Gestione Gamification
+
+Configurazioni disponibili:
+
+- CollectorScore
+- Livelli
+- Badge
+- Cornici
+- Obiettivi
+- Streak
+- Esperto Serie
+
+---
+
+# Gestione Notifiche
+
+Configurazioni disponibili:
+
+- categorie
+- template
+- canali
+- digest
+- priorità
+
+---
+
+# Gestione Valute
+
+La Dashboard deve consentire la gestione delle valute utilizzabili.
+
+---
+
+## Operazioni
+
+```text
+Crea
+
+Modifica
+
+Nascondi
+
+Archivia
+```
+
+---
+
+# Feature Flags
+
+La piattaforma deve supportare l'attivazione e la disattivazione dinamica delle funzionalità.
+
+---
+
+## Funzionalità Gestibili
+
+```text
+Marketplace
+
+Matching
+
+Chat
+
+Recensioni
+
+Scansioni
+
+Notifiche
+
+Catalogo Collaborativo
+
+Importazione
+
+Esportazione
+```
+
+---
+
+# Audit Log
+
+Ogni operazione amministrativa deve essere registrata.
+
+---
+
+## Informazioni Minime
+
+- amministratore
+- data
+- ora
+- azione
+- risorsa coinvolta
+
+---
+
+## Caratteristiche
+
+```text
+Immodificabile
+
+Persistente
+
+Consultabile
+
+Ricercabile
+```
+
+---
+
+# Cestino Amministrativo
+
+Gli elementi eliminati devono essere conservati.
+
+---
+
+## Durata Iniziale Consigliata
+
+```text
+30 giorni
+```
+
+---
+
+## Operazioni
+
+```text
+Ripristina
+
+Elimina Definitivamente
+```
+
+---
+
+# Statistiche
+
+La Dashboard deve fornire statistiche avanzate.
+
+---
+
+## Statistiche Disponibili
+
+- crescita utenti
+- crescita catalogo
+- crescita commercianti
+- conversioni prova gratuita
+- conversioni abbonamenti
+- utilizzo marketplace
+- utilizzo matching
+- utilizzo scansioni
+- utilizzo pubblicità
+- entrate pubblicitarie
+- entrate abbonamenti
+
+---
+
+# Esportazioni Amministrative
+
+Gli Amministratori devono poter esportare:
+
+- catalogo
+- configurazioni
+- revisioni
+- statistiche
+- marketplace
+
+---
+
+# Modalità Manutenzione
+
+La piattaforma deve supportare una Modalità Manutenzione.
+
+---
+
+## Operazioni Disponibili
+
+```text
+Attiva
+
+Disattiva
+
+Programma
+
+Messaggio Personalizzato
+```
+
+---
+
+## Effetti
+
+Durante la manutenzione:
+
+- l'accesso utenti può essere limitato
+- alcune funzionalità possono essere disattivate
+- il personale amministrativo mantiene l'accesso
+
+---
+
+# Obiettivo della Dashboard Admin
+
+La Dashboard Admin rappresenta il punto centrale di gestione di CollectorVerse e deve consentire ad Amministratori e Moderatori di configurare, controllare, monitorare e mantenere l'intera piattaforma senza richiedere modifiche al codice applicativo.
 
 # Parte 11 - Strategia di Lancio • Crescita Progressiva • Evoluzione del Catalogo
 
