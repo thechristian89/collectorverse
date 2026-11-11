@@ -8434,6 +8434,817 @@ Tutte le notifiche della piattaforma devono essere centralizzate, configurabili,
 
 # BR-016 - Dashboard Admin
 
+# Scopo
+
+Definire le regole operative relative a:
+
+- Dashboard Admin
+- Moderazione
+- Configurazioni Globali
+- Gestione Piani
+- Periodi di Prova
+- Audit Log
+- Gestione Utenti
+- Gestione Catalogo
+- Gestione Asset
+- Statistiche
+- Feature Flags
+- Configurazioni Dinamiche
+
+---
+
+# Principi Generali
+
+# BR-016.001
+
+La Dashboard Admin rappresenta il centro di controllo operativo ufficiale di CollectorVerse.
+
+---
+
+# BR-016.002
+
+Tutte le configurazioni della piattaforma devono essere gestibili tramite Dashboard Admin quando tecnicamente possibile.
+
+---
+
+# BR-016.003
+
+La modifica delle configurazioni non deve richiedere aggiornamenti applicativi.
+
+---
+
+# BR-016.004
+
+Le configurazioni devono essere persistenti.
+
+---
+
+# BR-016.005
+
+Le configurazioni devono essere versionabili.
+
+---
+
+# BR-016.006
+
+Le modifiche devono essere registrate e tracciabili.
+
+---
+
+# Accesso
+
+# BR-016.007
+
+L'accesso alla Dashboard Admin è consentito esclusivamente agli utenti autorizzati.
+
+---
+
+# BR-016.008
+
+I ruoli amministrativi sono:
+
+```text
+Moderatore
+
+Amministratore
+```
+
+---
+
+# BR-016.009
+
+Ogni accesso deve essere autenticato.
+
+---
+
+# BR-016.010
+
+L'autenticazione a due fattori deve essere obbligatoria per tutti gli account amministrativi.
+
+---
+
+# BR-016.011
+
+Le autorizzazioni devono essere verificate lato server.
+
+---
+
+# BR-016.012
+
+Ogni sessione amministrativa deve essere registrata.
+
+---
+
+# Permessi
+
+# BR-016.013
+
+La Dashboard deve utilizzare un sistema di autorizzazione basato sui ruoli.
+
+---
+
+# BR-016.014
+
+I Moderatori possono accedere esclusivamente alle sezioni autorizzate.
+
+---
+
+# BR-016.015
+
+Gli Amministratori possiedono accesso completo.
+
+---
+
+# BR-016.016
+
+Le autorizzazioni devono essere configurabili.
+
+---
+
+# BR-016.017
+
+Le modifiche alle autorizzazioni devono essere registrate nell'Audit Log.
+
+---
+
+# Dashboard Home
+
+# BR-016.018
+
+La Dashboard deve fornire una vista riassuntiva dello stato della piattaforma.
+
+---
+
+# BR-016.019
+
+La Home Amministrativa deve mostrare almeno:
+
+- nuovi utenti
+- utenti attivi
+- nuovi Premium
+- nuovi Premium Plus
+- nuovi Commercianti
+- Commercianti verificati
+- scansioni giornaliere
+- segnalazioni aperte
+- revisioni catalogo in attesa
+- annunci segnalati
+
+---
+
+# BR-016.020
+
+I dati mostrati devono aggiornarsi automaticamente.
+
+---
+
+# Gestione Utenti
+
+# BR-016.021
+
+Gli Amministratori devono poter ricercare qualsiasi account.
+
+---
+
+# BR-016.022
+
+La ricerca utenti deve supportare:
+
+- username
+- email
+- ID interno
+
+---
+
+# BR-016.023
+
+Per ogni account devono essere visualizzabili almeno:
+
+- profilo
+- ruolo
+- piano
+- stato account
+- CollectorScore
+- affidabilità
+- storico attività
+- segnalazioni
+
+---
+
+# BR-016.024
+
+Gli Amministratori devono poter:
+
+- sospendere account
+- riattivare account
+- bloccare account
+- eliminare account
+
+---
+
+# BR-016.025
+
+Tutte le operazioni sugli utenti devono essere registrate.
+
+---
+
+# Gestione Ruoli
+
+# BR-016.026
+
+Gli Amministratori devono poter assegnare il ruolo Moderatore.
+
+---
+
+# BR-016.027
+
+Gli Amministratori devono poter revocare il ruolo Moderatore.
+
+---
+
+# BR-016.028
+
+Le modifiche dei ruoli devono essere registrate nell'Audit Log.
+
+---
+
+# Gestione Piani
+
+# BR-016.029
+
+Gli Amministratori devono poter gestire tutti i piani commerciali.
+
+---
+
+# BR-016.030
+
+I piani supportati sono:
+
+```text
+Free
+
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+---
+
+# BR-016.031
+
+Gli Amministratori devono poter:
+
+- creare piani
+- modificare piani
+- sospendere piani
+- archiviare piani
+
+---
+
+# BR-016.032
+
+Le modifiche ai piani non devono richiedere aggiornamenti applicativi.
+
+---
+
+# Prezzi
+
+# BR-016.033
+
+Gli Amministratori devono poter configurare:
+
+- prezzi
+- valute
+- durate
+- promozioni
+- sconti
+
+---
+
+# BR-016.034
+
+Le durate iniziali supportate sono:
+
+```text
+Mensile
+
+Trimestrale
+
+Annuale
+```
+
+---
+
+# BR-016.035
+
+Gli Amministratori devono poter creare durate personalizzate.
+
+---
+
+# Periodo di Prova
+
+# BR-016.036
+
+Gli Amministratori devono poter configurare il Periodo di Prova gratuito.
+
+---
+
+# BR-016.037
+
+Gli Amministratori devono poter definire:
+
+- durata
+- piano assegnato
+- disponibilità
+- regole di utilizzo
+
+---
+
+# BR-016.038
+
+Valore iniziale consigliato:
+
+```text
+7 giorni
+```
+
+---
+
+# BR-016.039
+
+La durata deve essere modificabile senza aggiornamento applicativo.
+
+---
+
+# Gestione Commercianti
+
+# BR-016.040
+
+Gli Amministratori devono poter gestire i profili Commerciante.
+
+---
+
+# BR-016.041
+
+Gli Amministratori devono poter:
+
+- verificare commercianti
+- revocare verifiche
+- sospendere commercianti
+- eliminare commercianti
+
+---
+
+# BR-016.042
+
+L'assegnazione dello stato:
+
+```text
+Commerciante Verificato
+```
+
+deve essere riservata agli Amministratori.
+
+---
+
+# BR-016.043
+
+Le verifiche devono essere tracciate.
+
+---
+
+# Gestione Catalogo
+
+# BR-016.044
+
+Gli Amministratori devono poter gestire:
+
+- Categorie
+- Collezioni
+- Serie
+- Oggetti
+- Versioni
+- Varianti
+
+---
+
+# BR-016.045
+
+Ogni modifica catalografica deve essere registrata.
+
+---
+
+# Gestione Categorie
+
+# BR-016.046
+
+Gli Amministratori devono poter creare nuove Categorie.
+
+---
+
+# BR-016.047
+
+Gli Amministratori devono poter modificare gli stati delle Categorie.
+
+---
+
+# BR-016.048
+
+Gli stati supportati sono:
+
+```text
+In Sviluppo
+
+Attiva
+
+Nascosta
+
+Archiviata
+```
+
+---
+
+# Revisioni Catalogo
+
+# BR-016.049
+
+La Dashboard deve includere un'area dedicata alle revisioni.
+
+---
+
+# BR-016.050
+
+Devono essere revisionabili:
+
+- Oggetti
+- Versioni
+- Varianti
+- Immagini
+- Correzioni
+
+---
+
+# BR-016.051
+
+Le azioni disponibili sono:
+
+```text
+Verifica
+
+Correggi
+
+Rifiuta
+
+Unifica
+```
+
+---
+
+# BR-016.052
+
+L'approvazione finale spetta agli Amministratori.
+
+---
+
+# Gestione Immagini
+
+# BR-016.053
+
+Gli Amministratori devono poter gestire tutte le immagini catalogo.
+
+---
+
+# BR-016.054
+
+Le azioni disponibili devono includere:
+
+- approva
+- rifiuta
+- archivia
+- imposta ufficiale
+- sostituisci immagine ufficiale
+
+---
+
+# Asset Grafici
+
+# BR-016.055
+
+La Dashboard deve supportare la gestione centralizzata degli asset grafici.
+
+---
+
+# BR-016.056
+
+Gli Asset gestibili includono:
+
+- logo categoria
+- banner categoria
+- logo collezione
+- banner collezione
+- badge
+- cornici
+- immagini placeholder
+
+---
+
+# Placeholder
+
+# BR-016.057
+
+Gli Amministratori devono poter configurare i Placeholder di sistema.
+
+---
+
+# BR-016.058
+
+I Placeholder iniziali includono:
+
+- Categoria
+- Collezione
+- Oggetto
+- Profilo
+- Immagine Mancante
+
+---
+
+# Monetizzazione
+
+# BR-016.059
+
+Gli Amministratori devono poter configurare:
+
+- piani
+- prezzi
+- durate
+- prove gratuite
+- bundle
+- pacchetti
+- pubblicità
+- video reward
+
+---
+
+# Marketplace
+
+# BR-016.060
+
+Gli Amministratori devono poter configurare:
+
+- limiti annunci
+- visibilità marketplace
+- durata annunci
+- stati annunci
+
+---
+
+# BR-016.061
+
+Gli Amministratori devono poter configurare limiti differenti per:
+
+- Premium
+- Premium Plus
+- Commerciante
+
+---
+
+# Scansioni
+
+# BR-016.062
+
+Gli Amministratori devono poter configurare:
+
+- scansioni giornaliere
+- scansioni bonus
+- reward scansioni
+- provider AI
+- provider OCR
+
+---
+
+# BR-016.063
+
+I limiti scansioni devono poter essere configurati separatamente per:
+
+- Free
+- Premium
+- Premium Plus
+- Commerciante
+
+---
+
+# Matching
+
+# BR-016.064
+
+Gli Amministratori devono poter configurare:
+
+- pesi matching
+- formule matching
+- priorità matching
+- filtri geografici
+
+---
+
+# Gamification
+
+# BR-016.065
+
+Gli Amministratori devono poter configurare:
+
+- CollectorScore
+- Livelli
+- Badge
+- Cornici
+- Obiettivi
+- Streak
+
+---
+
+# Notifiche
+
+# BR-016.066
+
+Gli Amministratori devono poter configurare:
+
+- categorie
+- template
+- priorità
+- digest
+- canali
+
+---
+
+# Valute
+
+# BR-016.067
+
+Gli Amministratori devono poter gestire le valute disponibili.
+
+---
+
+# BR-016.068
+
+Le operazioni disponibili sono:
+
+- crea
+- modifica
+- nascondi
+- archivia
+
+---
+
+# Feature Flags
+
+# BR-016.069
+
+La Dashboard deve supportare Feature Flags.
+
+---
+
+# BR-016.070
+
+Gli Amministratori devono poter attivare o disattivare:
+
+- Marketplace
+- Matching
+- Chat
+- Recensioni
+- Scansioni
+- Notifiche
+- Catalogo Collaborativo
+- Importazione
+- Esportazione
+
+---
+
+# Audit Log
+
+# BR-016.071
+
+Ogni operazione amministrativa deve essere registrata nell'Audit Log.
+
+---
+
+# BR-016.072
+
+L'Audit Log deve registrare almeno:
+
+- amministratore
+- data
+- ora
+- azione
+- risorsa coinvolta
+
+---
+
+# BR-016.073
+
+L'Audit Log non deve essere modificabile.
+
+---
+
+# BR-016.074
+
+I Moderatori non devono poter modificare l'Audit Log.
+
+---
+
+# Cestino Amministrativo
+
+# BR-016.075
+
+Gli elementi eliminati devono essere conservati nel Cestino Amministrativo.
+
+---
+
+# BR-016.076
+
+La durata di conservazione deve essere configurabile.
+
+---
+
+# BR-016.077
+
+Valore iniziale consigliato:
+
+```text
+30 giorni
+```
+
+---
+
+# Statistiche
+
+# BR-016.078
+
+La Dashboard deve fornire statistiche avanzate.
+
+---
+
+# BR-016.079
+
+Le statistiche possono includere:
+
+- crescita utenti
+- crescita catalogo
+- crescita commercianti
+- conversioni prova gratuita
+- conversioni abbonamenti
+- utilizzo marketplace
+- utilizzo matching
+- utilizzo scansioni
+
+---
+
+# Esportazioni Amministrative
+
+# BR-016.080
+
+Gli Amministratori devono poter esportare dati amministrativi.
+
+---
+
+# BR-016.081
+
+Le esportazioni possono includere:
+
+- catalogo
+- configurazioni
+- revisioni
+- statistiche
+- marketplace
+
+---
+
+# Modalità Manutenzione
+
+# BR-016.082
+
+La piattaforma deve supportare una Modalità Manutenzione.
+
+---
+
+# BR-016.083
+
+Durante la Modalità Manutenzione l'accesso degli utenti può essere limitato.
+
+---
+
+# BR-016.084
+
+La Modalità Manutenzione deve essere attivabile tramite Dashboard Admin.
+
+---
+
+# Regola Finale
+
+# BR-016.085
+
+La Dashboard Admin rappresenta l'unico punto autorizzato per la configurazione globale, la moderazione, il monitoraggio e la gestione operativa di CollectorVerse.
+
 # BR-017 - Sicurezza
 
 # Scopo
