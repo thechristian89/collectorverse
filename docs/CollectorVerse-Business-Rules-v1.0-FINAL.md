@@ -18,6 +18,8 @@ BR-008 Catalogo Collaborativo
 
 BR-009 Immagini Collaborative
 
+BR-009A - Recensioni Esterne Commercianti
+
 BR-010 Versioni
 
 BR-011 Varianti
