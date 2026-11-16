@@ -382,8 +382,701 @@ La Versione 1.0 deve consentire:
 
 senza necessità di modifiche strutturali all'architettura del sistema.
 
+---
+
 # Parte 2 - Utenti • Privacy • Sicurezza • Recensioni • Gestione Account • Ruoli • Profili
 
+# Sistema Identità
+
+CollectorVerse utilizza un sistema di identità progettato per supportare:
+
+- collezionisti privati
+- collezionisti avanzati
+- commercianti professionali
+- moderatori
+- amministratori
+
+Ogni account è identificato in modo permanente e univoco all'interno della piattaforma.
+
+---
+
+# Modello Account
+
+CollectorVerse distingue chiaramente tra:
+
+```text
+Piano
+
+e
+
+Ruolo
+```
+
+Ogni account possiede sempre:
+
+```text
+1 Piano
+
++
+
+1 Ruolo
+```
+
+Il Piano determina le funzionalità disponibili.
+
+Il Ruolo determina i privilegi operativi e amministrativi.
+
+---
+
+# Identità Utente
+
+Ogni account possiede:
+
+- ID Interno Permanente
+- Email
+- Username
+- Display Name
+- Data Registrazione
+
+---
+
+# Username
+
+Lo Username identifica tecnicamente l'account.
+
+Caratteristiche:
+
+```text
+Univoco
+Modificabile
+Pubblico
+```
+
+---
+
+# Display Name
+
+Il Display Name rappresenta il nome visualizzato pubblicamente nella piattaforma.
+
+Caratteristiche:
+
+```text
+Univoco
+Modificabile
+Pubblico
+```
+
+---
+
+# Regole Identità
+
+Devono essere univoci:
+
+```text
+Email
+Username
+Display Name
+```
+
+La modifica di Username o Display Name non altera:
+
+- ID interno
+- QR Code
+- Cronologia attività
+- Collezioni
+- Wishlist
+- Marketplace
+- Recensioni
+- Contributi Catalogo
+
+---
+
+# Registrazione
+
+CollectorVerse supporta inizialmente:
+
+```text
+Email
+Google
+```
+
+Al termine della registrazione vengono automaticamente creati:
+
+- Profilo Utente
+- Impostazioni Privacy
+- Preferenze Notifiche
+- Abbonamento Iniziale
+- Configurazione Base Account
+
+---
+
+# Verifica Email
+
+Gli account registrati tramite email devono completare la verifica dell'indirizzo email.
+
+Fino alla verifica:
+
+```text
+Account limitato
+```
+
+Gli effetti sono configurabili tramite Dashboard Admin.
+
+---
+
+# Piani Disponibili
+
+CollectorVerse supporta i seguenti piani.
+
+```text
+Free
+Premium
+Premium Plus
+Commerciante
+```
+
+Un account può possedere un solo Piano attivo alla volta.
+
+---
+
+# Ruoli Disponibili
+
+CollectorVerse supporta:
+
+```text
+Utente
+Moderatore
+Amministratore
+```
+
+I privilegi derivanti dal Ruolo prevalgono sempre su quelli derivanti dal Piano.
+
+---
+
+# Esempi Validi
+
+```text
+Free + Utente
+
+Premium + Utente
+
+Premium Plus + Utente
+
+Commerciante + Utente
+
+Free + Moderatore
+
+Premium + Amministratore
+```
+
+---
+
+# Profilo Utente
+
+Ogni account dispone di un Profilo Utente.
+
+---
+
+# Informazioni Principali
+
+Il Profilo può mostrare:
+
+- Avatar
+- Cover
+- Username
+- Display Name
+- Piano Attivo
+- Livello
+- CollectorScore
+- Badge
+- Affidabilità
+- Data Iscrizione
+- Recensioni
+- Collezioni Pubbliche
+- Wishlist Pubbliche
+
+---
+
+# Affidabilità
+
+L'affidabilità rappresenta un indicatore interno utilizzato da:
+
+- Marketplace
+- Matching
+- Sistema Antispam
+- Moderazione
+
+L'affidabilità non viene mostrata numericamente.
+
+Visualizzazione:
+
+```text
+🟢 Alta
+
+🟡 Media
+
+🔴 Bassa
+```
+
+---
+
+# Privacy
+
+Ogni utente può configurare separatamente la privacy.
+
+---
+
+# Visibilità Profilo
+
+Valori supportati:
+
+```text
+Pubblico
+
+Privato
+```
+
+---
+
+# Visibilità Collezioni
+
+Valori supportati:
+
+```text
+Pubblico
+
+Privato
+```
+
+---
+
+# Visibilità Wishlist
+
+Valori supportati:
+
+```text
+Pubblico
+
+Privato
+```
+
+---
+
+# Permessi Contatto
+
+Ogni utente può definire chi può inviare Richieste di Contatto.
+
+Valori disponibili:
+
+```text
+Tutti
+
+Solo Premium
+
+Solo Commercianti
+
+Nessuno
+```
+
+---
+
+# Preferenze Notifiche
+
+Ogni account possiede preferenze notifiche indipendenti.
+
+Le notifiche possono essere abilitate o disabilitate separatamente per:
+
+- Push
+- Email
+- In-App
+
+---
+
+# Valuta Preferita
+
+Ogni utente può impostare una Valuta Preferita.
+
+Esempi:
+
+```text
+EUR €
+USD $
+GBP £
+JPY ¥
+CHF
+```
+
+La modifica della valuta preferita non modifica i dati storici esistenti.
+
+---
+
+# Richiesta di Contatto
+
+Una Conversazione non può essere creata direttamente.
+
+Il flusso obbligatorio è:
+
+```text
+Richiesta di Contatto
+↓
+Accettazione
+↓
+Conversazione
+↓
+Messaggi
+```
+
+---
+
+# Informazioni Visualizzate
+
+La Richiesta di Contatto può mostrare:
+
+- Username
+- Display Name
+- Piano
+- Affidabilità
+- Media Recensioni
+- Numero Recensioni
+- CollectorScore
+- Badge Principali
+
+---
+
+# Stati Richiesta di Contatto
+
+```text
+In Attesa
+Accettata
+Rifiutata
+Bloccata
+Scaduta
+```
+
+---
+
+# Regole Fondamentali
+
+Una Conversazione viene creata esclusivamente quando una Richiesta viene accettata.
+
+Non possono esistere Richieste pendenti duplicate tra gli stessi utenti.
+
+Può esistere una sola Conversazione attiva tra una coppia di utenti.
+
+---
+
+# Anti-Spam
+
+Dopo un rifiuto non è possibile inviare immediatamente una nuova richiesta.
+
+Valore iniziale consigliato:
+
+```text
+24 ore
+```
+
+Configurabile tramite Dashboard Admin.
+
+---
+
+# Conversazioni
+
+Le Conversazioni sono private.
+
+Devono rispettare:
+
+- Privacy
+- Blocchi Utente
+- Moderazione
+- Segnalazioni
+
+---
+
+# Messaggi
+
+I Messaggi appartengono sempre ad una Conversazione.
+
+---
+
+# Stato Lettura
+
+Lo stato di lettura è riferito al destinatario del messaggio.
+
+Valori:
+
+```text
+Inviato
+Letto
+```
+
+---
+
+# Blocchi Utente
+
+Ogni utente può bloccare un altro utente.
+
+---
+
+# Effetti del Blocco
+
+Il blocco impedisce:
+
+- Follow
+- Richieste di Contatto
+- Conversazioni
+- Matching
+- Marketplace reciproco
+- Visibilità reciproca nei risultati
+
+---
+
+# Durata
+
+Il blocco resta attivo fino a rimozione manuale.
+
+---
+
+# Merchant Profile
+
+Gli account con Piano Commerciante possono possedere un Profilo Negozio.
+
+Ogni account può possedere al massimo:
+
+```text
+1 Merchant Profile
+```
+
+---
+
+# Informazioni Merchant
+
+Visualizzare:
+
+- Logo
+- Banner
+- Nome Attività
+- Descrizione
+- Sito Web
+- Indirizzo
+- Orari
+- Recapiti Pubblici
+- Categorie Trattate
+
+---
+
+# Merchant Verification
+
+Ogni Merchant Profile può possedere una sola verifica.
+
+---
+
+# Stato Verifica
+
+```text
+Pending
+Approved
+Rejected
+Suspended
+```
+
+---
+
+# Commerciante Verificato
+
+Gli account approvati mostrano il badge:
+
+```text
+✅ Commerciante Verificato
+```
+
+---
+
+# Regole Verifica
+
+La verifica:
+
+- non scade automaticamente
+- rimane valida fino a modifica amministrativa
+- può essere sospesa
+- può essere revocata
+
+---
+
+# Google Business Profile
+
+I Merchant possono collegare un profilo Google Business.
+
+---
+
+# Informazioni Disponibili
+
+- Rating Medio
+- Numero Recensioni
+- Profilo Business
+- Recensioni Pubbliche
+
+---
+
+# Recensioni
+
+Gli utenti possono recensire altri utenti.
+
+---
+
+# Regola Fondamentale
+
+Un utente può lasciare una sola recensione per un altro utente.
+
+Vincolo logico:
+
+```text
+1 recensione per coppia utenti
+```
+
+---
+
+# Modifica Recensione
+
+La recensione può essere modificata in qualsiasi momento.
+
+La modifica aggiorna la recensione esistente.
+
+Non viene creata una nuova recensione.
+
+---
+
+# Utilizzo Recensioni
+
+Le recensioni contribuiscono a:
+
+- Affidabilità
+- Matching
+- Profilo Utente
+- Profilo Commerciante
+
+---
+
+# Moderatori
+
+I Moderatori possono gestire:
+
+- Segnalazioni Utenti
+- Segnalazioni Annunci
+- Segnalazioni Immagini
+- Segnalazioni Recensioni
+- Chat Segnalate
+- Contenuti Segnalati
+
+---
+
+# Limitazioni Moderatore
+
+Non possono:
+
+```text
+❌ modificare monetizzazione
+❌ modificare configurazioni globali
+❌ nominare amministratori
+❌ accedere all'infrastruttura
+```
+
+---
+
+# Amministratori
+
+Gli Amministratori possiedono accesso completo alla Dashboard Admin.
+
+Possono gestire:
+
+- Utenti
+- Merchant
+- Catalogo
+- Marketplace
+- Matching
+- Sicurezza
+- Notifiche
+- Monetizzazione
+- Configurazioni Globali
+
+---
+
+# Stati Account
+
+Ogni account può trovarsi in uno dei seguenti stati.
+
+```text
+Attivo
+Sospeso
+Bloccato
+Eliminato
+```
+
+---
+
+# Attivo
+
+Accesso completo secondo Piano e Ruolo.
+
+---
+
+# Sospeso
+
+Accesso limitato secondo le regole amministrative.
+
+---
+
+# Bloccato
+
+Accesso negato.
+
+---
+
+# Eliminato
+
+Account trattato secondo GDPR e normative Privacy applicabili.
+
+---
+
+# Eliminazione Account
+
+L'utente può richiedere l'eliminazione dell'account.
+
+---
+
+# Conservazione Contributi
+
+I contributi approvati al Catalogo Universale:
+
+- vengono conservati
+- vengono anonimizzati
+- rimangono patrimonio permanente della piattaforma
+
+Esempi:
+
+- Oggetti
+- Versioni
+- Varianti
+- Immagini
+- Correzioni Approvate
+
+---
+
+# Obiettivo del Sistema Utenti
+
+Il sistema Utenti di CollectorVerse deve consentire la gestione di collezionisti privati, utenti avanzati, commercianti professionali e personale amministrativo attraverso una chiara separazione tra:
+
+- Identità
+- Piani
+- Ruoli
+- Privacy
+- Comunicazioni
+- Verifiche
+- Recensioni
+- Permessi Operativi
+
+garantendo scalabilità, sicurezza e coerenza con l'intero ecosistema CollectorVerse.
+
+---
 
 # Parte 3 - Abbonamenti • Monetizzazione • Pubblicità • Scansioni • Bundle • Pacchetti
 
@@ -1263,7 +1956,1695 @@ L'obiettivo della monetizzazione di CollectorVerse è:
 
 # Parte 4 - Catalogo Universale • Categorie • Collezioni • Serie • Oggetti • Versioni • Varianti
 
+# Catalogo Universale
+
+Il Catalogo Universale rappresenta il cuore di CollectorVerse.
+
+Tutte le funzionalità della piattaforma si basano sulla struttura del Catalogo Universale.
+
+Il Catalogo Universale costituisce la fonte ufficiale dei dati utilizzati da:
+
+- Catalogazione Personale
+- Wishlist
+- Marketplace
+- Matching
+- Scanner AI
+- Catalogo Collaborativo
+- Gamification
+
+---
+
+# Obiettivo
+
+Consentire la catalogazione di qualsiasi tipologia di oggetto collezionabile.
+
+Esempi:
+
+- Carte Collezionabili
+- Monete
+- Banconote
+- Francobolli
+- Fumetti
+- Manga
+- Libri
+- LEGO
+- Action Figure
+- Videogiochi
+- Vinili
+- CD
+- Modellismo
+- Orologi
+- Antiquariato
+- Vini e Distillati
+
+---
+
+# Principi Fondamentali
+
+Il Catalogo Universale deve essere:
+
+- Estensibile
+- Scalabile
+- Multicategoria
+- Indipendente dagli utenti
+- Indipendente dalle collezioni personali
+- Utilizzabile da Marketplace e Matching
+
+---
+
+# Regola Fondamentale
+
+Il Catalogo Universale NON contiene:
+
+- proprietà degli utenti
+- disponibilità marketplace
+- wishlist
+- condizioni degli oggetti
+- prezzi
+- dati commerciali personali
+
+Queste informazioni appartengono esclusivamente alle sezioni personali degli utenti.
+
+---
+
+# Struttura Ufficiale
+
+Ogni elemento del catalogo deve rispettare la seguente gerarchia.
+
+```text
+Categoria
+↓
+Collezione
+↓
+Serie
+↓
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+---
+
+# Regole Gerarchiche
+
+## Regola 1
+
+Una Collezione appartiene ad una sola Categoria.
+
+---
+
+## Regola 2
+
+Una Serie appartiene ad una sola Collezione.
+
+---
+
+## Regola 3
+
+Un Oggetto appartiene ad una sola Serie.
+
+---
+
+## Regola 4
+
+Una Versione appartiene ad un solo Oggetto.
+
+---
+
+## Regola 5
+
+Una Variante appartiene ad una sola Versione.
+
+---
+
+## Regola 6
+
+Versioni e Varianti sono opzionali.
+
+Un Oggetto può non avere Versioni.
+
+Una Versione può non avere Varianti.
+
+---
+
+# Categoria
+
+La Categoria rappresenta il livello più alto del Catalogo Universale.
+
+---
+
+## Esempi
+
+- Carte Collezionabili
+- Numismatica
+- Filatelia
+- Fumetti e Libri
+- LEGO e Costruzioni
+- Action Figure e Toys
+- Videogiochi
+- Musica e Media
+- Orologi e Gioielli
+- Militaria e Storico
+- Modellismo
+- Antiquariato e Arte
+- Enologia e Spirits
+
+---
+
+# Stati Categoria
+
+Ogni Categoria deve possedere uno stato.
+
+---
+
+## In Sviluppo
+
+Categoria in preparazione.
+
+Visibile esclusivamente agli amministratori.
+
+---
+
+## Attiva
+
+Categoria disponibile agli utenti.
+
+---
+
+## Nascosta
+
+Categoria temporaneamente non visibile agli utenti.
+
+---
+
+## Archiviata
+
+Categoria non più supportata.
+
+---
+
+# Regola Visibilità Categoria
+
+Le categorie che non si trovano nello stato:
+
+```text
+Attiva
+```
+
+non devono comparire in:
+
+- Catalogo
+- Collezioni
+- Wishlist
+- Marketplace
+- Matching
+- Ricerca
+- Scanner
+- Importazione
+- Creazione Oggetti
+- Creazione Versioni
+- Creazione Varianti
+
+---
+
+# Informazioni Categoria
+
+Per ogni Categoria visualizzare:
+
+- Nome
+- Logo
+- Banner
+- Stato
+- Numero Collezioni
+- Numero Serie
+- Numero Oggetti
+- Percentuale Completamento Utente
+
+---
+
+# Collezione
+
+Una Collezione rappresenta un insieme coerente di Serie appartenenti alla stessa Categoria.
+
+---
+
+## Esempio
+
+Categoria:
+
+Carte Collezionabili
+
+↓
+
+Collezioni:
+
+- Pokémon
+- Yu-Gi-Oh!
+- Magic The Gathering
+- Disney Lorcana
+- One Piece
+
+---
+
+# Informazioni Collezione
+
+Visualizzare:
+
+- Nome
+- Logo
+- Banner
+- Numero Serie
+- Numero Oggetti
+- Percentuale Completamento Utente
+
+---
+
+# Serie
+
+Una Serie rappresenta un insieme di Oggetti appartenenti alla stessa Collezione.
+
+---
+
+## Esempio
+
+Pokémon
+
+↓
+
+Serie:
+
+- Set Base
+- Jungle
+- Fossil
+- Team Rocket
+- Neo Genesis
+
+---
+
+# Data Uscita Serie
+
+Ogni Serie possiede una data ufficiale di uscita.
+
+---
+
+## Formato
+
+```text
+gg/mm/aaaa
+```
+
+---
+
+## Gestione
+
+La data viene inserita e mantenuta dagli amministratori del Catalogo.
+
+---
+
+## Ordinamento
+
+Le Serie devono essere ordinate utilizzando la data ufficiale di uscita.
+
+Esempio:
+
+```text
+Set Base
+09/01/1999
+
+↓
+
+Jungle
+16/06/1999
+
+↓
+
+Fossil
+10/10/1999
+
+↓
+
+Team Rocket
+24/04/2000
+```
+
+---
+
+# Informazioni Serie
+
+Visualizzare:
+
+- Nome
+- Data Uscita
+- Numero Oggetti
+- Percentuale Completamento Utente
+
+---
+
+# Oggetto
+
+L'Oggetto rappresenta l'unità collezionabile principale.
+
+---
+
+## Esempio
+
+Serie:
+
+Set Base
+
+↓
+
+Oggetto:
+
+Charizard 4/102
+
+---
+
+# Informazioni Oggetto
+
+Visualizzare:
+
+- Nome
+- Codice
+- Numero Catalogo
+- Immagine Principale
+- Serie
+- Numero Versioni
+- Numero Varianti Totali
+- Statistiche
+
+---
+
+# Versione
+
+Le Versioni rappresentano differenti pubblicazioni, lingue o edizioni dello stesso Oggetto.
+
+Le Versioni NON sono nuovi Oggetti.
+
+---
+
+## Esempi
+
+Charizard 4/102
+
+↓
+
+Versioni:
+
+- Italiano
+- Inglese
+- Giapponese
+- Tedesco
+
+---
+
+oppure
+
+↓
+
+Versioni:
+
+- First Edition
+- Unlimited
+
+---
+
+# Regola Fondamentale
+
+Le Versioni:
+
+- non aumentano il numero degli Oggetti
+- non aumentano il completamento della Serie
+- non aumentano il completamento della Collezione
+- non aumentano il completamento della Categoria
+
+---
+
+# Possesso Oggetto
+
+Un Oggetto viene considerato posseduto quando l'utente possiede almeno una delle sue Versioni.
+
+---
+
+## Esempio
+
+Charizard
+
+Versioni:
+
+✅ Italiano
+
+❌ Inglese
+
+❌ Giapponese
+
+Risultato:
+
+```text
+Oggetto Posseduto
+```
+
+---
+
+# Progressione Versioni
+
+Le Versioni possiedono una progressione indipendente.
+
+---
+
+## Esempio
+
+Versioni Totali:
+
+- Italiano
+- Inglese
+- Giapponese
+- Tedesco
+
+Possedute:
+
+✅ Italiano
+
+✅ Inglese
+
+❌ Giapponese
+
+❌ Tedesco
+
+Progressione:
+
+```text
+2 / 4 Versioni
+```
+
+---
+
+# Variante
+
+Una Variante appartiene sempre ad una specifica Versione.
+
+Le Varianti NON sono nuove Versioni.
+
+Le Varianti NON sono nuovi Oggetti.
+
+---
+
+## Esempio
+
+Versione Inglese
+
+↓
+
+Varianti:
+
+- Holo
+- Reverse Holo
+- Gold
+- Promo Stamp
+- Error Print
+
+---
+
+# Regola Fondamentale
+
+Le Varianti:
+
+- non aumentano il numero degli Oggetti
+- non aumentano il completamento della Serie
+- non aumentano il completamento della Collezione
+- non aumentano il completamento della Categoria
+
+---
+
+# Progressione Varianti
+
+Le Varianti possiedono una progressione indipendente all'interno della Versione.
+
+---
+
+## Esempio
+
+Versione Inglese
+
+Varianti:
+
+✅ Holo
+
+✅ Reverse Holo
+
+❌ Gold
+
+Progressione:
+
+```text
+2 / 3 Varianti
+```
+
+---
+
+# Esempio Gerarchico
+
+Pokémon
+
+↓
+
+Scarlet & Violet
+
+↓
+
+Obsidian Flames
+
+↓
+
+Charizard
+
+↓
+
+Inglese
+
+↓
+
+Holo
+
+---
+
+Pokémon
+
+↓
+
+Scarlet & Violet
+
+↓
+
+Obsidian Flames
+
+↓
+
+Charizard
+
+↓
+
+Inglese
+
+↓
+
+Reverse Holo
+
+---
+
+Pokémon
+
+↓
+
+Scarlet & Violet
+
+↓
+
+Obsidian Flames
+
+↓
+
+Charizard
+
+↓
+
+Giapponese
+
+↓
+
+Holo
+
+---
+
+# Immagini Catalogo
+
+Le immagini del Catalogo possono essere associate a:
+
+- Oggetti
+- Versioni
+- Varianti
+
+---
+
+# Tipologie Immagini
+
+Esempi:
+
+- Fronte
+- Retro
+- Confezione
+- Dettaglio
+- Versione specifica
+- Variante specifica
+
+---
+
+# Scheda Oggetto
+
+Ogni Oggetto possiede una scheda dedicata.
+
+---
+
+## Sezioni
+
+- Dettagli
+- Versioni
+- Varianti
+- Immagini
+- Marketplace
+- Statistiche
+
+---
+
+# Statistiche Oggetto
+
+Visualizzare:
+
+- utenti che lo possiedono
+- utenti che lo desiderano
+- scansioni effettuate
+- annunci attivi
+- annunci di scambio
+
+---
+
+# Condizione dell'Oggetto
+
+La condizione appartiene esclusivamente alla copia posseduta dall'utente.
+
+---
+
+## Regole
+
+La condizione:
+
+```text
+❌ NON appartiene all'Oggetto
+❌ NON appartiene alla Versione
+❌ NON appartiene alla Variante
+❌ NON appartiene al Catalogo Universale
+```
+
+---
+
+# Creazione Nuovi Elementi
+
+CollectorVerse supporta:
+
+- Nuovo Oggetto
+- Nuova Versione
+- Nuova Variante
+
+---
+
+# Catalogo Collaborativo
+
+Le modifiche del Catalogo non vengono applicate direttamente.
+
+Ogni modifica segue il flusso:
+
+```text
+Catalog Contribution
+↓
+Revisione Community
+↓
+Decisione Amministratore
+↓
+Pubblicazione
+```
+
+---
+
+# Stato Iniziale
+
+Ogni elemento creato dalla community assume inizialmente lo stato:
+
+```text
+Provvisorio
+```
+
+---
+
+# Stati Disponibili
+
+```text
+Provvisorio
+In Revisione
+Verificato
+Rifiutato
+Unificato
+```
+
+---
+
+# Controllo Duplicati
+
+Prima della creazione di:
+
+- Oggetti
+- Versioni
+- Varianti
+
+CollectorVerse deve eseguire verifiche automatiche.
+
+---
+
+# Verifiche Disponibili
+
+- nome
+- codice identificativo
+- OCR
+- immagini
+- hash immagini
+
+---
+
+# Follow Categoria
+
+Gli utenti possono seguire una Categoria.
+
+---
+
+## Eventi Notificabili
+
+- Nuove Collezioni
+- Nuove Serie
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+
+---
+
+# Collezioni Preferite
+
+Gli utenti possono salvare Collezioni pubbliche.
+
+---
+
+# Differenza rispetto al Follow
+
+Follow:
+
+```text
+Riceve notifiche
+```
+
+---
+
+Preferita:
+
+```text
+Funziona come segnalibro rapido
+```
+
+---
+
+# Collezioni Pubbliche
+
+Ogni Collezione pubblica possiede:
+
+- Link pubblico
+- QR Code dedicato
+
+---
+
+# Regola Privacy
+
+Se una Collezione pubblica viene:
+
+- eliminata
+- resa privata
+
+deve essere automaticamente rimossa dai preferiti degli altri utenti.
+
+---
+
 # Parte 5 - Sistema Scansione • OCR • Hash • AI • Wizard Catalogo • Cronologia Scansioni
+
+# Sistema Scansione
+
+Il Sistema Scansione rappresenta una delle funzionalità principali di CollectorVerse.
+
+L'obiettivo è permettere il riconoscimento rapido degli oggetti catalogati e semplificare la catalogazione delle collezioni personali.
+
+---
+
+# Obiettivi
+
+Il Sistema Scansione deve:
+
+- riconoscere oggetti esistenti
+- individuare Versioni esistenti
+- individuare Varianti esistenti
+- ridurre l'inserimento manuale
+- velocizzare la catalogazione
+- migliorare la qualità del Catalogo Universale
+- assistere l'utente nell'individuazione di contenuti mancanti
+- facilitare la crescita del Catalogo Collaborativo
+
+---
+
+# Principio Fondamentale
+
+La scansione non modifica direttamente il Catalogo Universale.
+
+La scansione può:
+
+```text
+Riconoscere
+
+oppure
+
+Suggerire
+```
+
+La creazione di nuovi elementi segue sempre il workflow del Catalogo Collaborativo.
+
+---
+
+# Flusso Ufficiale di Scansione
+
+```text
+Categoria
+↓
+Collezione
+↓
+Versione (se applicabile)
+↓
+Acquisizione Immagine
+↓
+Consumo Scansione
+↓
+Analisi
+↓
+Risultato
+↓
+Catalogazione
+```
+
+---
+
+# Selezione Categoria
+
+Prima della scansione l'utente deve selezionare una Categoria.
+
+---
+
+## Regola
+
+Possono essere selezionate esclusivamente:
+
+```text
+Categorie Attive
+```
+
+---
+
+# Selezione Collezione
+
+Dopo la Categoria l'utente seleziona la Collezione.
+
+---
+
+## Esempio
+
+```text
+Categoria:
+Carte Collezionabili
+
+↓
+
+Collezione:
+Pokémon
+```
+
+---
+
+# Selezione Versione
+
+Dopo la Collezione l'utente può selezionare una Versione.
+
+---
+
+# Obiettivo
+
+Ridurre gli errori di riconoscimento.
+
+Migliorare la precisione dell'analisi.
+
+Ridurre i falsi positivi.
+
+---
+
+# Esempio
+
+```text
+Italiano
+Inglese
+Giapponese
+Tedesco
+Francese
+```
+
+---
+
+# Collezioni Senza Versioni
+
+Alcune collezioni non utilizzano Versioni.
+
+In questi casi il sistema utilizza automaticamente:
+
+```text
+Versione Generica
+```
+
+e il selettore Versione non viene mostrato.
+
+---
+
+# Acquisizione Immagine
+
+L'utente può:
+
+- scattare una foto
+- caricare una foto esistente
+
+---
+
+# Requisiti Minimi
+
+L'immagine deve rispettare requisiti minimi di qualità.
+
+Esempi:
+
+- immagine leggibile
+- oggetto visibile
+- risoluzione sufficiente
+- formato supportato
+
+---
+
+# Consumo Scansione
+
+La scansione viene consumata immediatamente dopo l'acquisizione dell'immagine.
+
+---
+
+# Flusso
+
+```text
+Foto
+↓
+Consumo Scansione
+↓
+Analisi
+```
+
+---
+
+# Regola Anti-Abuso
+
+Una scansione consumata non viene restituita.
+
+Eccezioni speciali possono essere gestite tramite Dashboard Admin.
+
+---
+
+# Pipeline di Analisi
+
+CollectorVerse utilizza più livelli progressivi di riconoscimento.
+
+---
+
+# Livello 1 - Hash Immagini
+
+Confronto diretto con immagini già presenti nel Catalogo Universale.
+
+---
+
+## Obiettivo
+
+Identificare rapidamente immagini già conosciute.
+
+---
+
+## Vantaggi
+
+- velocità
+- elevata precisione
+- basso costo computazionale
+
+---
+
+# Livello 2 - OCR
+
+Estrazione automatica di testo dall'immagine.
+
+---
+
+## Dati Ricercati
+
+- codici
+- numerazioni
+- nomi
+- sigle
+- identificativi stampati
+
+---
+
+## Esempi
+
+```text
+4/102
+
+Charizard
+
+SV3
+
+EN
+```
+
+---
+
+# Livello 3 - Confronto Catalogo
+
+I risultati ottenuti da:
+
+- OCR
+- Hash Immagini
+
+vengono confrontati con il Catalogo Universale.
+
+---
+
+# Obiettivo
+
+Individuare:
+
+- Oggetto
+- Versione
+- Variante
+
+più compatibili.
+
+---
+
+# Livello 4 - Analisi AI
+
+L'intelligenza artificiale viene utilizzata esclusivamente come fallback.
+
+---
+
+# Attivazione AI
+
+L'AI viene utilizzata quando:
+
+```text
+Hash
++
+OCR
++
+Catalogo
+
+non producono un risultato sufficientemente affidabile.
+```
+
+---
+
+# Obiettivo AI
+
+Migliorare il riconoscimento di:
+
+- immagini rare
+- oggetti deteriorati
+- varianti particolari
+- elementi non ancora completamente catalogati
+
+---
+
+# Risultati Scansione
+
+Al termine dell'analisi mostrare:
+
+- risultato principale
+- livello di affidabilità
+- alternative compatibili
+- versione rilevata
+- variante rilevata
+
+---
+
+# Esempio
+
+```text
+Charizard 4/102
+
+Versione:
+Inglese
+
+Variante:
+Holo
+
+Affidabilità:
+98%
+```
+
+---
+
+# Alternative
+
+Mostrare risultati alternativi ordinati per affidabilità.
+
+Esempio:
+
+```text
+Charizard 4/102
+98%
+
+↓
+
+Charizard Reverse Holo
+81%
+
+↓
+
+Charmander 46/102
+72%
+```
+
+---
+
+# Livello Affidabilità
+
+L'affidabilità deve essere rappresentata visivamente.
+
+---
+
+## Alta
+
+```text
+90% - 100%
+```
+
+---
+
+## Media
+
+```text
+70% - 89%
+```
+
+---
+
+## Bassa
+
+```text
+0% - 69%
+```
+
+---
+
+# Risultato Confermato
+
+Quando l'utente conferma il risultato:
+
+```text
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+può essere aggiunto alla Collezione Personale.
+
+---
+
+# Nessun Risultato Affidabile
+
+Se non esistono risultati sufficientemente affidabili:
+
+mostrare il Wizard Catalogo.
+
+---
+
+# Wizard Catalogo
+
+Permette la creazione guidata di nuove proposte Catalogo.
+
+---
+
+# Operazioni Disponibili
+
+- Nuovo Oggetto
+- Nuova Versione
+- Nuova Variante
+
+---
+
+# Nuovo Oggetto
+
+Utilizzato quando l'oggetto non esiste.
+
+---
+
+## Informazioni Richieste
+
+- Categoria
+- Collezione
+- Serie
+- Nome
+- Codice o Numero
+- Versione
+- Immagine
+- Descrizione (facoltativa)
+
+---
+
+# Nuova Versione
+
+Utilizzata quando:
+
+```text
+Oggetto esistente
++
+Versione mancante
+```
+
+---
+
+## Esempio
+
+```text
+Charizard esiste
+
+↓
+
+Versione Spagnola non esistente
+
+↓
+
+Nuova Versione
+```
+
+---
+
+# Nuova Variante
+
+Utilizzata quando:
+
+```text
+Oggetto esistente
++
+Versione esistente
++
+Variante mancante
+```
+
+---
+
+## Esempio
+
+```text
+Charizard
+
+↓
+
+Versione Inglese
+
+↓
+
+Variante Gold non esistente
+
+↓
+
+Nuova Variante
+```
+
+---
+
+# Controlli Automatici
+
+Prima della creazione di una proposta il sistema deve verificare:
+
+- duplicati
+- nomi simili
+- codici uguali
+- OCR corrispondenti
+- immagini simili
+- hash immagini
+
+---
+
+# Stato Iniziale
+
+Ogni proposta assume automaticamente lo stato:
+
+```text
+Provvisorio
+```
+
+---
+
+# Utilizzo Immediato
+
+Anche se Provvisorio l'elemento può essere:
+
+- cercato
+- catalogato
+- aggiunto alle collezioni
+- aggiunto alle wishlist
+- utilizzato nel marketplace
+
+fino a decisione amministrativa.
+
+---
+
+# Catalogazione Diretta
+
+Dopo il riconoscimento l'utente può:
+
+- aggiungere alla collezione
+- aggiungere alla wishlist
+- segnare come posseduto
+- segnare come disponibile alla vendita
+- segnare come disponibile allo scambio
+
+---
+
+# Cronologia Scansioni
+
+Ogni utente possiede una cronologia personale.
+
+---
+
+# Posizione
+
+```text
+Profilo
+↓
+Cronologia Scansioni
+```
+
+---
+
+# Informazioni Mostrate
+
+Per ogni scansione:
+
+- data
+- immagine
+- categoria
+- collezione
+- serie
+- oggetto
+- versione
+- variante
+- affidabilità
+- risultato finale
+
+---
+
+# Conservazione Cronologia
+
+Valore iniziale consigliato:
+
+```text
+50 scansioni
+```
+
+Configurabile tramite Dashboard Admin.
+
+---
+
+# Errori di Scansione
+
+Quando la scansione fallisce devono essere mostrati messaggi comprensibili.
+
+---
+
+## Esempi
+
+```text
+Immagine troppo sfocata
+```
+
+---
+
+```text
+Immagine troppo scura
+```
+
+---
+
+```text
+Risoluzione insufficiente
+```
+
+---
+
+```text
+Formato non supportato
+```
+
+---
+
+```text
+Oggetto non riconosciuto
+```
+
+---
+
+```text
+Versione non selezionata
+```
+
+---
+
+# Statistiche Scansione
+
+CollectorVerse deve memorizzare:
+
+- scansioni effettuate
+- scansioni riuscite
+- scansioni fallite
+- scansioni AI
+- nuove proposte generate
+- nuove versioni individuate
+- nuove varianti individuate
+
+---
+
+# Utilizzo Statistiche
+
+Le statistiche possono essere utilizzate da:
+
+- Dashboard Utente
+- Gamification
+- Dashboard Merchant
+- Dashboard Admin
+
+---
+
+# Importazione Collezioni
+
+CollectorVerse supporta l'importazione tramite:
+
+```text
+Excel
+CSV
+```
+
+---
+
+# Obiettivo
+
+Permettere il popolamento rapido delle Collezioni Personali.
+
+---
+
+# Regola Fondamentale
+
+L'importazione:
+
+```text
+❌ NON crea Oggetti
+
+❌ NON crea Versioni
+
+❌ NON crea Varianti
+
+❌ NON modifica il Catalogo Universale
+```
+
+---
+
+# Flusso Importazione
+
+```text
+Categoria
+↓
+Caricamento File
+↓
+Mapping Colonne
+↓
+Simulazione
+↓
+Correzione Guidata
+↓
+Conferma
+↓
+Importazione
+```
+
+---
+
+# Mapping Colonne
+
+L'utente deve associare i campi del file ai campi CollectorVerse.
+
+---
+
+# Esempio
+
+```text
+Product Name
+↓
+Oggetto
+```
+
+```text
+Language
+↓
+Versione
+```
+
+```text
+Series
+↓
+Serie
+```
+
+---
+
+# Simulazione
+
+Prima dell'importazione mostrare:
+
+- elementi riconosciuti
+- elementi non riconosciuti
+- possibili duplicati
+- errori
+- incongruenze
+
+---
+
+# Esempio
+
+```text
+1200 righe analizzate
+
+1180 riconosciute
+
+20 non riconosciute
+```
+
+---
+
+# Elementi Non Riconosciuti
+
+Gli elementi non riconosciuti:
+
+```text
+NON vengono importati
+
+NON creano automaticamente
+Oggetti
+
+Versioni
+
+Varianti
+```
+
+---
+
+# Azioni Disponibili
+
+```text
+Importa Riconosciuti
+
+Esporta Non Riconosciuti
+```
+
+---
+
+# Inserimento Manuale
+
+Gli elementi non riconosciuti devono utilizzare il normale workflow:
+
+```text
+Nuovo Oggetto
+
+Nuova Versione
+
+Nuova Variante
+```
+
+---
+
+# Dashboard Admin
+
+Configurazioni modificabili senza modificare il codice.
+
+---
+
+# Configurazioni Scansione
+
+- scansioni giornaliere
+- scansioni reward
+- cooldown
+- limiti AI
+- soglia affidabilità
+
+---
+
+# Configurazioni Cronologia
+
+- numero scansioni conservate
+
+---
+
+# Configurazioni AI
+
+- attivazione AI
+- soglia attivazione
+- provider AI
+- limiti utilizzo
+
+---
+
+# Configurazioni Importazione
+
+- formati consentiti
+- dimensione massima file
+- numero massimo righe
+- soglie simulazione
+
+---
+
+# Configurazioni Errori
+
+Tutti i messaggi errore devono poter essere personalizzati tramite Dashboard Admin.
+
+---
+
+# Obiettivo del Sistema Scansione
+
+Il Sistema Scansione deve consentire il riconoscimento rapido e affidabile di Oggetti, Versioni e Varianti presenti nel Catalogo Universale, ridurre l'inserimento manuale, supportare la crescita del Catalogo Collaborativo e facilitare la catalogazione delle collezioni personali mantenendo elevati standard qualitativi e un'esperienza utente semplice ed efficace.
+
+---
 
 # Parte 6 - Catalogo Collaborativo • Contributori Catalogo • Votazioni • Reputazione • Immagini
 
@@ -1850,6 +4231,959 @@ Disattivato
 tramite Dashboard Admin.
 
 # Parte 7 - Marketplace • Chat • Matching • Geolocalizzazione • Commercianti
+
+# Marketplace
+
+CollectorVerse include un Marketplace dedicato all'incontro tra collezionisti e commercianti.
+
+La piattaforma non gestisce direttamente:
+
+- pagamenti
+- spedizioni
+- incassi
+- rimborsi
+- controversie commerciali
+
+Le transazioni avvengono direttamente tra gli utenti.
+
+CollectorVerse opera esclusivamente come piattaforma di incontro tra domanda e offerta.
+
+---
+
+# Obiettivi Marketplace
+
+Il Marketplace deve:
+
+- facilitare la compravendita tra collezionisti
+- facilitare gli scambi
+- valorizzare le collezioni personali
+- favorire il completamento delle collezioni
+- generare opportunità tramite il Matching
+- supportare commercianti professionali
+
+---
+
+# Principio Fondamentale
+
+Un Annuncio Marketplace può essere creato esclusivamente a partire da un elemento realmente presente nella Collezione Personale dell'utente.
+
+Non è consentita la creazione di annunci per oggetti non posseduti.
+
+---
+
+# Chat
+
+CollectorVerse utilizza un sistema di messaggistica privata.
+
+---
+
+# Regola Fondamentale
+
+Una Conversazione non può essere aperta direttamente.
+
+Il flusso obbligatorio è:
+
+```text
+Richiesta di Contatto
+↓
+Accettazione
+↓
+Conversazione
+↓
+Messaggi
+```
+
+---
+
+# Richieste di Contatto
+
+Le Richieste di Contatto rappresentano il punto di accesso alle comunicazioni private.
+
+---
+
+# Informazioni Mostrate
+
+Una Richiesta di Contatto può mostrare:
+
+- Username
+- Display Name
+- Piano Attivo
+- Affidabilità
+- Media Recensioni
+- Numero Recensioni
+- CollectorScore
+- Badge Principali
+
+---
+
+# Stati Richiesta
+
+```text
+In Attesa
+Accettata
+Rifiutata
+Bloccata
+Scaduta
+```
+
+---
+
+# Regole
+
+Solo una richiesta Accettata genera una Conversazione.
+
+Non possono esistere richieste duplicate in stato pendente tra la stessa coppia di utenti.
+
+Può esistere una sola Conversazione attiva per la stessa coppia di utenti.
+
+---
+
+# Conversazioni
+
+Le Conversazioni sono private.
+
+Devono rispettare:
+
+- Privacy
+- Blocchi Utente
+- Moderazione
+- Segnalazioni
+
+---
+
+# Messaggi
+
+I Messaggi appartengono sempre ad una Conversazione.
+
+---
+
+# Stato Lettura
+
+Lo stato di lettura è riferito al destinatario del messaggio.
+
+Valori disponibili:
+
+```text
+Inviato
+Letto
+```
+
+---
+
+# Utenti Free
+
+Possono:
+
+```text
+✅ ricevere richieste di contatto
+✅ rispondere a richieste ricevute
+✅ partecipare a conversazioni avviate da altri
+```
+
+Non possono:
+
+```text
+❌ avviare nuove richieste di contatto
+```
+
+---
+
+# Utenti Premium
+
+Possono:
+
+```text
+✅ inviare richieste di contatto
+✅ avviare nuove conversazioni
+✅ utilizzare la chat completa
+```
+
+---
+
+# Recensioni
+
+Gli utenti possono rilasciare recensioni dopo un'interazione avvenuta tramite CollectorVerse.
+
+---
+
+# Utilizzo delle Recensioni
+
+Le recensioni contribuiscono a:
+
+- Affidabilità
+- Matching
+- Profilo Utente
+- Profilo Commerciante
+
+---
+
+# Regola Fondamentale
+
+Ogni utente può lasciare una sola recensione per un altro utente.
+
+---
+
+# Modifica Recensione
+
+La recensione può essere modificata.
+
+La modifica aggiorna la recensione esistente.
+
+Non viene creata una nuova recensione.
+
+---
+
+# Segnalazioni
+
+Le recensioni possono essere:
+
+- segnalate
+- analizzate
+- moderate
+
+dagli Amministratori.
+
+---
+
+# Disponibilità Oggetti
+
+Ogni elemento della Collezione Personale può essere contrassegnato come:
+
+```text
+In Vendita
+In Scambio
+```
+
+Le due opzioni possono coesistere.
+
+---
+
+# Disponibilità e Marketplace
+
+La semplice disponibilità NON genera automaticamente un annuncio Marketplace.
+
+Disponibilità e Annuncio Marketplace sono due concetti distinti.
+
+---
+
+# In Vendita
+
+L'utente è disposto a vendere l'oggetto posseduto.
+
+---
+
+# In Scambio
+
+L'utente è disposto a scambiare l'oggetto posseduto.
+
+---
+
+# Accesso Marketplace
+
+Dipende dal Piano attivo.
+
+---
+
+# Piano Free
+
+Può:
+
+```text
+✅ contrassegnare elementi come In Vendita
+✅ contrassegnare elementi come In Scambio
+✅ mostrare tali disponibilità nel profilo
+✅ consultare il Marketplace
+✅ consultare gli annunci pubblici
+```
+
+Non può:
+
+```text
+❌ creare Annunci Marketplace
+```
+
+---
+
+# Piano Premium
+
+Può:
+
+```text
+✅ creare Annunci Marketplace
+✅ creare annunci vendita
+✅ creare annunci scambio
+✅ creare annunci vendita e scambio
+```
+
+---
+
+# Piano Premium Plus
+
+Può utilizzare tutte le funzionalità del Piano Premium.
+
+---
+
+# Piano Commerciante
+
+Può utilizzare tutte le funzionalità del Piano Premium Plus.
+
+Dispone inoltre di:
+
+- Profilo Negozio
+- Dashboard Professionale
+- Mappa Commercianti
+- Statistiche Professionali
+- Opportunità Commerciali
+- Commerciante Verificato
+
+---
+
+# Tipologie Annuncio
+
+CollectorVerse supporta tre tipologie di annuncio.
+
+---
+
+## Vendita
+
+L'oggetto viene proposto esclusivamente per la vendita.
+
+---
+
+## Scambio
+
+L'oggetto viene proposto esclusivamente per lo scambio.
+
+---
+
+## Vendita e Scambio
+
+L'utente accetta entrambe le possibilità.
+
+---
+
+# Contenuto Annuncio
+
+Ogni annuncio può contenere:
+
+```text
+Oggetto
+Versione
+Variante
+Condizione
+Prezzo
+Valuta
+Descrizione
+Immagini
+```
+
+---
+
+# Identificazione Elemento
+
+Ogni annuncio deve identificare in modo preciso:
+
+```text
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+quando disponibili.
+
+---
+
+# Esempio
+
+```text
+Charizard
+
+↓
+
+Versione Inglese
+
+↓
+
+Variante Holo
+```
+
+---
+
+# Prezzo
+
+Gli annunci di vendita richiedono un prezzo.
+
+Gli annunci di scambio possono non avere alcun prezzo.
+
+---
+
+# Valute
+
+Ogni prezzo viene registrato nella valuta originale scelta dall'utente.
+
+---
+
+# Esempi
+
+```text
+120 EUR
+
+250 USD
+
+20.000 JPY
+```
+
+---
+
+# Regola Fondamentale
+
+CollectorVerse non effettua conversioni automatiche tra valute.
+
+Gli utenti visualizzano sempre:
+
+```text
+Prezzo originale
++
+Valuta originale
+```
+
+---
+
+# Condizione
+
+La condizione appartiene esclusivamente alla copia posseduta.
+
+Non appartiene:
+
+```text
+❌ all'Oggetto
+❌ alla Versione
+❌ alla Variante
+❌ al Catalogo Universale
+```
+
+---
+
+# Stati Annuncio
+
+Ogni annuncio può assumere uno dei seguenti stati.
+
+---
+
+## Attivo
+
+Visibile nel Marketplace.
+
+Incluso nel Matching.
+
+---
+
+## Sospeso
+
+Non visibile.
+
+Conservato nel sistema.
+
+Escluso dal Matching.
+
+---
+
+## Chiuso
+
+Venduto.
+
+Scambiato.
+
+Ritirato.
+
+Concluso.
+
+---
+
+# Limiti Annunci
+
+Configurabili tramite Dashboard Admin.
+
+Valori iniziali consigliati:
+
+### Premium
+
+```text
+10 annunci attivi
+```
+
+### Premium Plus
+
+```text
+30 annunci attivi
+```
+
+### Commerciante
+
+```text
+100 annunci attivi
+```
+
+---
+
+# Superamento Limite
+
+Quando il numero di annunci supera il limite del Piano:
+
+mostrare un Wizard di selezione.
+
+---
+
+# Esempio
+
+```text
+Hai 57 oggetti disponibili.
+
+Con il tuo piano puoi pubblicarne 10.
+
+Seleziona gli annunci da mantenere attivi.
+```
+
+---
+
+# Scadenza Piano
+
+Quando Premium, Premium Plus o Commerciante scadono:
+
+```text
+Gli annunci vengono sospesi automaticamente.
+```
+
+---
+
+# Effetti
+
+```text
+✅ dati conservati
+✅ annunci recuperabili
+
+❌ annunci visibili
+❌ matching attivo
+```
+
+---
+
+# Riattivazione
+
+Al rinnovo di un Piano compatibile:
+
+```text
+Gli annunci vengono riattivati automaticamente.
+```
+
+---
+
+# Ricerca Marketplace
+
+Il Marketplace deve supportare:
+
+- ricerca testuale
+- ricerca catalografica
+- filtri dinamici
+- ordinamenti personalizzabili
+
+---
+
+# Filtri Base
+
+- Categoria
+- Collezione
+- Serie
+- Oggetto
+- Versione
+- Variante
+
+---
+
+# Filtri Avanzati
+
+- Prezzo
+- Condizione
+- Distanza
+- Tipo Annuncio
+- Tipo Account
+- Affidabilità
+- Commerciante Verificato
+
+---
+
+# Ordinamenti
+
+Valori iniziali consigliati:
+
+- Compatibilità
+- Data Pubblicazione
+- Prezzo
+- Distanza
+- Affidabilità
+- CollectorScore
+- Recensioni
+
+---
+
+# Matching
+
+Il Matching rappresenta il sistema automatico di individuazione opportunità.
+
+---
+
+# Obiettivo
+
+Individuare automaticamente:
+
+- opportunità di acquisto
+- opportunità di vendita
+- opportunità di scambio
+- opportunità commerciali
+- completamenti collezione
+
+---
+
+# Accesso Matching
+
+Disponibile per:
+
+```text
+Premium
+Premium Plus
+Commerciante
+```
+
+Non disponibile per utenti Free.
+
+---
+
+# Dati Utilizzati
+
+Il Matching può utilizzare:
+
+- Wishlist
+- Collezioni Personali
+- Disponibilità Vendita
+- Disponibilità Scambio
+- Annunci Marketplace
+- Affidabilità
+- Recensioni
+- CollectorScore
+- Geolocalizzazione
+- Piano Utente
+
+---
+
+# Precisione Matching
+
+Il Matching deve supportare:
+
+```text
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+---
+
+# Esempio
+
+Richiesta:
+
+```text
+Charizard
+↓
+Inglese
+↓
+Holo
+```
+
+Non è equivalente a:
+
+```text
+Charizard
+↓
+Giapponese
+↓
+Holo
+```
+
+---
+
+# Matching Acquisto
+
+Individua:
+
+```text
+Wishlist
+↓
+Disponibilità compatibili
+```
+
+---
+
+# Matching Vendita
+
+Individua:
+
+```text
+Oggetti disponibili
+↓
+Utenti interessati
+```
+
+---
+
+# Matching Scambio
+
+Identifica situazioni in cui:
+
+```text
+Utente A possiede ciò che vuole Utente B
+
+↓
+
+Utente B possiede ciò che vuole Utente A
+```
+
+---
+
+# Matching Completamento Collezione
+
+Individua elementi mancanti.
+
+---
+
+# Esempio
+
+```text
+Serie:
+102 elementi
+
+Utente:
+101 posseduti
+
+↓
+
+Manca 1 elemento
+```
+
+---
+
+# Opportunità Commercianti
+
+Il sistema può individuare:
+
+- wishlist compatibili
+- domanda geografica
+- utenti interessati
+- opportunità ad alta conversione
+
+---
+
+# Geolocalizzazione
+
+Il Matching può utilizzare la distanza geografica.
+
+---
+
+# Distanza Predefinita Consigliata
+
+```text
+25 km
+```
+
+---
+
+# Estensioni Possibili
+
+```text
+50 km
+100 km
+250 km
+500 km
+Nazionale
+Europa
+Mondo
+```
+
+---
+
+# Filtri Geografici
+
+Supportati:
+
+- Regione
+- Nazione
+- Continente
+
+---
+
+# Ranking Matching
+
+Il ranking può considerare:
+
+- compatibilità
+- distanza
+- affidabilità
+- recensioni
+- CollectorScore
+- attività recente
+
+---
+
+# Blocchi Utente
+
+Gli utenti bloccati non devono comparire nei risultati reciproci.
+
+---
+
+# Effetti
+
+Non devono essere generati:
+
+- Match
+- Suggerimenti
+- Opportunità
+- Contatti
+
+tra utenti coinvolti da un blocco.
+
+---
+
+# Conversione Match
+
+Quando un Match viene considerato interessante:
+
+l'utente può inviare una Richiesta di Contatto.
+
+---
+
+# Flusso
+
+```text
+Match
+↓
+Richiesta di Contatto
+↓
+Accettazione
+↓
+Conversazione
+↓
+Interazione
+```
+
+---
+
+# Notifiche Matching
+
+CollectorVerse può generare notifiche per:
+
+- nuovi Match Acquisto
+- nuovi Match Vendita
+- nuovi Match Scambio
+- nuovi annunci compatibili
+- nuove opportunità commerciali
+- opportunità completamento collezione
+
+---
+
+# Statistiche Matching
+
+CollectorVerse può registrare:
+
+- Match generati
+- Match visualizzati
+- Match aperti
+- Match convertiti in contatto
+- Match convertiti in recensione
+- Match convertiti in transazione
+
+---
+
+# Merchant Profile
+
+I Commercianti dispongono di un Profilo Professionale dedicato.
+
+---
+
+# Merchant Verification
+
+Ogni Merchant può possedere una sola verifica.
+
+---
+
+# Stato Verifica
+
+```text
+Pending
+Approved
+Rejected
+Suspended
+```
+
+---
+
+# Commerciante Verificato
+
+Visualizza il badge:
+
+```text
+✅ Commerciante Verificato
+```
+
+---
+
+# Regola Fondamentale
+
+La verifica:
+
+- non scade automaticamente
+- rimane valida fino a modifica amministrativa
+- può essere sospesa
+- può essere revocata
+
+---
+
+# Google Business
+
+I Merchant possono collegare un profilo Google Business.
+
+---
+
+# Informazioni Visualizzabili
+
+- Rating Medio
+- Numero Recensioni
+- Recensioni Pubbliche
+- Informazioni Business
+
+---
+
+# Dashboard Professionale
+
+I Merchant possono visualizzare:
+
+- visualizzazioni profilo
+- visualizzazioni annunci
+- click recapiti
+- follower
+- conversioni marketplace
+- opportunità matching
+- recensioni Google
+
+---
+
+# Obiettivo del Marketplace e del Matching
+
+L'obiettivo del Marketplace e del Matching è facilitare l'incontro tra collezionisti e commercianti, aumentare la probabilità di completamento delle collezioni, migliorare la scoperta di opportunità rilevanti e favorire vendite e scambi senza che CollectorVerse intervenga direttamente nelle transazioni economiche.
+
+---
 
 # Parte 8 - Gamification • CollectorScore • Livelli • Badge • Cornici Profilo • Obiettivi
 
