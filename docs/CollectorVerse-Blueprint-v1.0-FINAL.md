@@ -1956,9 +1956,2151 @@ L'obiettivo della monetizzazione di CollectorVerse è:
 
 # Parte 4 - Catalogo Universale • Categorie • Collezioni • Serie • Oggetti • Versioni • Varianti
 
+# Catalogo Universale
+
+Il Catalogo Universale rappresenta il cuore di CollectorVerse.
+
+Tutte le funzionalità della piattaforma si basano sulla struttura del Catalogo Universale.
+
+Il Catalogo Universale costituisce la fonte ufficiale e centralizzata dei dati utilizzati da:
+
+- Catalogazione Personale
+- Wishlist
+- Marketplace
+- Matching
+- Scanner AI
+- Catalogo Collaborativo
+- Gamification
+- Dashboard Amministratore
+
+---
+
+# Obiettivo
+
+Consentire la catalogazione di qualsiasi tipologia di oggetto collezionabile utilizzando una struttura unica, coerente e scalabile.
+
+Esempi:
+
+- Carte Collezionabili
+- Monete
+- Banconote
+- Francobolli
+- Fumetti
+- Manga
+- Libri
+- LEGO
+- Action Figure
+- Videogiochi
+- Vinili
+- CD
+- Modellismo
+- Orologi
+- Antiquariato
+- Vini e Distillati
+
+---
+
+# Principi Fondamentali
+
+Il Catalogo Universale deve essere:
+
+- Scalabile
+- Estensibile
+- Multicategoria
+- Collaborativo
+- Verificabile
+- Normalizzato
+- Compatibile con Scanner AI
+- Compatibile con Marketplace
+- Compatibile con Matching
+
+---
+
+# Regola Fondamentale
+
+Il Catalogo Universale NON contiene:
+
+- proprietà degli utenti
+- quantità possedute
+- prezzi personali
+- condizioni personali
+- wishlist utente
+- annunci marketplace
+- dati commerciali personali
+
+Questi dati appartengono alle aree personali degli utenti.
+
+---
+
+# Struttura Ufficiale
+
+Ogni elemento del Catalogo Universale deve rispettare la seguente struttura.
+
+```text
+Categoria
+↓
+Collezione
+↓
+Serie
+↓
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+---
+
+# Regole Gerarchiche
+
+## Regola 1
+
+Una Collezione appartiene ad una sola Categoria.
+
+---
+
+## Regola 2
+
+Una Serie appartiene ad una sola Collezione.
+
+---
+
+## Regola 3
+
+Un Oggetto appartiene ad una sola Serie.
+
+---
+
+## Regola 4
+
+Una Versione appartiene ad un solo Oggetto.
+
+---
+
+## Regola 5
+
+Una Variante appartiene ad una sola Versione.
+
+---
+
+## Regola 6
+
+Ogni Oggetto possiede almeno una Versione.
+
+---
+
+## Regola 7
+
+Se una Collezione non utilizza realmente le Versioni, il sistema crea automaticamente:
+
+```text
+Versione Generica
+```
+
+---
+
+## Regola 8
+
+Le Varianti sono opzionali.
+
+Una Versione può non possedere Varianti.
+
+---
+
+# Categoria
+
+La Categoria rappresenta il livello più alto della classificazione.
+
+---
+
+## Esempi
+
+- Carte Collezionabili
+- Numismatica
+- Filatelia
+- Fumetti e Libri
+- LEGO e Costruzioni
+- Action Figure e Toys
+- Videogiochi
+- Musica e Media
+- Orologi e Gioielli
+- Militaria e Storico
+- Modellismo
+- Antiquariato e Arte
+- Enologia e Spirits
+
+---
+
+# Stati Categoria
+
+Ogni Categoria deve possedere uno stato.
+
+---
+
+## In Sviluppo
+
+Categoria in preparazione.
+
+Visibile esclusivamente agli amministratori.
+
+---
+
+## Attiva
+
+Categoria disponibile agli utenti.
+
+---
+
+## Nascosta
+
+Categoria temporaneamente non visibile.
+
+---
+
+## Archiviata
+
+Categoria conservata ma non più utilizzabile.
+
+---
+
+# Regola Visibilità Categoria
+
+Le categorie che non si trovano nello stato:
+
+```text
+Attiva
+```
+
+non devono comparire in:
+
+- Catalogo
+- Scanner
+- Marketplace
+- Matching
+- Ricerca
+- Importazione
+- Catalogazione Personale
+- Wishlist
+
+---
+
+# Informazioni Categoria
+
+Per ogni Categoria visualizzare:
+
+- Nome
+- Logo
+- Banner
+- Stato
+- Numero Collezioni
+- Numero Serie
+- Numero Oggetti
+- Percentuale Completamento Utente
+
+---
+
+# Collezione
+
+Una Collezione rappresenta un insieme coerente di Serie appartenenti alla stessa Categoria.
+
+---
+
+## Esempi
+
+Categoria:
+
+Carte Collezionabili
+
+↓
+
+Collezioni:
+
+- Pokémon
+- Yu-Gi-Oh!
+- Magic The Gathering
+- Disney Lorcana
+- One Piece
+
+---
+
+Categoria:
+
+Videogiochi
+
+↓
+
+Collezioni:
+
+- Nintendo
+- PlayStation
+- Xbox
+
+---
+
+# Informazioni Collezione
+
+Visualizzare:
+
+- Nome
+- Logo
+- Banner
+- Numero Serie
+- Numero Oggetti
+- Percentuale Completamento Utente
+
+---
+
+# Sistema Rarità
+
+Ogni Collezione può utilizzare il proprio sistema di rarità.
+
+Le rarità non sono condivise globalmente.
+
+---
+
+# Rarità
+
+Le rarità appartengono alla Collezione.
+
+---
+
+## Esempio Pokémon
+
+```text
+Common
+Uncommon
+Rare
+Ultra Rare
+Illustration Rare
+Secret Rare
+```
+
+---
+
+## Esempio Magic
+
+```text
+Common
+Uncommon
+Rare
+Mythic Rare
+```
+
+---
+
+## Esempio Funko
+
+```text
+Common
+Exclusive
+Limited Edition
+Chase
+Grail
+```
+
+---
+
+# Creazione Oggetto
+
+Quando un utente crea un nuovo Oggetto il sistema deve mostrare:
+
+- tutte le rarità esistenti della Collezione
+- la voce "Altro..."
+
+---
+
+## Esempio
+
+```text
+Common
+Uncommon
+Rare
+Ultra Rare
+
+Altro...
+```
+
+---
+
+# Caso "Altro..."
+
+Se l'utente seleziona:
+
+```text
+Altro...
+```
+
+significa che la rarità desiderata non esiste ancora.
+
+---
+
+# Comportamento Sistema
+
+Il Catalogo deve considerare l'elemento come non riconosciuto.
+
+Il sistema deve avviare il workflow:
+
+```text
+Nuova Rarità
+↓
+Catalogo Collaborativo
+↓
+Revisione
+↓
+Approvazione Amministratore
+```
+
+---
+
+# Serie
+
+Una Serie rappresenta un insieme di Oggetti appartenenti alla stessa Collezione.
+
+---
+
+## Esempio
+
+Pokémon
+
+↓
+
+Serie:
+
+- Set Base
+- Jungle
+- Fossil
+- Team Rocket
+- Neo Genesis
+
+---
+
+# Data Uscita Serie
+
+Ogni Serie possiede una data ufficiale di uscita.
+
+---
+
+## Formato
+
+```text
+gg/mm/aaaa
+```
+
+---
+
+## Gestione
+
+La data viene gestita dagli Amministratori del Catalogo.
+
+---
+
+## Regola Fondamentale
+
+La data di uscita della Serie rappresenta l'unica fonte ufficiale utilizzata per l'ordinamento cronologico.
+
+---
+
+# Ordinamento Serie
+
+Le Serie devono essere ordinate cronologicamente utilizzando:
+
+```text
+release_date
+```
+
+---
+
+## Esempio
+
+```text
+Set Base
+09/01/1999
+
+↓
+
+Jungle
+16/06/1999
+
+↓
+
+Fossil
+10/10/1999
+
+↓
+
+Team Rocket
+24/04/2000
+```
+
+---
+
+# Informazioni Serie
+
+Visualizzare:
+
+- Nome
+- Data Uscita
+- Numero Oggetti
+- Percentuale Completamento Utente
+
+---
+
+# Oggetto
+
+L'Oggetto rappresenta l'entità collezionabile principale.
+
+È il centro logico del Catalogo Universale.
+
+---
+
+## Esempio
+
+Serie:
+
+Set Base
+
+↓
+
+Oggetto:
+
+```text
+Charizard 4/102
+```
+
+---
+
+# Informazioni Oggetto
+
+Visualizzare:
+
+- Nome
+- Codice
+- Numero Catalogo
+- Rarità
+- Numero Versioni
+- Numero Varianti Totali
+- Statistiche
+
+---
+
+# Rarità Oggetto
+
+La rarità appartiene sempre all'Oggetto.
+
+---
+
+## Regola Fondamentale
+
+La rarità NON appartiene:
+
+```text
+❌ alla Versione
+
+❌ alla Variante
+```
+
+---
+
+## Esempio
+
+```text
+Charizard
+↓
+Ultra Rare
+↓
+Versione Inglese
+↓
+Holo
+```
+
+---
+
+```text
+Charizard
+↓
+Ultra Rare
+↓
+Versione Inglese
+↓
+Reverse Holo
+```
+
+La rarità rimane:
+
+```text
+Ultra Rare
+```
+
+---
+
+# Versione
+
+Le Versioni rappresentano differenti lingue, edizioni, distribuzioni o pubblicazioni dello stesso Oggetto.
+
+Le Versioni NON sono nuovi Oggetti.
+
+---
+
+## Esempi Linguistici
+
+```text
+Italiano
+Inglese
+Francese
+Tedesco
+Giapponese
+Spagnolo
+```
+
+---
+
+## Esempi Editoriali
+
+```text
+First Edition
+Unlimited
+Collector Edition
+Launch Edition
+Reprint
+```
+
+---
+
+# Versione Generica
+
+Quando una Collezione non utilizza realmente Versioni:
+
+il sistema crea automaticamente:
+
+```text
+Versione Generica
+```
+
+---
+
+# Regola Fondamentale
+
+Ogni Oggetto possiede almeno una Versione.
+
+---
+
+# Progressione Versioni
+
+Le Versioni possiedono una progressione indipendente.
+
+---
+
+## Esempio
+
+```text
+Italiano ✅
+
+Inglese ✅
+
+Francese ❌
+
+Tedesco ❌
+```
+
+Progressione:
+
+```text
+2 / 4 Versioni
+```
+
+---
+
+# Possesso Oggetto
+
+Un Oggetto viene considerato posseduto quando l'utente possiede almeno una Versione.
+
+---
+
+## Esempio
+
+```text
+Charizard
+
+Italiano ✅
+
+Inglese ❌
+
+Giapponese ❌
+```
+
+Risultato:
+
+```text
+Oggetto Posseduto
+```
+
+---
+
+# Variante
+
+Una Variante appartiene sempre ad una specifica Versione.
+
+Le Varianti NON rappresentano nuovi Oggetti.
+
+Le Varianti NON rappresentano nuove Versioni.
+
+---
+
+## Esempi
+
+Versione Inglese
+
+↓
+
+```text
+Holo
+Reverse Holo
+Gold
+Promo Stamp
+Error Print
+```
+
+---
+
+## Esempi Funko
+
+```text
+Glow In The Dark
+Metallic
+Signed
+```
+
+---
+
+# Progressione Varianti
+
+Le Varianti possiedono una progressione indipendente.
+
+---
+
+## Esempio
+
+```text
+Holo ✅
+
+Reverse Holo ✅
+
+Gold ❌
+
+Promo Stamp ❌
+```
+
+Progressione:
+
+```text
+2 / 4 Varianti
+```
+
+---
+
+# Regole Completamento
+
+Versioni e Varianti NON incrementano:
+
+- numero Oggetti
+- completamento Serie
+- completamento Collezione
+- completamento Categoria
+
+---
+
+# Immagini Catalogo
+
+Le immagini del Catalogo rappresentano elementi reali utilizzati da utenti e Scanner.
+
+---
+
+# Regola Fondamentale
+
+Le immagini NON appartengono direttamente agli Oggetti.
+
+Le immagini possono appartenere esclusivamente a:
+
+```text
+ItemVersion
+
+oppure
+
+ItemVariant
+```
+
+---
+
+# Motivazione
+
+L'Oggetto rappresenta un'entità logica.
+
+Le immagini rappresentano invece una specifica manifestazione reale dell'oggetto.
+
+---
+
+## Esempio
+
+```text
+Charizard
+```
+
+possiede:
+
+```text
+Versione Italiana
+↓
+Immagine Italiana
+```
+
+---
+
+```text
+Charizard
+```
+
+possiede:
+
+```text
+Versione Inglese
+↓
+Immagine Inglese
+```
+
+---
+
+```text
+Charizard
+```
+
+possiede:
+
+```text
+Versione Giapponese
+↓
+Immagine Giapponese
+```
+
+---
+
+# Esempio Variante
+
+```text
+Charizard
+↓
+Versione Inglese
+↓
+Gold
+↓
+Immagine Gold
+```
+
+---
+
+# Tipologie Immagine
+
+Esempi:
+
+- Fronte
+- Retro
+- Confezione
+- Dettaglio
+- Immagine Versione
+- Immagine Variante
+
+---
+
+# Benefici
+
+Questo approccio:
+
+- migliora la precisione Scanner
+- migliora il Matching
+- migliora il Marketplace
+- evita immagini errate
+- supporta cataloghi multilingua
+- supporta promo speciali
+- supporta versioni regionali
+- supporta error print
+
+---
+
+# Scheda Oggetto
+
+Ogni Oggetto possiede una scheda dedicata.
+
+---
+
+## Sezioni
+
+- Dettagli
+- Versioni
+- Varianti
+- Marketplace
+- Statistiche
+
+---
+
+# Statistiche Oggetto
+
+Visualizzare:
+
+- utenti che possiedono l'Oggetto
+- utenti che desiderano l'Oggetto
+- scansioni effettuate
+- annunci attivi
+- annunci di scambio
+
+---
+
+# Condizione
+
+La condizione appartiene esclusivamente alla copia posseduta dall'utente.
+
+---
+
+## Regola Fondamentale
+
+La condizione NON appartiene:
+
+```text
+❌ all'Oggetto
+
+❌ alla Versione
+
+❌ alla Variante
+
+❌ al Catalogo Universale
+```
+
+---
+
+# Catalogo Collaborativo
+
+Le modifiche non vengono applicate direttamente.
+
+Ogni modifica segue il flusso:
+
+```text
+Proposta
+↓
+Revisione Community
+↓
+Decisione Amministratore
+↓
+Pubblicazione
+```
+
+---
+
+# Creazione Nuovi Elementi
+
+CollectorVerse supporta:
+
+- Nuovo Oggetto
+- Nuova Versione
+- Nuova Variante
+- Nuova Rarità
+- Nuova Immagine
+
+---
+
+# Stato Iniziale
+
+Ogni elemento creato dalla community assume inizialmente lo stato:
+
+```text
+Provvisorio
+```
+
+---
+
+# Stati Disponibili
+
+```text
+Provvisorio
+In Revisione
+Verificato
+Rifiutato
+Unificato
+```
+
+---
+
+# Controllo Duplicati
+
+Prima della creazione di qualsiasi elemento il sistema deve effettuare verifiche automatiche.
+
+---
+
+# Verifiche Disponibili
+
+- nome
+- codice identificativo
+- OCR
+- immagini
+- hash immagini
+- rarità esistenti
+
+---
+
+# Follow Categoria
+
+Gli utenti possono seguire una Categoria.
+
+---
+
+## Eventi Notificabili
+
+- Nuove Collezioni
+- Nuove Serie
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+
+---
+
+# Follow Collezione
+
+Eventi notificabili:
+
+- Nuove Serie
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+
+---
+
+# Follow Serie
+
+Eventi notificabili:
+
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+
+---
+
+# Follow Oggetto
+
+Eventi notificabili:
+
+- Nuove Versioni
+- Nuove Varianti
+- Nuove Immagini
+- Nuovi Annunci
+
+---
+
+# Collezioni Preferite
+
+Le Collezioni possono essere salvate come preferite.
+
+---
+
+# Differenza rispetto al Follow
+
+Follow:
+
+```text
+Riceve notifiche
+```
+
+---
+
+Preferita:
+
+```text
+Funziona come segnalibro rapido
+```
+
+---
+
+# Collezioni Pubbliche
+
+Ogni Collezione pubblica possiede:
+
+- Link pubblico
+- QR Code dedicato
+
+---
+
+# Regola Privacy
+
+Se una Collezione pubblica viene:
+
+- eliminata
+- resa privata
+
+deve essere automaticamente rimossa dai preferiti degli altri utenti.
+
+---
+
+# Obiettivo del Catalogo Universale
+
+Fornire una struttura unica, consistente e scalabile in grado di rappresentare qualsiasi tipologia di collezionabile supportando contemporaneamente Catalogazione Personale, Scanner AI, Marketplace, Matching, Gamification e crescita collaborativa del Catalogo senza richiedere modifiche strutturali future.
+
 ---
 
 # Parte 5 - Sistema Scansione • OCR • Hash • AI • Wizard Catalogo • Cronologia Scansioni
+
+# Sistema Scansione
+
+Il Sistema Scansione rappresenta una delle funzionalità principali di CollectorVerse.
+
+L'obiettivo è permettere il riconoscimento rapido degli oggetti catalogati e semplificare la catalogazione delle collezioni personali.
+
+Il sistema deve essere progettato per supportare milioni di scansioni mantenendo elevata accuratezza e semplicità d'uso.
+
+---
+
+# Obiettivi
+
+Il Sistema Scansione deve:
+
+- riconoscere Oggetti esistenti
+- riconoscere Versioni esistenti
+- riconoscere Varianti esistenti
+- ridurre l'inserimento manuale
+- velocizzare la catalogazione
+- migliorare la qualità del Catalogo Universale
+- aiutare nella scoperta di nuovi elementi non catalogati
+- alimentare il Catalogo Collaborativo
+- supportare il Matching futuro
+- supportare la crescita della Community
+
+---
+
+# Principio Fondamentale
+
+La scansione non modifica direttamente il Catalogo Universale.
+
+La scansione può:
+
+```text
+Riconoscere
+
+oppure
+
+Suggerire
+```
+
+Le modifiche Catalogo seguono sempre il workflow ufficiale di revisione.
+
+---
+
+# Gerarchia di Riconoscimento
+
+Lo Scanner deve sempre lavorare rispettando la gerarchia ufficiale del Catalogo.
+
+```text
+Categoria
+↓
+Collezione
+↓
+Serie
+↓
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+---
+
+# Flusso Ufficiale Scansione
+
+```text
+Selezione Categoria
+↓
+Selezione Collezione
+↓
+Selezione Versione (se applicabile)
+↓
+Acquisizione Immagine
+↓
+Consumo Scansione
+↓
+Analisi
+↓
+Risultato
+↓
+Conferma Utente
+↓
+Catalogazione
+```
+
+---
+
+# Selezione Categoria
+
+Prima della scansione l'utente deve selezionare una Categoria.
+
+---
+
+## Regola
+
+Possono essere selezionate esclusivamente:
+
+```text
+Categorie Attive
+```
+
+---
+
+# Selezione Collezione
+
+Dopo la Categoria.
+
+---
+
+## Esempio
+
+```text
+Categoria
+
+Carte Collezionabili
+
+↓
+
+Collezione
+
+Pokémon
+```
+
+---
+
+# Selezione Versione
+
+Dopo la Collezione.
+
+La selezione della Versione è facoltativa se la Collezione utilizza una sola Versione Generica.
+
+---
+
+## Esempio
+
+```text
+Italiano
+
+Inglese
+
+Tedesco
+
+Francese
+
+Giapponese
+
+Spagnolo
+```
+
+---
+
+# Obiettivo
+
+Ridurre gli errori di riconoscimento.
+
+Migliorare la precisione dell'analisi.
+
+Velocizzare il matching catalografico.
+
+---
+
+# Versione Generica
+
+Se la Collezione utilizza esclusivamente:
+
+```text
+Versione Generica
+```
+
+il selettore Versione non deve essere mostrato.
+
+---
+
+# Acquisizione Immagine
+
+L'utente può:
+
+- scattare una foto
+- selezionare una foto dalla galleria
+
+---
+
+# Requisiti Minimi
+
+L'immagine deve essere:
+
+- sufficientemente nitida
+- leggibile
+- centrata
+- supportata dal sistema
+
+---
+
+# Formati Supportati
+
+Valori iniziali consigliati:
+
+```text
+JPG
+
+JPEG
+
+PNG
+
+WEBP
+```
+
+Nuovi formati possono essere aggiunti tramite Dashboard Admin.
+
+---
+
+# Consumo Scansione
+
+La scansione viene consumata immediatamente dopo l'acquisizione della foto.
+
+---
+
+## Flusso
+
+```text
+Foto
+↓
+Consumo Scansione
+↓
+Analisi
+```
+
+---
+
+# Regola Anti-Abuso
+
+Una scansione consumata non viene restituita automaticamente.
+
+Eccezioni e compensazioni possono essere configurate dagli amministratori.
+
+---
+
+# Pipeline di Analisi
+
+CollectorVerse utilizza una pipeline di riconoscimento multilivello.
+
+Ogni livello aumenta la precisione e riduce il carico computazionale.
+
+---
+
+# Livello 1 - Hash Immagini
+
+Confronto con immagini già presenti nel Catalogo Universale.
+
+---
+
+## Obiettivo
+
+Identificare rapidamente immagini già note.
+
+---
+
+## Benefici
+
+- rapidità
+- basso costo computazionale
+- alta precisione
+
+---
+
+# Livello 2 - OCR
+
+Estrazione automatica del testo visibile.
+
+---
+
+## Informazioni Ricercate
+
+- nome oggetto
+- codice catalogo
+- identificativi
+- numerazioni
+- sigle
+- testi stampati
+
+---
+
+## Esempi
+
+```text
+4/102
+
+SV3
+
+Charizard
+
+English
+
+EN
+```
+
+---
+
+# Livello 3 - Matching Catalogo
+
+I dati ottenuti da:
+
+- Hash
+- OCR
+
+vengono confrontati con il Catalogo Universale.
+
+---
+
+# Obiettivo
+
+Individuare:
+
+```text
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+più probabili.
+
+---
+
+# Livello 4 - Analisi AI
+
+L'intelligenza artificiale viene utilizzata esclusivamente come fallback.
+
+---
+
+## Attivazione
+
+L'AI interviene quando:
+
+```text
+Hash
++
+OCR
++
+Matching Catalogo
+
+non raggiungono
+una soglia affidabile
+```
+
+---
+
+## Utilizzo
+
+L'AI supporta:
+
+- identificazione oggetti
+- identificazione Versioni
+- identificazione Varianti
+- classificazione immagini
+- suggerimenti Catalogo
+
+---
+
+# Utilizzo Immagini Catalogo
+
+Lo Scanner utilizza esclusivamente immagini associate a:
+
+```text
+ItemVersion
+
+oppure
+
+ItemVariant
+```
+
+---
+
+# Regola Fondamentale
+
+Le immagini NON appartengono direttamente all'Oggetto.
+
+---
+
+# Motivazione
+
+Un Oggetto è una entità logica.
+
+Le immagini rappresentano una manifestazione reale specifica.
+
+---
+
+## Esempio
+
+```text
+Charizard
+↓
+Versione Italiana
+↓
+Immagine Italiana
+```
+
+---
+
+```text
+Charizard
+↓
+Versione Inglese
+↓
+Immagine Inglese
+```
+
+---
+
+```text
+Charizard
+↓
+Versione Giapponese
+↓
+Immagine Giapponese
+```
+
+---
+
+# Esempio Variante
+
+```text
+Charizard
+↓
+Versione Inglese
+↓
+Gold
+↓
+Immagine Gold
+```
+
+---
+
+# Benefici
+
+Questa struttura:
+
+- migliora la precisione dello Scanner
+- evita immagini errate
+- supporta cataloghi multilingua
+- supporta promo speciali
+- supporta versioni regionali
+- supporta Error Print
+- supporta Varianti rare
+
+---
+
+# Risultati Scansione
+
+Al termine dell'analisi visualizzare:
+
+- risultato suggerito
+- livello affidabilità
+- Versione individuata
+- Variante individuata
+- risultati alternativi
+
+---
+
+# Esempio
+
+```text
+Charizard 4/102
+
+Versione:
+Inglese
+
+Variante:
+Holo
+
+Affidabilità:
+98%
+```
+
+---
+
+# Risultati Alternativi
+
+Visualizzare alternative ordinate per affidabilità.
+
+---
+
+## Esempio
+
+```text
+Charizard Holo
+98%
+```
+
+---
+
+```text
+Charizard Reverse Holo
+82%
+```
+
+---
+
+```text
+Charmander Holo
+71%
+```
+
+---
+
+# Livelli Affidabilità
+
+## Alta
+
+```text
+90% - 100%
+```
+
+---
+
+## Media
+
+```text
+70% - 89%
+```
+
+---
+
+## Bassa
+
+```text
+0% - 69%
+```
+
+---
+
+# Conferma Risultato
+
+Prima della catalogazione definitiva l'utente deve confermare il risultato ottenuto.
+
+---
+
+# Azioni Disponibili
+
+- Conferma
+- Correggi
+- Cerca Manualmente
+- Segnala Errore
+
+---
+
+# Nessun Risultato
+
+Quando non viene trovato alcun risultato affidabile.
+
+---
+
+## Comportamento
+
+Mostrare il Wizard Catalogo.
+
+---
+
+# Wizard Catalogo
+
+Sistema guidato per la creazione di nuovi elementi.
+
+---
+
+# Operazioni Disponibili
+
+- Nuovo Oggetto
+- Nuova Versione
+- Nuova Variante
+- Nuova Rarità
+- Nuova Immagine
+
+---
+
+# Nuovo Oggetto
+
+Utilizzato quando l'Oggetto non esiste.
+
+---
+
+## Informazioni Richieste
+
+- Categoria
+- Collezione
+- Serie
+- Nome
+- Codice
+- Numero Catalogo
+- Rarità
+- Immagine
+- Descrizione
+
+---
+
+# Nuova Versione
+
+Utilizzata quando:
+
+```text
+Oggetto esistente
++
+Versione mancante
+```
+
+---
+
+## Esempio
+
+```text
+Charizard esiste
+
+↓
+
+Versione Spagnola assente
+
+↓
+
+Nuova Versione
+```
+
+---
+
+# Nuova Variante
+
+Utilizzata quando:
+
+```text
+Oggetto esistente
+
+↓
+
+Versione esistente
+
+↓
+
+Variante mancante
+```
+
+---
+
+## Esempio
+
+```text
+Charizard
+
+↓
+
+Inglese
+
+↓
+
+Gold non presente
+
+↓
+
+Nuova Variante
+```
+
+---
+
+# Nuova Rarità
+
+Utilizzata quando l'utente seleziona:
+
+```text
+Altro...
+```
+
+durante la scelta della rarità.
+
+---
+
+## Workflow
+
+```text
+Nuova Rarità
+↓
+Catalogo Collaborativo
+↓
+Revisione
+↓
+Approvazione
+```
+
+---
+
+# Nuova Immagine
+
+Utilizzata per migliorare il Catalogo Universale.
+
+Le immagini possono essere associate esclusivamente a:
+
+```text
+ItemVersion
+
+oppure
+
+ItemVariant
+```
+
+---
+
+# Controlli Automatici
+
+Prima della creazione di una proposta il sistema deve verificare:
+
+- duplicati
+- OCR simili
+- nomi simili
+- codici identici
+- hash immagini
+- immagini simili
+- rarità esistenti
+
+---
+
+# Stato Iniziale
+
+Ogni proposta assume automaticamente lo stato:
+
+```text
+Provvisorio
+```
+
+---
+
+# Utilizzo Immediato
+
+Gli elementi Provvisori possono essere:
+
+- cercati
+- catalogati
+- inseriti nelle collezioni
+- inseriti nelle wishlist
+- utilizzati nel Marketplace
+
+fino a decisione amministrativa.
+
+---
+
+# Catalogazione Diretta
+
+Dopo il riconoscimento l'utente può:
+
+- aggiungere alla Collezione
+- aggiungere alla Wishlist
+- impostare quantità
+- segnare come disponibile alla vendita
+- segnare come disponibile allo scambio
+
+---
+
+# Cronologia Scansioni
+
+Ogni utente possiede una cronologia personale.
+
+---
+
+# Percorso
+
+```text
+Profilo
+↓
+Cronologia Scansioni
+```
+
+---
+
+# Informazioni Visualizzate
+
+Per ogni scansione:
+
+- Data
+- Immagine
+- Categoria
+- Collezione
+- Serie
+- Oggetto
+- Versione
+- Variante
+- Affidabilità
+- Risultato
+
+---
+
+# Conservazione
+
+Valore iniziale consigliato:
+
+```text
+50 scansioni
+```
+
+Configurabile dalla Dashboard Admin.
+
+---
+
+# Errori di Scansione
+
+Quando una scansione fallisce devono essere mostrati messaggi chiari.
+
+---
+
+## Esempi
+
+```text
+Immagine troppo sfocata
+```
+
+---
+
+```text
+Immagine troppo scura
+```
+
+---
+
+```text
+Oggetto non riconosciuto
+```
+
+---
+
+```text
+Formato non supportato
+```
+
+---
+
+```text
+Versione non selezionata
+```
+
+---
+
+```text
+Nessuna scansione disponibile
+```
+
+---
+
+# Statistiche Scansione
+
+CollectorVerse deve registrare:
+
+- scansioni effettuate
+- scansioni riuscite
+- scansioni fallite
+- scansioni AI
+- nuove proposte generate
+- nuove Versioni suggerite
+- nuove Varianti suggerite
+- nuove Rarità suggerite
+
+---
+
+# Utilizzo Statistiche
+
+Le statistiche possono essere utilizzate da:
+
+- Dashboard Utente
+- Gamification
+- Dashboard Merchant
+- Dashboard Admin
+
+---
+
+# Importazione Collezioni
+
+CollectorVerse supporta l'importazione tramite:
+
+```text
+Excel
+
+CSV
+```
+
+---
+
+# Obiettivo
+
+Popolare rapidamente le Collezioni Personali.
+
+---
+
+# Regola Fondamentale
+
+L'importazione:
+
+```text
+❌ NON crea Oggetti
+
+❌ NON crea Versioni
+
+❌ NON crea Varianti
+
+❌ NON crea Rarità
+
+❌ NON modifica il Catalogo Universale
+```
+
+---
+
+# Flusso Importazione
+
+```text
+Categoria
+↓
+Caricamento File
+↓
+Mapping Colonne
+↓
+Simulazione
+↓
+Correzione Guidata
+↓
+Conferma
+↓
+Importazione
+```
+
+---
+
+# Mapping Colonne
+
+L'utente associa i campi del file ai campi CollectorVerse.
+
+---
+
+## Esempio
+
+```text
+Product Name
+↓
+Oggetto
+```
+
+```text
+Language
+↓
+Versione
+```
+
+```text
+Series
+↓
+Serie
+```
+
+---
+
+# Simulazione
+
+Mostrare:
+
+- elementi riconosciuti
+- elementi non riconosciuti
+- duplicati
+- incongruenze
+- errori
+
+---
+
+## Esempio
+
+```text
+1200 righe analizzate
+
+1180 riconosciute
+
+20 non riconosciute
+```
+
+---
+
+# Elementi Non Riconosciuti
+
+Gli elementi non riconosciuti:
+
+```text
+NON vengono importati
+
+NON creano automaticamente
+Oggetti
+
+Versioni
+
+Varianti
+
+Rarità
+```
+
+---
+
+# Azioni Disponibili
+
+```text
+Importa Elementi Riconosciuti
+
+Esporta Elementi Non Riconosciuti
+```
+
+---
+
+# Dashboard Admin
+
+Tutte le configurazioni devono essere modificabili senza aggiornare il codice.
+
+---
+
+# Configurazioni Scansione
+
+- scansioni giornaliere
+- scansioni reward
+- cooldown
+- limiti AI
+- soglia affidabilità
+
+---
+
+# Configurazioni Cronologia
+
+- numero scansioni conservate
+
+---
+
+# Configurazioni AI
+
+- attivazione AI
+- provider AI
+- soglia utilizzo
+- limiti consumo
+
+---
+
+# Configurazioni Importazione
+
+- formati consentiti
+- limiti file
+- limiti righe
+- soglie simulazione
+
+---
+
+# Configurazioni Errori
+
+Tutti i messaggi di errore devono poter essere personalizzati dalla Dashboard Admin.
+
+---
+
+# Obiettivo del Sistema Scansione
+
+Il Sistema Scansione deve consentire il riconoscimento rapido e affidabile di Oggetti, Versioni e Varianti presenti nel Catalogo Universale, semplificare la catalogazione delle collezioni personali, migliorare la qualità del Catalogo Universale e favorire la crescita collaborativa dell'intero ecosistema CollectorVerse.
 
 ---
 
