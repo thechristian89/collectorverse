@@ -3045,9 +3045,1824 @@ Fornire una struttura unica, consistente e scalabile in grado di rappresentare q
 
 # Parte 5 - Sistema Scansione • OCR • Hash • AI • Wizard Catalogo • Cronologia Scansioni
 
+# Sistema Scansione
+
+Il Sistema Scansione rappresenta una delle funzionalità principali di CollectorVerse.
+
+L'obiettivo è permettere il riconoscimento rapido degli oggetti catalogati e semplificare la catalogazione delle collezioni personali.
+
+Il sistema deve essere progettato per supportare milioni di scansioni mantenendo elevata accuratezza, velocità e semplicità d'uso.
+
+---
+
+# Obiettivi
+
+Il Sistema Scansione deve:
+
+- riconoscere Oggetti esistenti
+- riconoscere Versioni esistenti
+- riconoscere Varianti esistenti
+- ridurre l'inserimento manuale
+- velocizzare la catalogazione
+- migliorare la qualità del Catalogo Universale
+- aiutare nella scoperta di nuovi elementi non catalogati
+- alimentare il Catalogo Collaborativo
+- supportare il Matching
+- supportare la crescita della Community
+
+---
+
+# Principio Fondamentale
+
+La scansione non modifica direttamente il Catalogo Universale.
+
+La scansione può:
+
+```text
+Riconoscere
+
+oppure
+
+Suggerire
+```
+
+Le modifiche al Catalogo Universale seguono sempre il workflow ufficiale di revisione.
+
+---
+
+# Gerarchia di Riconoscimento
+
+Lo Scanner deve sempre rispettare la gerarchia ufficiale del Catalogo.
+
+```text
+Categoria
+↓
+Collezione
+↓
+Serie
+↓
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+---
+
+# Flusso Ufficiale Scansione
+
+```text
+Selezione Categoria
+↓
+Selezione Collezione
+↓
+Selezione Versione (se applicabile)
+↓
+Acquisizione Immagine
+↓
+Consumo Scansione
+↓
+Analisi
+↓
+Risultato
+↓
+Conferma Utente
+↓
+Catalogazione
+```
+
+---
+
+# Selezione Categoria
+
+Prima della scansione l'utente deve selezionare una Categoria.
+
+---
+
+## Regola
+
+Possono essere selezionate esclusivamente:
+
+```text
+Categorie Attive
+```
+
+---
+
+# Selezione Collezione
+
+Dopo la Categoria viene selezionata la Collezione.
+
+---
+
+## Esempio
+
+```text
+Categoria
+
+Carte Collezionabili
+
+↓
+
+Collezione
+
+Pokémon
+```
+
+---
+
+# Selezione Versione
+
+Dopo la Collezione.
+
+La selezione della Versione è facoltativa se la Collezione utilizza esclusivamente una Versione Generica.
+
+---
+
+## Esempio
+
+```text
+Italiano
+
+Inglese
+
+Francese
+
+Tedesco
+
+Giapponese
+
+Spagnolo
+```
+
+---
+
+# Obiettivo
+
+Ridurre gli errori di riconoscimento.
+
+Migliorare la precisione dell'analisi.
+
+Velocizzare il matching catalografico.
+
+---
+
+# Versione Generica
+
+Se la Collezione utilizza esclusivamente:
+
+```text
+Versione Generica
+```
+
+il selettore della Versione non deve essere mostrato.
+
+---
+
+# Acquisizione Immagine
+
+L'utente può:
+
+- scattare una foto
+- caricare una foto esistente dalla galleria
+
+---
+
+# Requisiti Minimi
+
+L'immagine deve essere:
+
+- sufficientemente nitida
+- leggibile
+- centrata
+- supportata dal sistema
+
+---
+
+# Formati Supportati
+
+Valori iniziali consigliati:
+
+```text
+JPG
+
+JPEG
+
+PNG
+
+WEBP
+```
+
+Nuovi formati possono essere aggiunti dalla Dashboard Admin.
+
+---
+
+# Consumo Scansione
+
+La scansione viene consumata immediatamente dopo l'acquisizione della foto.
+
+---
+
+## Flusso
+
+```text
+Foto
+↓
+Consumo Scansione
+↓
+Analisi
+```
+
+---
+
+# Regola Anti-Abuso
+
+Una scansione consumata non viene restituita automaticamente.
+
+Eccezioni e compensazioni possono essere configurate dagli Amministratori.
+
+---
+
+# Pipeline di Analisi
+
+CollectorVerse utilizza una pipeline multilivello.
+
+Ogni livello aumenta la precisione del riconoscimento e riduce il carico computazionale.
+
+---
+
+# Livello 1 - Hash Immagini
+
+Confronto dell'immagine con quelle già presenti nel Catalogo Universale.
+
+---
+
+## Obiettivo
+
+Identificare rapidamente immagini già conosciute.
+
+---
+
+## Benefici
+
+- elevata velocità
+- basso costo computazionale
+- elevata precisione
+
+---
+
+# Livello 2 - OCR
+
+Estrazione automatica del testo presente nell'immagine.
+
+---
+
+## Informazioni Ricercate
+
+- nome oggetto
+- numero catalogo
+- codici identificativi
+- numerazioni
+- sigle
+- testi stampati
+
+---
+
+## Esempi
+
+```text
+4/102
+
+SV3
+
+Charizard
+
+English
+
+EN
+```
+
+---
+
+# Livello 3 - Matching Catalogo
+
+Le informazioni ottenute da:
+
+- Hash
+- OCR
+
+vengono confrontate con il Catalogo Universale.
+
+---
+
+## Obiettivo
+
+Individuare:
+
+```text
+Oggetto
+↓
+Versione
+↓
+Variante
+```
+
+più compatibili.
+
+---
+
+# Livello 4 - Analisi AI
+
+L'Intelligenza Artificiale viene utilizzata esclusivamente come fallback.
+
+---
+
+## Attivazione
+
+L'AI interviene quando:
+
+```text
+Hash
++
+OCR
++
+Matching Catalogo
+
+non raggiungono
+una soglia di affidabilità sufficiente
+```
+
+---
+
+## Utilizzo
+
+L'AI supporta:
+
+- identificazione oggetti
+- identificazione versioni
+- identificazione varianti
+- classificazione immagini
+- suggerimenti catalografici
+
+---
+
+# Utilizzo Immagini Catalogo
+
+Lo Scanner utilizza esclusivamente immagini associate a:
+
+```text
+ItemVersion
+
+oppure
+
+ItemVariant
+```
+
+---
+
+# Regola Fondamentale
+
+Le immagini NON appartengono direttamente all'Oggetto.
+
+---
+
+# Motivazione
+
+L'Oggetto rappresenta una entità logica.
+
+Le immagini rappresentano una manifestazione reale e specifica dell'oggetto.
+
+---
+
+## Esempio
+
+```text
+Charizard
+↓
+Versione Italiana
+↓
+Immagine Italiana
+```
+
+---
+
+```text
+Charizard
+↓
+Versione Inglese
+↓
+Immagine Inglese
+```
+
+---
+
+```text
+Charizard
+↓
+Versione Giapponese
+↓
+Immagine Giapponese
+```
+
+---
+
+# Esempio Variante
+
+```text
+Charizard
+↓
+Versione Inglese
+↓
+Gold
+↓
+Immagine Gold
+```
+
+---
+
+# Benefici
+
+Questa struttura:
+
+- migliora la precisione dello Scanner
+- evita immagini errate
+- supporta cataloghi multilingua
+- supporta promo speciali
+- supporta versioni regionali
+- supporta Error Print
+- supporta Varianti rare
+
+---
+
+# Priorità Immagini
+
+La visualizzazione delle immagini deve rispettare il seguente ordine:
+
+```text
+Immagine Variante
+↓
+Immagine Versione
+↓
+Placeholder
+```
+
+---
+
+## Regola
+
+Se esiste una immagine associata alla Variante:
+
+```text
+utilizzare immagine Variante
+```
+
+Altrimenti:
+
+```text
+utilizzare immagine Versione
+```
+
+Se nessuna immagine è disponibile:
+
+```text
+utilizzare Placeholder
+```
+
+---
+
+# Risultati Scansione
+
+Al termine dell'analisi mostrare:
+
+- risultato suggerito
+- livello di affidabilità
+- Versione individuata
+- Variante individuata
+- risultati alternativi
+
+---
+
+## Esempio
+
+```text
+Charizard 4/102
+
+Versione:
+Inglese
+
+Variante:
+Holo
+
+Affidabilità:
+98%
+```
+
+---
+
+# Risultati Alternativi
+
+Mostrare soluzioni alternative ordinate per affidabilità.
+
+---
+
+## Esempio
+
+```text
+Charizard Holo
+98%
+```
+
+---
+
+```text
+Charizard Reverse Holo
+82%
+```
+
+---
+
+```text
+Charmander Holo
+71%
+```
+
+---
+
+# Livelli Affidabilità
+
+## Alta
+
+```text
+90% - 100%
+```
+
+---
+
+## Media
+
+```text
+70% - 89%
+```
+
+---
+
+## Bassa
+
+```text
+0% - 69%
+```
+
+---
+
+# Conferma Risultato
+
+Prima della catalogazione definitiva l'utente deve confermare il risultato proposto.
+
+---
+
+# Azioni Disponibili
+
+- Conferma
+- Correggi
+- Cerca Manualmente
+- Segnala Errore
+
+---
+
+# Nessun Risultato
+
+Quando non viene trovato alcun risultato sufficientemente affidabile.
+
+---
+
+## Comportamento
+
+Mostrare il Wizard Catalogo.
+
+---
+
+# Wizard Catalogo
+
+Sistema guidato per la creazione di nuovi elementi.
+
+---
+
+# Operazioni Disponibili
+
+- Nuovo Oggetto
+- Nuova Versione
+- Nuova Variante
+- Nuova Rarità
+- Nuova Immagine
+
+---
+
+# Nuovo Oggetto
+
+Utilizzato quando l'Oggetto non esiste.
+
+---
+
+## Informazioni Richieste
+
+- Categoria
+- Collezione
+- Serie
+- Nome
+- Codice
+- Numero Catalogo
+- Rarità
+- Prima Versione
+- Immagine della Versione
+- Descrizione
+
+---
+
+# Nuova Versione
+
+Utilizzata quando:
+
+```text
+Oggetto esistente
++
+Versione mancante
+```
+
+---
+
+## Esempio
+
+```text
+Charizard esiste
+
+↓
+
+Versione Spagnola assente
+
+↓
+
+Nuova Versione
+```
+
+---
+
+# Nuova Variante
+
+Utilizzata quando:
+
+```text
+Oggetto esistente
+↓
+Versione esistente
+↓
+Variante mancante
+```
+
+---
+
+## Esempio
+
+```text
+Charizard
+↓
+Inglese
+↓
+Gold non presente
+↓
+Nuova Variante
+```
+
+---
+
+# Nuova Rarità
+
+Utilizzata quando l'utente seleziona:
+
+```text
+Altro...
+```
+
+durante la scelta della rarità.
+
+---
+
+## Workflow
+
+```text
+Nuova Rarità
+↓
+Catalogo Collaborativo
+↓
+Revisione
+↓
+Approvazione
+```
+
+---
+
+# Nuova Immagine
+
+Utilizzata per migliorare il Catalogo Universale.
+
+---
+
+## Associazioni Consentite
+
+Le immagini possono essere associate esclusivamente a:
+
+```text
+ItemVersion
+
+oppure
+
+ItemVariant
+```
+
+---
+
+# Controlli Automatici
+
+Prima della creazione di una proposta il sistema deve verificare:
+
+- duplicati
+- OCR simili
+- nomi simili
+- codici identici
+- hash immagini
+- immagini simili
+- rarità esistenti
+
+---
+
+# Stato Iniziale
+
+Ogni proposta assume automaticamente lo stato:
+
+```text
+Provvisorio
+```
+
+---
+
+# Utilizzo Immediato
+
+Gli elementi Provvisori possono essere:
+
+- cercati
+- catalogati
+- aggiunti alle collezioni
+- aggiunti alle wishlist
+- utilizzati nel Marketplace
+
+fino a decisione amministrativa.
+
+---
+
+# Catalogazione Diretta
+
+Dopo il riconoscimento l'utente può:
+
+- aggiungere alla Collezione
+- aggiungere alla Wishlist
+- impostare quantità
+- segnare come disponibile alla vendita
+- segnare come disponibile allo scambio
+
+---
+
+# Cronologia Scansioni
+
+Ogni utente possiede una cronologia personale.
+
+---
+
+# Percorso
+
+```text
+Profilo
+↓
+Cronologia Scansioni
+```
+
+---
+
+# Informazioni Visualizzate
+
+Per ogni scansione mostrare:
+
+- Data
+- Immagine
+- Categoria
+- Collezione
+- Serie
+- Oggetto
+- Versione
+- Variante
+- Affidabilità
+- Risultato
+
+---
+
+# Conservazione
+
+Valore iniziale consigliato:
+
+```text
+50 scansioni
+```
+
+Configurabile dalla Dashboard Admin.
+
+---
+
+# Errori di Scansione
+
+Quando la scansione fallisce devono essere mostrati messaggi comprensibili.
+
+---
+
+## Esempi
+
+```text
+Immagine troppo sfocata
+```
+
+---
+
+```text
+Immagine troppo scura
+```
+
+---
+
+```text
+Oggetto non riconosciuto
+```
+
+---
+
+```text
+Formato non supportato
+```
+
+---
+
+```text
+Versione non selezionata
+```
+
+---
+
+```text
+Nessuna scansione disponibile
+```
+
+---
+
+# Statistiche Scansione
+
+CollectorVerse deve registrare:
+
+- scansioni effettuate
+- scansioni riuscite
+- scansioni fallite
+- scansioni AI
+- nuove proposte generate
+- nuove Versioni suggerite
+- nuove Varianti suggerite
+- nuove Rarità suggerite
+
+---
+
+# Utilizzo Statistiche
+
+Le statistiche possono essere utilizzate da:
+
+- Dashboard Utente
+- Gamification
+- Dashboard Merchant
+- Dashboard Admin
+
+---
+
+# Importazione Collezioni
+
+CollectorVerse supporta l'importazione tramite:
+
+```text
+Excel
+
+CSV
+```
+
+---
+
+# Obiettivo
+
+Popolare rapidamente le Collezioni Personali.
+
+---
+
+# Regola Fondamentale
+
+L'importazione:
+
+```text
+❌ NON crea Oggetti
+
+❌ NON crea Versioni
+
+❌ NON crea Varianti
+
+❌ NON crea Rarità
+
+❌ NON modifica il Catalogo Universale
+```
+
+---
+
+# Flusso Importazione
+
+```text
+Categoria
+↓
+Caricamento File
+↓
+Mapping Colonne
+↓
+Simulazione
+↓
+Correzione Guidata
+↓
+Conferma
+↓
+Importazione
+```
+
+---
+
+# Mapping Colonne
+
+L'utente associa i campi del file ai campi CollectorVerse.
+
+---
+
+## Esempio
+
+```text
+Product Name
+↓
+Oggetto
+```
+
+```text
+Language
+↓
+Versione
+```
+
+```text
+Series
+↓
+Serie
+```
+
+---
+
+# Simulazione
+
+Mostrare:
+
+- elementi riconosciuti
+- elementi non riconosciuti
+- duplicati
+- incongruenze
+- errori
+
+---
+
+## Esempio
+
+```text
+1200 righe analizzate
+
+1180 riconosciute
+
+20 non riconosciute
+```
+
+---
+
+# Elementi Non Riconosciuti
+
+Gli elementi non riconosciuti:
+
+```text
+NON vengono importati
+
+NON creano automaticamente
+Oggetti
+
+Versioni
+
+Varianti
+
+Rarità
+```
+
+---
+
+# Azioni Disponibili
+
+```text
+Importa Elementi Riconosciuti
+
+Esporta Elementi Non Riconosciuti
+```
+
+---
+
+# Dashboard Admin
+
+Tutte le configurazioni devono essere modificabili senza aggiornare il codice.
+
+---
+
+# Configurazioni Scansione
+
+- scansioni giornaliere
+- scansioni reward
+- cooldown
+- limiti AI
+- soglia affidabilità
+
+---
+
+# Configurazioni Cronologia
+
+- numero scansioni conservate
+
+---
+
+# Configurazioni AI
+
+- attivazione AI
+- provider AI
+- soglia utilizzo
+- limiti consumo
+
+---
+
+# Configurazioni Importazione
+
+- formati consentiti
+- limiti file
+- limiti righe
+- soglie simulazione
+
+---
+
+# Configurazioni Errori
+
+Tutti i messaggi di errore devono poter essere personalizzati dalla Dashboard Admin.
+
+---
+
+# Obiettivo del Sistema Scansione
+
+Il Sistema Scansione deve consentire il riconoscimento rapido e affidabile di Oggetti, Versioni e Varianti presenti nel Catalogo Universale, semplificare la catalogazione delle collezioni personali, migliorare la qualità del Catalogo Universale e favorire la crescita collaborativa dell'intero ecosistema CollectorVerse.
+
 ---
 
 # Parte 6 - Catalogo Collaborativo • Contributori Catalogo • Votazioni • Reputazione • Immagini
+
+# Catalogo Collaborativo
+
+CollectorVerse utilizza un sistema di crescita collaborativa del Catalogo Universale.
+
+La community può contribuire alla creazione, correzione e miglioramento del Catalogo Universale.
+
+---
+
+# Obiettivo
+
+Consentire una crescita rapida del catalogo mantenendo elevata qualità dei dati, coerenza strutturale e controllo amministrativo.
+
+---
+
+# Principio Fondamentale
+
+La community contribuisce al Catalogo.
+
+La community NON approva direttamente il Catalogo.
+
+La decisione finale appartiene sempre agli Amministratori.
+
+---
+
+# Contenuti Contribuibili
+
+Gli utenti possono proporre:
+
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+- Nuove Rarità
+- Nuove Immagini
+- Correzioni Catalogo
+
+---
+
+# Workflow Ufficiale
+
+Tutte le proposte seguono il seguente flusso:
+
+```text
+Proposta
+↓
+Revisione Community
+↓
+Valutazione Amministrativa
+↓
+Decisione Finale
+```
+
+---
+
+# Contributori Catalogo
+
+I Contributori Catalogo sono utenti autorizzati a partecipare al processo di revisione.
+
+---
+
+# Accesso Commercianti
+
+I Commercianti diventano automaticamente Contributori Catalogo.
+
+---
+
+## Limitazioni
+
+Possono revisionare esclusivamente le categorie dichiarate nel proprio Profilo Negozio.
+
+---
+
+# Accesso Utenti
+
+Gli utenti possono essere invitati a partecipare al programma Contributori Catalogo.
+
+---
+
+## Requisito Minimo
+
+Valore iniziale consigliato:
+
+```text
+30 giorni di iscrizione
+```
+
+Configurabile dalla Dashboard Admin.
+
+---
+
+# Invito
+
+Quando l'utente raggiunge i requisiti stabiliti riceve una notifica.
+
+---
+
+## Messaggio Esempio
+
+```text
+Vuoi aiutare CollectorVerse
+a migliorare il Catalogo Universale?
+```
+
+---
+
+# Accettazione
+
+Quando l'utente accetta:
+
+entra ufficialmente nel programma Contributori Catalogo.
+
+---
+
+# Ambito di Revisione
+
+Gli utenti possono revisionare solo collezioni effettivamente presenti nelle proprie Collezioni Personali.
+
+---
+
+## Esempio
+
+Possiede:
+
+```text
+Pokémon
+LEGO
+Euro Italia
+```
+
+---
+
+Può revisionare:
+
+```text
+Pokémon
+LEGO
+Euro Italia
+```
+
+---
+
+Non può revisionare:
+
+```text
+Magic
+Lorcana
+Francobolli
+```
+
+se non presenti nelle sue Collezioni Personali.
+
+---
+
+# Area Contributori Catalogo
+
+Sezione dedicata ai revisori.
+
+---
+
+## Percorso
+
+```text
+Profilo
+↓
+Contributori Catalogo
+```
+
+---
+
+# Sezioni Disponibili
+
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+- Nuove Rarità
+- Nuove Immagini
+- Correzioni Catalogo
+
+---
+
+# Informazioni Visualizzate
+
+Ogni proposta deve mostrare:
+
+- Categoria
+- Collezione
+- Serie
+- Oggetto
+- Versione
+- Variante (se presente)
+- Rarità (se presente)
+- Immagine
+- Data Proposta
+- Utente Proponente
+
+---
+
+# Sistema di Votazione
+
+Ogni revisore può votare una sola volta per ogni proposta.
+
+---
+
+# Voti Disponibili
+
+```text
+✅ Corretta
+
+❌ Non Corretta
+
+❓ Non So
+```
+
+---
+
+# Motivazione
+
+Quando viene selezionato:
+
+```text
+❌ Non Corretta
+```
+
+deve essere possibile inserire:
+
+```text
+Motivazione (facoltativa)
+```
+
+---
+
+# Visibilità Andamento
+
+I revisori possono visualizzare l'andamento della revisione.
+
+---
+
+## Informazioni Mostrate
+
+```text
+Corretta
+
+Non Corretta
+
+Non So
+
+Totale Voti
+```
+
+---
+
+# Reputazione Contributore
+
+Ogni Contributore possiede una reputazione.
+
+---
+
+# Formula Iniziale
+
+```text
+Correzioni Approvate
+
+-
+
+Correzioni Respinte
+```
+
+---
+
+# Valore Minimo
+
+La reputazione non può mai essere negativa.
+
+---
+
+## Valore Minimo
+
+```text
+0
+```
+
+---
+
+# Peso del Voto
+
+Non tutti i voti hanno lo stesso peso.
+
+Gli utenti più affidabili influenzano maggiormente la revisione.
+
+---
+
+# Configurazione Iniziale Consigliata
+
+Reputazione:
+
+```text
+0 - 9
+```
+
+↓
+
+Peso:
+
+```text
+1
+```
+
+---
+
+Reputazione:
+
+```text
+10 - 29
+```
+
+↓
+
+Peso:
+
+```text
+2
+```
+
+---
+
+Reputazione:
+
+```text
+30 - 99
+```
+
+↓
+
+Peso:
+
+```text
+3
+```
+
+---
+
+Reputazione:
+
+```text
+100+
+```
+
+↓
+
+Peso:
+
+```text
+5
+```
+
+---
+
+# Applicazione Peso
+
+Il peso viene applicato a:
+
+- Utenti
+- Commercianti
+
+---
+
+# Statistiche Contributore
+
+Ogni Contributore deve visualizzare:
+
+- Correzioni Approvate
+- Correzioni Respinte
+- Reputazione
+- Peso Voto Attuale
+
+---
+
+# Revisione Community
+
+La Community non approva direttamente gli elementi.
+
+La Community fornisce indicazioni agli Amministratori.
+
+---
+
+# Stati Revisione
+
+---
+
+## Revisione Positiva
+
+Valori configurabili.
+
+Esempio:
+
+```text
+Almeno 20 voti
+
++
+
+Almeno 85% Corretta
+```
+
+---
+
+## Revisione Negativa
+
+Valori configurabili.
+
+Esempio:
+
+```text
+Almeno 20 voti
+
++
+
+Almeno 85% Non Corretta
+```
+
+---
+
+## Revisione Incerta
+
+Tutti gli altri casi.
+
+---
+
+# Utilizzo Revisioni
+
+Lo stato della revisione viene utilizzato esclusivamente per stabilire la priorità di revisione amministrativa.
+
+---
+
+# Decisione Finale
+
+La decisione finale appartiene sempre ad un Amministratore.
+
+---
+
+# Azioni Amministratore
+
+```text
+✅ Verifica
+
+✏️ Correggi
+
+❌ Rifiuta
+
+🔀 Unifica
+```
+
+---
+
+# Nuove Collezioni
+
+Quando una nuova Collezione non possiede ancora una base utenti sufficientemente ampia:
+
+le revisioni vengono affidate principalmente a:
+
+- Commercianti
+- Moderatori
+- Amministratori
+
+---
+
+# Immagini Collaborative
+
+CollectorVerse supporta un sistema di miglioramento continuo delle immagini del Catalogo Universale.
+
+---
+
+# Obiettivo
+
+Permettere alla Community di migliorare progressivamente la qualità visiva del Catalogo.
+
+---
+
+# Regola Fondamentale
+
+Le immagini NON appartengono direttamente agli Oggetti.
+
+Le immagini possono appartenere esclusivamente a:
+
+```text
+ItemVersion
+
+oppure
+
+ItemVariant
+```
+
+---
+
+# Immagini Candidate
+
+Ogni Versione o Variante può possedere più immagini candidate.
+
+Le immagini non appartengono direttamente agli Oggetti.
+
+---
+
+# Valutazione Immagini
+
+Formula completamente configurabile.
+
+---
+
+## Valori Iniziali Consigliati
+
+```text
+Qualità Tecnica = 50%
+
+Voti Community = 40%
+
+Utilizzo = 10%
+```
+
+---
+
+# Immagine Ufficiale
+
+L'immagine con il punteggio più elevato diventa:
+
+```text
+Immagine Ufficiale
+```
+
+---
+
+# Soglia Minima
+
+Valore iniziale consigliato:
+
+```text
+80 / 100
+```
+
+Configurabile tramite Dashboard Admin.
+
+---
+
+# Priorità Visualizzazione Immagini
+
+La piattaforma deve utilizzare il seguente ordine:
+
+```text
+Immagine Variante
+↓
+Immagine Versione
+↓
+Placeholder
+```
+
+---
+
+# Regola
+
+Se una Variante possiede una propria Immagine Ufficiale:
+
+```text
+utilizzare immagine Variante
+```
+
+---
+
+Altrimenti:
+
+```text
+utilizzare immagine Versione
+```
+
+---
+
+Se nessuna immagine è disponibile:
+
+```text
+utilizzare Placeholder
+```
+
+---
+
+# Nuova Immagine
+
+Ogni nuova immagine entra nel sistema come:
+
+```text
+Immagine Candidata
+```
+
+---
+
+# Prime Fasi
+
+Se un'immagine non possiede ancora:
+
+- voti
+- utilizzi
+
+la valutazione deve basarsi principalmente sulla qualità tecnica.
+
+---
+
+# Gestione Immagini
+
+Gli Amministratori possono:
+
+- eliminare immagini errate
+- eliminare immagini inappropriate
+- bloccare immagini
+- sostituire immagini
+- forzare immagine ufficiale
+
+---
+
+# Controllo Duplicati
+
+Le immagini candidate devono essere sottoposte a controlli automatici.
+
+---
+
+## Verifiche Disponibili
+
+- Hash Immagine
+- Similarità Immagine
+- OCR
+- Duplicati Catalogo
+- Duplicati Variante
+- Duplicati Versione
+
+---
+
+# Proprietà dei Contributi
+
+I contributi approvati diventano parte permanente del Catalogo Universale.
+
+---
+
+# Contenuti Coinvolti
+
+- Oggetti
+- Versioni
+- Varianti
+- Rarità
+- Immagini
+
+---
+
+# Eliminazione Account
+
+Se l'autore elimina il proprio account:
+
+```text
+I contributi approvati rimangono nel Catalogo.
+```
+
+---
+
+# Effetti
+
+```text
+✅ contenuti conservati
+
+✅ catalogo preservato
+
+✅ autore anonimizzato
+```
+
+---
+
+# Dashboard Admin
+
+Tutte le configurazioni devono essere modificabili senza aggiornare il codice.
+
+---
+
+# Configurazioni Contributori
+
+- giorni minimi iscrizione
+- attivazione programma
+- requisiti accesso
+- limiti operativi
+
+---
+
+# Configurazioni Reputazione
+
+- soglie reputazione
+- peso voto
+- formule reputazione
+
+---
+
+# Configurazioni Revisioni
+
+- voti minimi
+- soglia revisione positiva
+- soglia revisione negativa
+- gestione revisione incerta
+
+---
+
+# Configurazioni Immagini
+
+- peso qualità tecnica
+- peso voti community
+- peso utilizzo
+- soglia immagine ufficiale
+
+---
+
+# Configurazione Programma
+
+Il Programma Contributori può essere:
+
+```text
+Attivo
+
+Disattivato
+```
+
+tramite Dashboard Admin.
+
+---
+
+# Obiettivo del Catalogo Collaborativo
+
+Il Catalogo Collaborativo deve consentire alla Community di contribuire alla crescita e al miglioramento continuo del Catalogo Universale mantenendo elevati standard qualitativi grazie ad un sistema di revisione, reputazione, controllo amministrativo e validazione progressiva dei contenuti.
 
 ---
 
@@ -4511,9 +6326,1903 @@ Configurazioni modificabili senza aggiornare il codice.
 
 # Parte 9 - Esperienza Utente • Home • Profilo • Attività • Notifiche • Tutorial • Assistenza • Importazione • Esportazione
 
+# Esperienza Utente
+
+L'interfaccia di CollectorVerse deve essere semplice, intuitiva e personalizzabile.
+
+Ogni utente deve poter adattare la propria esperienza alle proprie esigenze senza richiedere competenze tecniche.
+
+---
+
+# Obiettivi
+
+L'esperienza utente deve:
+
+- essere semplice da apprendere
+- essere veloce da utilizzare
+- richiedere pochi passaggi operativi
+- valorizzare le collezioni personali
+- facilitare la scoperta di nuovi contenuti
+- incentivare la partecipazione alla community
+- rendere immediatamente accessibili le funzionalità principali
+
+---
+
+# Primo Accesso
+
+Alla prima apertura dell'applicazione l'utente deve completare una configurazione guidata iniziale.
+
+---
+
+# Interessi Iniziali
+
+L'utente può selezionare le categorie di maggior interesse.
+
+---
+
+## Esempi
+
+- Carte Collezionabili
+- Numismatica
+- Fumetti e Libri
+- LEGO e Costruzioni
+- Videogiochi
+
+---
+
+# Utilizzo Interessi
+
+Le categorie selezionate vengono utilizzate per:
+
+- Home Personalizzata
+- Suggerimenti
+- Matching
+- Notifiche
+- Contenuti in Evidenza
+
+---
+
+# Tutorial Iniziale
+
+Durante il primo accesso deve essere disponibile un tutorial guidato.
+
+---
+
+## Argomenti
+
+- Catalogo Universale
+- Collezioni Personali
+- Wishlist
+- Scanner
+- Marketplace
+- Matching
+- Catalogo Collaborativo
+
+---
+
+# Home
+
+La Home rappresenta il punto di accesso principale dell'applicazione.
+
+---
+
+# Obiettivi Home
+
+Fornire una panoramica immediata di:
+
+- Collezioni
+- Wishlist
+- Scanner
+- Marketplace
+- Matching
+- Notifiche
+- Badge
+- Attività Recenti
+
+---
+
+# Home Personalizzata
+
+La Home deve essere composta da widget configurabili.
+
+---
+
+# Widget Base
+
+Disponibili per tutti gli utenti.
+
+---
+
+## Widget
+
+- Le Mie Collezioni
+- Wishlist
+- Scansioni Disponibili
+- Badge
+- Attività Recenti
+- Notifiche Recenti
+
+---
+
+# Widget Premium
+
+Disponibili per Premium, Premium Plus e Commercianti.
+
+---
+
+## Widget
+
+- Scambi Consigliati
+- Utenti Consigliati
+- Opportunità Marketplace
+
+---
+
+# Widget Premium Plus
+
+Disponibili per Premium Plus e Commercianti.
+
+---
+
+## Widget
+
+- Match Vicini
+- Utenti Vicini
+- Opportunità Locali
+- Attività Geolocalizzate
+
+---
+
+# Personalizzazione Home
+
+L'utente può:
+
+- mostrare widget
+- nascondere widget
+- riordinare widget
+
+---
+
+# Obiettivi Giornalieri
+
+La Home può mostrare gli obiettivi giornalieri.
+
+---
+
+## Informazioni Mostrate
+
+- obiettivi disponibili
+- avanzamento
+- premi ottenibili
+- tempo rimanente
+
+---
+
+# Profilo Utente
+
+Ogni utente possiede una schermata Profilo dedicata.
+
+---
+
+# Informazioni Principali
+
+Visualizzare:
+
+- Avatar
+- Cover
+- Cornice Profilo
+- Username
+- Display Name
+- Piano Attivo
+- Ruolo
+- CollectorScore
+- Livello
+- Affidabilità
+- Data Iscrizione
+
+---
+
+# Badge Profilo
+
+Possibili valori:
+
+```text
+👤 Collezionista
+
+⭐ Collezionista Premium
+
+💎 Collezionista Premium Plus
+
+🏪 Commerciante
+
+✅🏪 Commerciante Verificato
+
+🛡️ Moderatore
+
+⚙️ Amministratore
+```
+
+---
+
+# Indicatore Affidabilità
+
+L'affidabilità non viene mostrata con un valore numerico.
+
+---
+
+## Rappresentazione
+
+```text
+🟢 Alta
+
+🟡 Media
+
+🔴 Bassa
+```
+
+---
+
+# Indicatori Funzionalità
+
+Mostrare chiaramente le funzionalità disponibili all'utente.
+
+---
+
+## Chat
+
+```text
+💬 Chat Disponibile
+```
+
+oppure
+
+```text
+🚫 Non può avviare nuove conversazioni
+```
+
+---
+
+## Marketplace
+
+```text
+🟢 Marketplace Attivo
+```
+
+oppure
+
+```text
+⚪ Marketplace Non Attivo
+```
+
+---
+
+# Sezioni Profilo
+
+- Collezioni
+- Wishlist
+- Disponibili per Vendita
+- Disponibili per Scambio
+- Annunci
+- Recensioni
+- Badge
+- Contributori Catalogo
+- Le Mie Attività
+- Cronologia Scansioni
+- Importazione
+- Esportazione
+- Tutorial
+- Centro Assistenza
+- Abbonamenti e Pacchetti
+
+---
+
+# Collezioni
+
+Visualizzare:
+
+- Collezioni Pubbliche
+- Collezioni Private
+- Percentuali di Completamento
+- Numero Oggetti
+- Numero Versioni Possedute
+- Numero Varianti Possedute
+
+---
+
+# Wishlist
+
+Ogni Wishlist può essere:
+
+```text
+Pubblica
+
+Privata
+```
+
+---
+
+# Disponibili per Vendita
+
+Visualizzare:
+
+- Oggetto
+- Versione
+- Variante
+- Condizione
+- Prezzo
+- Valuta
+
+---
+
+# Disponibili per Scambio
+
+Visualizzare:
+
+- Oggetto
+- Versione
+- Variante
+- Condizione
+
+---
+
+# Annunci
+
+Mostrare tutti gli annunci creati dall'utente.
+
+---
+
+## Informazioni Visualizzate
+
+- Oggetto
+- Versione
+- Variante
+- Prezzo
+- Valuta
+- Stato Annuncio
+- Data Pubblicazione
+
+---
+
+# Recensioni
+
+Visualizzare:
+
+- Media Recensioni
+- Numero Recensioni
+- Ultime Recensioni Ricevute
+
+---
+
+# Le Mie Attività
+
+Storico delle attività dell'utente.
+
+---
+
+## Eventi Visualizzati
+
+- Oggetti creati
+- Versioni create
+- Varianti create
+- Rarità proposte
+- Correzioni proposte
+- Correzioni approvate
+- Badge ottenuti
+- Livelli ottenuti
+- Scansioni effettuate
+
+---
+
+# Cronologia Scansioni
+
+Area dedicata alle ultime scansioni effettuate.
+
+---
+
+## Informazioni Mostrate
+
+- Data
+- Immagine
+- Categoria
+- Collezione
+- Serie
+- Oggetto
+- Versione
+- Variante
+- Affidabilità
+- Risultato
+
+---
+
+# Abbonamenti e Pacchetti
+
+Sezione dedicata alla situazione commerciale dell'account.
+
+---
+
+## Informazioni Visualizzate
+
+- Piano Attivo
+- Data Scadenza
+- Bundle Attivi
+- Pacchetti Attivi
+- Pacchetti Congelati
+- Pacchetti Scaduti
+
+---
+
+## Esempio
+
+```text
+Pacchetto +100 Annunci
+
+Stato:
+Congelato
+
+Tempo Residuo:
+8 mesi e 12 giorni
+```
+
+---
+
+# Valuta Preferita
+
+Ogni utente può modificare la propria valuta preferita.
+
+---
+
+## Utilizzo
+
+La valuta selezionata viene proposta automaticamente durante la pubblicazione degli annunci.
+
+---
+
+# Profilo Pubblico
+
+Ogni utente può condividere il proprio profilo pubblico.
+
+---
+
+# Informazioni Visibili
+
+- Avatar
+- Cornice
+- CollectorScore
+- Livello
+- Badge
+- Affidabilità
+- Recensioni
+- Collezioni Pubbliche
+- Wishlist Pubbliche
+- Disponibili per Vendita
+- Disponibili per Scambio
+
+---
+
+# Condivisione Profilo
+
+Disponibile tramite:
+
+- Link Pubblico
+- QR Code Profilo
+
+---
+
+# QR Code Profilo
+
+Il QR Code deve essere collegato all'identificativo interno dell'utente.
+
+---
+
+# Regola Fondamentale
+
+La modifica di Username o Display Name non deve invalidare il QR Code.
+
+---
+
+# Notifiche
+
+CollectorVerse utilizza un sistema notifiche centralizzato.
+
+---
+
+# Canali Disponibili
+
+## Push
+
+Inviate tramite:
+
+```text
+Firebase Cloud Messaging (FCM)
+```
+
+---
+
+## Email
+
+Inviate tramite:
+
+```text
+Brevo
+```
+
+---
+
+## In-App
+
+Disponibili all'interno del Centro Notifiche.
+
+---
+
+# Preferenze Notifiche
+
+Ogni categoria può essere configurata separatamente.
+
+---
+
+## Esempio
+
+```text
+Push ✅
+
+Email ❌
+
+In-App ✅
+```
+
+---
+
+# Centro Notifiche
+
+Le notifiche devono essere facilmente consultabili.
+
+---
+
+## Filtri Disponibili
+
+- Tutte
+- Non Lette
+- Sistema
+
+---
+
+# Tipologie Notifiche
+
+---
+
+## Marketplace
+
+- Nuovi Annunci Compatibili
+- Nuove Opportunità
+- Interesse per i propri Oggetti
+
+---
+
+## Chat
+
+- Nuove Richieste di Contatto
+- Nuovi Messaggi
+
+---
+
+## Matching
+
+- Nuovi Match
+- Nuove Opportunità di Scambio
+- Opportunità di Completamento
+
+---
+
+## Catalogo
+
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+- Nuove Rarità
+
+---
+
+## Follow Categoria
+
+- Nuove Collezioni
+- Nuove Serie
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+
+---
+
+## Follow Collezione
+
+- Nuove Serie
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+- Nuovi Commercianti
+
+---
+
+## Follow Serie
+
+- Nuovi Oggetti
+- Nuove Versioni
+- Nuove Varianti
+
+---
+
+## Follow Oggetto
+
+- Nuove Versioni
+- Nuove Varianti
+- Nuove Immagini
+- Nuovi Annunci
+
+---
+
+## Follow Utente
+
+- Nuovi Annunci
+- Nuove Collezioni Pubbliche
+
+---
+
+## Follow Commerciante
+
+- Nuovi Annunci
+- Aggiornamenti Profilo
+- Nuove Recensioni Google
+
+---
+
+## Gamification
+
+- Nuovi Badge
+- Passaggio Livello
+- Obiettivi Completati
+
+---
+
+## Abbonamenti
+
+- Scadenza Imminente
+- Pacchetti Congelati
+- Bundle in Scadenza
+
+---
+
+# Promemoria Scadenze
+
+Configurabili tramite Dashboard Admin.
+
+---
+
+## Valori Iniziali Consigliati
+
+- 7 giorni prima
+- 3 giorni prima
+- giorno di scadenza
+
+---
+
+# Tutorial
+
+CollectorVerse include un sistema tutorial integrato.
+
+---
+
+# Tutorial Iniziale
+
+Visualizzato durante il primo accesso.
+
+---
+
+# Argomenti
+
+- Collezioni
+- Catalogo
+- Scanner
+- Marketplace
+- Matching
+- Community
+
+---
+
+# Tutorial Successivi
+
+Consultabili in qualsiasi momento.
+
+---
+
+## Percorso
+
+```text
+Profilo
+↓
+Tutorial
+```
+
+---
+
+# Centro Assistenza
+
+Area dedicata al supporto utenti.
+
+---
+
+# Contenuti
+
+- FAQ
+- Guide
+- Tutorial
+- Contatti
+- Segnalazioni
+
+---
+
+# Segnalazioni
+
+Gli utenti possono segnalare:
+
+- Problemi Tecnici
+- Errori Catalogo
+- Immagini
+- Recensioni
+- Utenti
+- Annunci Marketplace
+
+---
+
+# Importazione
+
+CollectorVerse supporta l'importazione delle Collezioni Personali.
+
+---
+
+# Formati Supportati
+
+- Excel
+- CSV
+
+---
+
+# Simulazione Importazione
+
+Prima dell'importazione definitiva deve essere mostrata una simulazione.
+
+---
+
+## Esempio
+
+```text
+Oggetti trovati: 1200
+
+Oggetti riconosciuti: 1180
+
+Oggetti non riconosciuti: 20
+```
+
+---
+
+# Correzione Guidata
+
+Gli elementi non riconosciuti non vengono importati automaticamente.
+
+---
+
+## Azioni Disponibili
+
+- Importa Elementi Riconosciuti
+- Esporta Elementi Non Riconosciuti
+
+---
+
+# Esportazione
+
+Gli utenti possono esportare i propri dati.
+
+---
+
+# Formati Supportati
+
+- PDF
+- Excel
+
+---
+
+# Ricerca Globale
+
+CollectorVerse dispone di una ricerca globale.
+
+---
+
+# Ricerca
+
+Consentire la ricerca di:
+
+- Categorie
+- Collezioni
+- Serie
+- Oggetti
+- Versioni
+- Varianti
+- Utenti
+- Commercianti
+
+---
+
+# Dashboard Admin
+
+Tutte le configurazioni devono essere modificabili senza aggiornare il codice.
+
+---
+
+# Configurazioni Home
+
+- Widget Disponibili
+- Widget Premium
+- Widget Premium Plus
+
+---
+
+# Configurazioni Profilo
+
+- Sezioni abilitate
+- Informazioni visibili
+- Layout profilo
+
+---
+
+# Configurazioni Notifiche
+
+- Template
+- Categorie
+- Priorità
+- Attivazione
+
+---
+
+# Configurazioni Tutorial
+
+- Step
+- Ordine
+- Obbligatorietà
+
+---
+
+# Configurazioni Importazione
+
+- Formati Consentiti
+- Dimensione Massima File
+- Limiti Importazione
+
+---
+
+# Configurazioni Esportazione
+
+- Formati Disponibili
+- Limiti Esportazione
+
+---
+
+# Obiettivo dell'Esperienza Utente
+
+L'Esperienza Utente deve consentire ad ogni collezionista di accedere rapidamente alle proprie collezioni, utilizzare in modo semplice le funzionalità principali della piattaforma, ricevere informazioni rilevanti e personalizzare il proprio percorso all'interno dell'ecosistema CollectorVerse mantenendo semplicità, velocità e coerenza operativa.
+
 ---
 
 # Parte 10 - Dashboard Amministratore • Configurazioni Globali • Moderazione • Asset Grafici • Statistiche
+
+# Obiettivo
+
+La Dashboard Amministratore rappresenta il centro di controllo operativo di CollectorVerse.
+
+Tutte le configurazioni dinamiche della piattaforma devono essere gestite attraverso la Dashboard senza richiedere modifiche al codice applicativo.
+
+La Dashboard deve consentire il monitoraggio, la gestione e la configurazione completa dell'ecosistema CollectorVerse.
+
+---
+
+# Principi Fondamentali
+
+La Dashboard deve essere:
+
+- Sicura
+- Scalabile
+- Configurabile
+- Tracciabile
+- Modularizzabile
+- Estendibile
+
+---
+
+# Regola Fondamentale
+
+Qualsiasi valore operativo dovrebbe essere modificabile tramite Dashboard Admin senza richiedere una nuova pubblicazione dell'app quando tecnicamente possibile.
+
+---
+
+# Ruoli Amministrativi
+
+L'accesso alla Dashboard è consentito esclusivamente ai ruoli autorizzati.
+
+```text
+Moderatore
+
+Amministratore
+```
+
+---
+
+# Moderatore
+
+Può gestire:
+
+- Segnalazioni Utenti
+- Segnalazioni Immagini
+- Segnalazioni Recensioni
+- Segnalazioni Annunci
+- Chat Segnalate
+- Contenuti Segnalati
+
+---
+
+## Limitazioni
+
+Non può:
+
+```text
+❌ modificare monetizzazione
+
+❌ modificare configurazioni globali
+
+❌ gestire infrastruttura
+
+❌ nominare amministratori
+
+❌ modificare piani
+
+❌ modificare prezzi
+```
+
+---
+
+# Amministratore
+
+Possiede accesso completo alla Dashboard.
+
+---
+
+## Può Gestire
+
+- Utenti
+- Catalogo
+- Marketplace
+- Matching
+- Monetizzazione
+- Notifiche
+- Sicurezza
+- Configurazioni Globali
+- Feature Flags
+- Statistiche
+- Asset Grafici
+
+---
+
+# Dashboard Home
+
+La Dashboard deve fornire una panoramica immediata dello stato della piattaforma.
+
+---
+
+# Indicatori Principali
+
+Visualizzare almeno:
+
+- Utenti Registrati
+- Utenti Attivi
+- Nuovi Utenti
+- Nuovi Premium
+- Nuovi Premium Plus
+- Nuovi Commercianti
+- Commercianti Verificati
+- Annunci Attivi
+- Scansioni Giornaliere
+- Revisioni Catalogo Aperte
+- Segnalazioni Aperte
+- Notifiche Inviate
+
+---
+
+# Gestione Utenti
+
+Gli Amministratori devono poter ricercare qualsiasi account.
+
+---
+
+# Ricerca Utenti
+
+Supportare almeno:
+
+```text
+Username
+
+Email
+
+ID Utente
+```
+
+---
+
+# Scheda Utente
+
+La scheda deve visualizzare:
+
+- Profilo
+- Piano
+- Ruolo
+- Stato Account
+- CollectorScore
+- Livello
+- Affidabilità
+- Storico Attività
+- Segnalazioni Ricevute
+- Storico Abbonamenti
+
+---
+
+# Operazioni Disponibili
+
+```text
+Sospendi
+
+Riattiva
+
+Blocca
+
+Sblocca
+
+Elimina
+
+Modifica Piano
+
+Modifica Ruolo
+```
+
+---
+
+# Gestione Piani
+
+La Dashboard deve consentire la gestione completa dei Piani.
+
+---
+
+# Piani Supportati
+
+```text
+Free
+
+Premium
+
+Premium Plus
+
+Commerciante
+```
+
+---
+
+# Operazioni Disponibili
+
+```text
+Crea
+
+Modifica
+
+Attiva
+
+Disattiva
+
+Archivia
+```
+
+---
+
+# Gestione Prezzi
+
+Gli Amministratori devono poter configurare:
+
+- prezzi
+- promozioni
+- sconti
+- offerte temporanee
+
+senza modificare il codice applicativo.
+
+---
+
+# Gestione Durate
+
+Durate iniziali:
+
+```text
+Mensile
+
+Trimestrale
+
+Annuale
+```
+
+---
+
+# Durate Personalizzate
+
+La Dashboard deve consentire la creazione di nuove durate.
+
+---
+
+## Esempi
+
+```text
+30 giorni
+
+90 giorni
+
+180 giorni
+
+24 mesi
+```
+
+---
+
+# Gestione Periodo di Prova
+
+CollectorVerse supporta un periodo di prova gratuito.
+
+---
+
+## Configurazioni Disponibili
+
+- Attivazione
+- Disattivazione
+- Durata
+- Piano Associato
+- Regole di Utilizzo
+
+---
+
+## Valore Iniziale Consigliato
+
+```text
+7 giorni
+```
+
+---
+
+# Gestione Commercianti
+
+La Dashboard deve supportare la gestione completa dei Commercianti.
+
+---
+
+# Operazioni Disponibili
+
+```text
+Verifica
+
+Revoca Verifica
+
+Sospendi
+
+Riattiva
+
+Elimina
+```
+
+---
+
+# Commerciante Verificato
+
+Gli Amministratori possono assegnare:
+
+```text
+✅ Commerciante Verificato
+```
+
+---
+
+# Verifica
+
+Può richiedere:
+
+- Documentazione Aziendale
+- Partita IVA
+- Sito Web
+- Attività Verificabile
+
+---
+
+# Gestione Catalogo
+
+Gli Amministratori devono poter gestire l'intera struttura del Catalogo Universale.
+
+---
+
+# Entità Gestibili
+
+```text
+Categorie
+
+Collezioni
+
+Serie
+
+Oggetti
+
+Rarità
+
+Versioni
+
+Varianti
+```
+
+---
+
+# Gestione Categorie
+
+---
+
+## Stati Disponibili
+
+```text
+In Sviluppo
+
+Attiva
+
+Nascosta
+
+Archiviata
+```
+
+---
+
+## Operazioni
+
+```text
+Crea
+
+Modifica
+
+Attiva
+
+Nascondi
+
+Archivia
+```
+
+---
+
+# Gestione Collezioni
+
+Operazioni consentite:
+
+```text
+Crea
+
+Modifica
+
+Attiva
+
+Disattiva
+
+Archivia
+```
+
+---
+
+# Gestione Serie
+
+Operazioni consentite:
+
+```text
+Crea
+
+Modifica
+
+Aggiorna release_date
+
+Attiva
+
+Disattiva
+
+Archivia
+```
+
+---
+
+# Gestione Rarità
+
+Le Rarità appartengono alle Collezioni.
+
+---
+
+## Operazioni Disponibili
+
+```text
+Crea
+
+Modifica
+
+Unifica
+
+Disattiva
+
+Archivia
+```
+
+---
+
+# Gestione Oggetti
+
+Operazioni consentite:
+
+```text
+Crea
+
+Modifica
+
+Correggi
+
+Disattiva
+
+Archivia
+
+Unifica Duplicati
+```
+
+---
+
+# Gestione Versioni
+
+Operazioni consentite:
+
+```text
+Crea
+
+Modifica
+
+Correggi
+
+Disattiva
+
+Archivia
+
+Unifica
+```
+
+---
+
+# Gestione Varianti
+
+Operazioni consentite:
+
+```text
+Crea
+
+Modifica
+
+Correggi
+
+Disattiva
+
+Archivia
+
+Unifica
+```
+
+---
+
+# Centro Revisioni Catalogo
+
+La Dashboard deve includere un Centro Revisioni dedicato.
+
+---
+
+# Elementi Revisionabili
+
+- Oggetti
+- Versioni
+- Varianti
+- Rarità
+- Immagini
+- Correzioni Catalogo
+
+---
+
+# Informazioni Visualizzate
+
+- Categoria
+- Collezione
+- Serie
+- Oggetto
+- Versione
+- Variante
+- Stato Revisione
+- Data Creazione
+- Utente Proponente
+
+---
+
+# Azioni Disponibili
+
+```text
+Approva
+
+Correggi
+
+Rifiuta
+
+Unifica
+```
+
+---
+
+# Immagini Catalogo
+
+Le immagini NON appartengono direttamente agli Oggetti.
+
+---
+
+# Regola Fondamentale
+
+Le immagini possono appartenere esclusivamente a:
+
+```text
+ItemVersion
+
+oppure
+
+ItemVariant
+```
+
+---
+
+# Gestione Immagini
+
+Gli Amministratori devono poter gestire tutte le immagini catalogo.
+
+---
+
+# Operazioni Disponibili
+
+```text
+Approva
+
+Rifiuta
+
+Archivia
+
+Imposta Ufficiale
+
+Sostituisci Immagine Ufficiale
+
+Blocca
+```
+
+---
+
+# Priorità Visualizzazione Immagini
+
+La piattaforma utilizza il seguente ordine:
+
+```text
+Immagine Variante
+↓
+Immagine Versione
+↓
+Placeholder
+```
+
+---
+
+# Asset Grafici
+
+La Dashboard deve consentire la gestione degli asset grafici.
+
+---
+
+# Asset Gestibili
+
+- Loghi Categoria
+- Banner Categoria
+- Loghi Collezione
+- Banner Collezione
+- Badge
+- Cornici Profilo
+- Placeholder
+
+---
+
+# Placeholder
+
+Placeholder iniziali:
+
+```text
+Categoria
+
+Collezione
+
+Oggetto
+
+Profilo
+
+Immagine Mancante
+```
+
+---
+
+# Configurazioni Monetizzazione
+
+La Dashboard deve consentire la gestione completa della monetizzazione.
+
+---
+
+# Configurazioni Disponibili
+
+- Piani
+- Prezzi
+- Durate
+- Periodo di Prova
+- Bundle
+- Pacchetti
+- Reward Video
+- Scansioni Bonus
+
+---
+
+# Provider Pagamenti
+
+La piattaforma deve supportare provider configurabili.
+
+---
+
+## Provider Iniziale
+
+```text
+Google Play Billing
+```
+
+---
+
+# Provider Pubblicitari
+
+La piattaforma deve supportare provider pubblicitari configurabili.
+
+---
+
+## Provider Iniziale
+
+```text
+Google AdMob
+```
+
+---
+
+# Gestione Pubblicità
+
+Configurazioni disponibili:
+
+- Banner
+- Rewarded Video
+- Frequenza
+- Limiti Giornalieri
+- Cooldown
+
+---
+
+# Gestione Marketplace
+
+Configurazioni disponibili:
+
+- Limiti Annunci
+- Durata Annunci
+- Visibilità Annunci
+- Stati Annuncio
+
+---
+
+## Limiti Iniziali Consigliati
+
+### Premium
+
+```text
+10 annunci
+```
+
+---
+
+### Premium Plus
+
+```text
+30 annunci
+```
+
+---
+
+### Commerciante
+
+```text
+100 annunci
+```
+
+---
+
+# Gestione Scansioni
+
+Configurazioni disponibili:
+
+- Scansioni Giornaliere
+- Scansioni Reward
+- Cooldown
+- Limiti Giornalieri
+- Provider OCR
+- Provider AI
+- Soglia Affidabilità
+
+---
+
+## Limiti Iniziali Consigliati
+
+### Free
+
+```text
+3 scansioni
+```
+
+### Premium
+
+```text
+20 scansioni
+```
+
+### Premium Plus
+
+```text
+40 scansioni
+```
+
+### Commerciante
+
+```text
+100 scansioni
+```
+
+---
+
+# Gestione Matching
+
+Configurazioni disponibili:
+
+- Pesi Matching
+- Formule Matching
+- Distanza Geografica
+- Filtri Geografici
+- Soglie Compatibilità
+
+---
+
+# Gestione Gamification
+
+Configurazioni disponibili:
+
+- CollectorScore
+- Livelli
+- Badge
+- Cornici
+- Obiettivi
+- Streak
+- Esperto Serie
+
+---
+
+# Gestione Notifiche
+
+Configurazioni disponibili:
+
+- Categorie
+- Template
+- Priorità
+- Canali
+- Digest
+
+---
+
+# Gestione Valute
+
+La Dashboard deve consentire la gestione delle valute supportate.
+
+---
+
+# Operazioni Disponibili
+
+```text
+Crea
+
+Modifica
+
+Nascondi
+
+Archivia
+```
+
+---
+
+# Feature Flags
+
+La piattaforma deve supportare attivazione e disattivazione dinamica delle funzionalità.
+
+---
+
+# Funzionalità Gestibili
+
+```text
+Marketplace
+
+Matching
+
+Chat
+
+Recensioni
+
+Scanner
+
+Notifiche
+
+Catalogo Collaborativo
+
+Importazione
+
+Esportazione
+```
+
+---
+
+# Audit Log
+
+Ogni operazione amministrativa deve essere registrata.
+
+---
+
+# Informazioni Minime
+
+- Amministratore
+- Data
+- Ora
+- Azione
+- Risorsa Coinvolta
+
+---
+
+# Caratteristiche
+
+```text
+Immodificabile
+
+Persistente
+
+Consultabile
+
+Ricercabile
+```
+
+---
+
+# Cestino Amministrativo
+
+Gli elementi eliminati devono essere conservati temporaneamente.
+
+---
+
+## Durata Iniziale Consigliata
+
+```text
+30 giorni
+```
+
+---
+
+# Operazioni Disponibili
+
+```text
+Ripristina
+
+Elimina Definitivamente
+```
+
+---
+
+# Statistiche
+
+La Dashboard deve fornire statistiche avanzate sull'intera piattaforma.
+
+---
+
+# Statistiche Disponibili
+
+- Crescita Utenti
+- Crescita Catalogo
+- Crescita Commercianti
+- Conversioni Prova Gratuita
+- Conversioni Abbonamenti
+- Utilizzo Marketplace
+- Utilizzo Matching
+- Utilizzo Scanner
+- Utilizzo Pubblicità
+- Entrate Pubblicitarie
+- Entrate Abbonamenti
+
+---
+
+# Esportazioni Amministrative
+
+Gli Amministratori devono poter esportare:
+
+- Catalogo
+- Configurazioni
+- Revisioni
+- Statistiche
+- Marketplace
+
+---
+
+# Modalità Manutenzione
+
+La piattaforma deve supportare una modalità manutenzione.
+
+---
+
+# Operazioni Disponibili
+
+```text
+Attiva
+
+Disattiva
+
+Programma
+
+Messaggio Personalizzato
+```
+
+---
+
+# Effetti
+
+Durante la manutenzione:
+
+- l'accesso utenti può essere limitato
+- alcune funzionalità possono essere disattivate
+- Moderatori e Amministratori mantengono l'accesso
+
+---
+
+# Sicurezza Operativa
+
+Le operazioni amministrative più critiche devono poter richiedere conferma aggiuntiva.
+
+---
+
+## Esempi
+
+- Eliminazione definitiva
+- Revoca Verifica Commerciante
+- Cambio Ruolo
+- Modifica Piano
+- Ripristino Dati
+- Disattivazione Categoria
+
+---
+
+# Obiettivo della Dashboard Admin
+
+La Dashboard Admin rappresenta il punto centrale di gestione di CollectorVerse e deve consentire ad Amministratori e Moderatori di configurare, controllare, monitorare e mantenere l'intera piattaforma senza richiedere modifiche al codice applicativo, garantendo contemporaneamente sicurezza, tracciabilità, controllo operativo e scalabilità futura.
 
 ---
 
