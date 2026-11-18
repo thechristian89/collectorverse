@@ -20937,6 +20937,19 @@ La tabella costituisce il cuore operativo del sistema di Messaggistica.
 
 Ogni messaggio appartiene ad una Conversazione ed è inviato da un partecipante autorizzato.
 
+I messaggi possono contenere:
+
+- testo
+- riferimenti a Marketplace
+- riferimenti a Matching
+- allegati
+
+Gli allegati vengono gestiti tramite la tabella:
+
+```text
+message_attachments
+```
+
 ---
 
 ## Tipo Tabella
@@ -21012,13 +21025,13 @@ Messaggio generato automaticamente dal sistema.
 
 ### marketplace
 
-Messaggio generato da un'azione Marketplace.
+Messaggio collegato ad attività Marketplace.
 
 ---
 
 ### matching
 
-Messaggio generato da un'azione Matching.
+Messaggio collegato ad attività Matching.
 
 ---
 
@@ -21073,6 +21086,16 @@ messages (1)
 messages
 
 (risposte)
+
+---
+
+messages (1)
+
+↓
+
+(N)
+
+message_attachments
 
 ---
 
@@ -21168,19 +21191,13 @@ created_at
 
 ## Modifica Messaggi
 
-L'utente può modificare un messaggio.
-
-Quando ciò avviene:
+Quando un messaggio viene modificato:
 
 ```text
 edited_at
 ```
 
 deve essere valorizzato.
-
----
-
-Il messaggio originale non deve essere perso.
 
 ---
 
@@ -21198,9 +21215,7 @@ deleted_at
 
 viene valorizzato.
 
----
-
-Il record rimane nel database.
+Il record resta disponibile per finalità storiche e di moderazione.
 
 ---
 
@@ -21250,20 +21265,6 @@ Messages
 
 ---
 
-### Esempio
-
-```text
-Buongiorno, il Charizard è ancora disponibile?
-```
-
----
-
-```text
-Sì, è ancora disponibile.
-```
-
----
-
 ## Compatibilità Matching
 
 Un Match può generare una conversazione.
@@ -21272,22 +21273,26 @@ I messaggi permettono agli utenti di approfondire la proposta.
 
 ---
 
-### Esempio
+## Compatibilità Allegati
+
+Un messaggio può contenere:
 
 ```text
-Ho visto che cerchi Lugia.
+Fotografie
+
+Screenshot
+
+Documenti
+
+Certificazioni
+
+Immagini Oggetti
 ```
 
----
+tramite:
 
 ```text
-Io cerco Charizard.
-```
-
----
-
-```text
-Possiamo organizzare uno scambio.
+message_attachments
 ```
 
 ---
@@ -21331,8 +21336,6 @@ Filtri Linguaggio Abusivo
 
 Moderazione
 ```
-
-senza alterare il contenuto originale.
 
 ---
 
@@ -21402,33 +21405,9 @@ Messages
 
 "Possiamo parlarne"
 
----
-
-Conversation Thread
-
 ↓
 
-Matching
-
-↓
-
-Trade Match
-
-↓
-
-Messages
-
-↓
-
-"Ho visto che cerchi Lugia"
-
-↓
-
-"Esatto"
-
-↓
-
-"Potrei averne una disponibile"
+Allegati Fotografici
 
 ---
 
@@ -21444,29 +21423,377 @@ conversation_threads
 conversation_participants
 ```
 
+```text
+messages
+```
+
 e
+
+```text
+message_attachments
+```
+
+consente di mantenere separati:
+
+- contesto conversazione
+- partecipanti
+- contenuto testuale
+- file allegati
+
+garantendo scalabilità, sicurezza e moderazione.
+
+---
+
+# Tabella: message_attachments
+
+## Scopo
+
+Rappresenta un allegato associato ad un Messaggio.
+
+Permette agli utenti di inviare file all'interno delle Conversazioni.
+
+Supporta:
+
+- immagini
+- fotografie
+- screenshot
+- documenti
+- certificazioni
+- prove fotografiche
+- materiale informativo
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+message_attachments
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo allegato |
+| message_id | UUID | SI | Messaggio associato |
+| media_file_id | UUID | SI | File associato |
+| attachment_type | VARCHAR(30) | SI | Tipologia allegato |
+| created_at | TIMESTAMPTZ | SI | Data collegamento |
+
+---
+
+## Valori Consentiti
+
+### attachment_type
+
+```text
+image
+
+document
+
+certificate
+
+other
+```
+
+---
+
+## Significato Tipologie
+
+### image
+
+Immagine o fotografia.
+
+---
+
+### document
+
+Documento generico.
+
+---
+
+### certificate
+
+Certificato o documento di autenticità.
+
+---
+
+### other
+
+Allegato non classificato.
+
+---
+
+## Foreign Keys
+
+message_id
+
+→ messages.id
+
+---
+
+media_file_id
+
+→ media_files.id
+
+---
+
+## Relazioni
+
+messages (1)
+
+↓
+
+(N)
+
+message_attachments
+
+---
+
+media_files (1)
+
+↓
+
+(N)
+
+message_attachments
+
+---
+
+## Vincoli
+
+message_id deve esistere.
+
+media_file_id deve esistere.
+
+attachment_type deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (message_id)
+
+INDEX (media_file_id)
+
+INDEX (attachment_type)
+
+INDEX (created_at)
+
+---
+
+## Regole Business
+
+Un Messaggio può contenere:
+
+```text
+Nessun allegato
+
+Uno
+
+Molti allegati
+```
+
+---
+
+Un Allegato appartiene ad un solo Messaggio.
+
+---
+
+## Compatibilità Marketplace
+
+Gli utenti possono inviare:
+
+```text
+Foto Oggetti
+
+Dettagli Difetti
+
+Certificazioni
+
+Immagini Aggiuntive
+```
+
+---
+
+## Compatibilità Matching
+
+Gli utenti possono condividere:
+
+```text
+Immagini Collezione
+
+Verifiche Condizione
+
+Foto Varianti
+```
+
+---
+
+## Compatibilità Merchant Verification
+
+I commercianti possono condividere:
+
+```text
+Documentazione
+
+Certificati
+
+Materiale Informativo
+```
+
+all'interno delle conversazioni.
+
+---
+
+## Compatibilità Moderazione
+
+Gli allegati possono essere:
+
+```text
+Revisionati
+
+Segnalati
+
+Oscurati
+
+Disattivati
+```
+
+tramite:
+
+```text
+media_files
+```
+
+e i sistemi di moderazione.
+
+---
+
+## Compatibilità Storage
+
+I file non vengono salvati direttamente nella tabella.
+
+La gestione fisica avviene tramite:
+
+```text
+media_files
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Allegati
+
+Numero Immagini
+
+Numero Documenti
+
+Spazio Utilizzato
+
+Media Allegati per Conversazione
+```
+
+---
+
+## Esempio Logico
+
+Conversation
+
+↓
+
+Message
+
+↓
+
+"Ti allego altre foto del Charizard"
+
+↓
+
+Message Attachments
+
+↓
+
+front.jpg
+
+↓
+
+back.jpg
+
+↓
+
+closeup_holo.jpg
+
+---
+
+Conversation
+
+↓
+
+Message
+
+↓
+
+"Ti allego il certificato"
+
+↓
+
+Message Attachments
+
+↓
+
+certificate.pdf
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
 
 ```text
 messages
 ```
 
-consente di mantenere distinta:
+e
 
-- la conversazione
-- i partecipanti
-- il contenuto dei messaggi
+```text
+message_attachments
+```
 
-Questo approccio garantisce:
+consente di gestire file e contenuti testuali in modo indipendente.
 
-- scalabilità
-- moderazione
-- supporto thread di lunga durata
-- gestione letture
-- future estensioni con allegati
+Questo approccio:
 
-senza modificare la struttura esistente.
+- evita duplicazioni
+- migliora lo storage
+- migliora la moderazione
+- migliora la scalabilità
 
-La tabella costituisce il nucleo operativo dell'intero sistema di Messaggistica CollectorVerse.
+e integra perfettamente la messaggistica con il sistema centralizzato:
+
+```text
+media_files
+```
+
+di CollectorVerse.
 
 ---
 
@@ -21478,15 +21805,14 @@ La tabella costituisce il nucleo operativo dell'intero sistema di Messaggistica 
 
 Rappresenta una recensione lasciata da un utente nei confronti di un altro utente.
 
-Le recensioni consentono alla community di valutare l'affidabilità dei membri della piattaforma.
+Le recensioni consentono alla community di valutare:
 
-Questa tabella viene utilizzata per:
+- affidabilità
+- correttezza
+- qualità della comunicazione
+- esperienza complessiva
 
-- reputazione utenti
-- reputazione commercianti
-- fiducia marketplace
-- fiducia matching
-- statistiche community
+Le recensioni possono essere lasciate esclusivamente tra utenti che hanno effettivamente interagito tramite una conversazione sulla piattaforma.
 
 ---
 
@@ -21512,14 +21838,14 @@ id UUID PRIMARY KEY
 
 | Colonna | Tipo | Obbligatorio | Descrizione |
 |----------|----------|----------|----------|
-| id | UUID | SI | Identificativo univoco recensione |
+| id | UUID | SI | Identificativo recensione |
 | reviewer_user_id | UUID | SI | Utente autore recensione |
 | reviewed_user_id | UUID | SI | Utente recensito |
+| conversation_thread_id | UUID | SI | Conversazione che abilita la recensione |
 | rating | INTEGER | SI | Valutazione |
-| review_text | TEXT | NO | Commento recensione |
-| review_type | VARCHAR(30) | SI | Origine recensione |
-| is_visible | BOOLEAN | SI | Recensione visibile |
-| created_at | TIMESTAMPTZ | SI | Data recensione |
+| review_text | TEXT | NO | Testo recensione |
+| is_visible | BOOLEAN | SI | Visibilità recensione |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
 | updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
 | deleted_at | TIMESTAMPTZ | NO | Soft Delete |
 
@@ -21528,8 +21854,6 @@ id UUID PRIMARY KEY
 ## Valori Predefiniti
 
 is_visible = TRUE
-
-review_type = marketplace
 
 ---
 
@@ -21547,20 +21871,6 @@ review_type = marketplace
 4
 
 5
-```
-
----
-
-### review_type
-
-```text
-marketplace
-
-trade
-
-matching
-
-community
 ```
 
 ---
@@ -21611,6 +21921,12 @@ reviewed_user_id
 
 ---
 
+conversation_thread_id
+
+→ conversation_threads.id
+
+---
+
 ## Relazioni
 
 users (1)
@@ -21637,11 +21953,23 @@ user_reviews
 
 ---
 
+conversation_threads (1)
+
+↓
+
+(N)
+
+user_reviews
+
+---
+
 ## Vincoli
 
 reviewer_user_id deve esistere.
 
 reviewed_user_id deve esistere.
+
+conversation_thread_id deve esistere.
 
 rating deve essere compreso tra:
 
@@ -21669,15 +21997,27 @@ reviewed_user_id
 
 ---
 
+## Vincolo Conversazione
+
+L'utente recensore e l'utente recensito devono essere partecipanti della Conversazione indicata.
+
+La conversazione deve esistere.
+
+Non è consentito recensire utenti con cui non è mai esistita una conversazione.
+
+---
+
 ## Vincolo Anti-Duplicato
 
-Si consiglia:
+Un utente può possedere una sola recensione verso uno specifico utente.
 
 ```text
-Una recensione per utente
+UNIQUE
+(
+reviewer_user_id,
+reviewed_user_id
+)
 ```
-
-per ogni singola interazione.
 
 ---
 
@@ -21685,13 +22025,15 @@ per ogni singola interazione.
 
 PRIMARY KEY (id)
 
+UNIQUE (reviewer_user_id, reviewed_user_id)
+
 INDEX (reviewer_user_id)
 
 INDEX (reviewed_user_id)
 
-INDEX (rating)
+INDEX (conversation_thread_id)
 
-INDEX (review_type)
+INDEX (rating)
 
 INDEX (is_visible)
 
@@ -21701,43 +22043,67 @@ INDEX (created_at)
 
 ## Regole Business
 
-Le recensioni devono essere pubbliche.
-
-Le recensioni archiviate restano nello storico.
-
 Le recensioni contribuiscono alla reputazione dell'utente.
+
+Le recensioni archiviate devono rimanere nello storico.
+
+Le recensioni possono essere moderate dagli amministratori.
+
+---
+
+## Aggiornamento Recensione
+
+Se un utente tenta di recensire nuovamente lo stesso utente:
+
+```text
+NON viene creato un nuovo record.
+```
+
+---
+
+Il sistema deve aggiornare il record esistente.
+
+Devono essere aggiornati:
+
+```text
+rating
+
+review_text
+
+updated_at
+
+conversation_thread_id
+```
 
 ---
 
 ## Compatibilità Marketplace
 
-Le recensioni possono derivare da:
-
-```text
-Vendite
-
-Acquisti
-
-Scambi
-```
+Le recensioni possono nascere da conversazioni originate da annunci Marketplace.
 
 ---
 
 ## Compatibilità Matching
 
-Gli utenti possono recensire l'esperienza di collaborazione.
+Le recensioni possono nascere da conversazioni originate da opportunità di Matching.
+
+---
+
+## Compatibilità Messaggistica
+
+La Conversazione rappresenta la prova dell'effettiva interazione tra gli utenti.
 
 ---
 
 ## Compatibilità User Scores
 
-Le recensioni influenzano:
+Le recensioni contribuiscono al calcolo di:
 
 ```text
 reputation_score
 ```
 
-presente nella tabella:
+presente in:
 
 ```text
 user_scores
@@ -21750,7 +22116,7 @@ user_scores
 Il profilo può mostrare:
 
 ```text
-Media Valutazione
+Media Recensioni
 
 Numero Recensioni
 
@@ -21764,11 +22130,13 @@ Ultime Recensioni
 Gli amministratori devono poter:
 
 ```text
-Revisionare
+Visualizzare
+
+Moderare
 
 Nascondere
 
-Moderare
+Ripristinare
 ```
 
 recensioni abusive.
@@ -21786,22 +22154,32 @@ Numero Recensioni
 
 Distribuzione Voti
 
-Top Utenti
+Migliori Utenti
+
+Utenti Più Recensiti
 ```
 
 ---
 
 ## Esempio Logico
 
+Conversation Thread
+
+↓
+
+Marketplace
+
+↓
+
 Utente A
 
 ↓
 
-Recensione
+Utente B
 
 ↓
 
-Utente B
+Recensione
 
 ↓
 
@@ -21813,31 +22191,18 @@ Utente B
 
 ---
 
-Utente C
-
-↓
-
-Recensione
-
-↓
-
-Utente D
-
-↓
-
-4 Stelle
-
-↓
-
-"Scambio perfetto"
-
----
-
 ## Motivazione Architetturale
 
-La tabella user_reviews costituisce il sistema di fiducia della piattaforma.
+La recensione è consentita soltanto dopo una reale interazione documentata tramite Conversazione.
 
-Permette di costruire reputazione nel tempo senza dipendere da sistemi esterni e migliora la qualità delle interazioni tra utenti.
+Questo approccio:
+
+- riduce recensioni false
+- aumenta affidabilità
+- migliora reputazione
+- protegge gli utenti
+
+e costituisce la base del sistema di fiducia di CollectorVerse.
 
 ---
 
@@ -21845,17 +22210,17 @@ Permette di costruire reputazione nel tempo senza dipendere da sistemi esterni e
 
 ## Scopo
 
-Rappresenta la richiesta di verifica di un Commerciante all'interno della piattaforma CollectorVerse.
+Rappresenta una richiesta di verifica professionale effettuata da un utente.
 
-La verifica consente di identificare utenti che operano come:
+La verifica consente di identificare:
 
 - negozi
-- attività professionali
-- rivenditori
-- commercianti specializzati
-- aziende del settore collezionistico
+- commercianti professionali
+- aziende
+- rivenditori specializzati
+- attività commerciali del settore collezionistico
 
-L'obiettivo è aumentare la fiducia della community e distinguere i profili verificati dagli utenti privati.
+L'obiettivo è aumentare la fiducia e la trasparenza all'interno della piattaforma.
 
 ---
 
@@ -21882,23 +22247,23 @@ id UUID PRIMARY KEY
 | Colonna | Tipo | Obbligatorio | Descrizione |
 |----------|----------|----------|----------|
 | id | UUID | SI | Identificativo verifica |
-| user_id | UUID | SI | Utente richiedente |
+| user_id | UUID | SI | Richiedente verifica |
 | business_name | VARCHAR(255) | SI | Nome attività |
 | business_type | VARCHAR(50) | SI | Tipologia attività |
-| website_url | TEXT | NO | Sito web attività |
+| website_url | TEXT | NO | Sito web |
 | tax_identifier | VARCHAR(100) | NO | Identificativo fiscale |
 | country_code | VARCHAR(10) | SI | Paese attività |
 | verification_status | VARCHAR(30) | SI | Stato verifica |
-| application_notes | TEXT | NO | Note del richiedente |
+| application_notes | TEXT | NO | Note richiedente |
 | reviewer_user_id | UUID | NO | Revisore amministratore |
 | review_notes | TEXT | NO | Note revisione |
-| submitted_at | TIMESTAMPTZ | SI | Data invio richiesta |
+| submitted_at | TIMESTAMPTZ | SI | Data invio |
 | reviewed_at | TIMESTAMPTZ | NO | Data revisione |
 | approved_at | TIMESTAMPTZ | NO | Data approvazione |
 | rejected_at | TIMESTAMPTZ | NO | Data rifiuto |
-| expires_at | TIMESTAMPTZ | NO | Data scadenza verifica |
+| expires_at | TIMESTAMPTZ | NO | Scadenza verifica |
 | created_at | TIMESTAMPTZ | SI | Data creazione |
-| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| updated_at | TIMESTAMPTZ | SI | Data aggiornamento |
 
 ---
 
@@ -21992,8 +22357,6 @@ Altra attività professionale.
 
 Richiesta ricevuta.
 
-In attesa di revisione.
-
 ---
 
 ### under_review
@@ -22022,7 +22385,7 @@ Verifica scaduta.
 
 ### revoked
 
-Verifica revocata dall'amministrazione.
+Verifica revocata.
 
 ---
 
@@ -22064,6 +22427,16 @@ merchant_verifications
 
 ---
 
+merchant_verifications (1)
+
+↓
+
+(N)
+
+media_usages
+
+---
+
 ## Vincoli
 
 user_id deve esistere.
@@ -22081,10 +22454,6 @@ business_type deve contenere un valore valido.
 ## Vincolo Anti-Duplicato
 
 Un utente può avere una sola verifica attiva.
-
----
-
-### Regola
 
 ```text
 UNIQUE (user_id)
@@ -22114,20 +22483,60 @@ INDEX (reviewed_at)
 
 ## Regole Business
 
-Solo gli utenti che desiderano essere riconosciuti come commercianti devono utilizzare questa procedura.
+Solo gli utenti che operano come professionisti o attività commerciali devono richiedere la verifica.
 
-Gli utenti privati non sono obbligati a richiedere la verifica.
+Gli utenti privati non sono obbligati a richiederla.
 
 ---
 
-## Procedura Standard
+## Documentazione Verifica
+
+La documentazione viene gestita tramite:
+
+```text
+media_files
+```
+
+e
+
+```text
+media_usages
+```
+
+utilizzando:
+
+```text
+entity_type = merchant_verification
+```
+
+---
+
+## Esempi Documenti
+
+```text
+Visura camerale
+
+Documento fiscale
+
+Partita IVA
+
+Certificato attività
+
+Prove commerciali
+
+Documentazione aziendale
+```
+
+---
+
+## Workflow Standard
 
 ```text
 Utente
 
 ↓
 
-Richiesta Verifica
+Richiesta
 
 ↓
 
@@ -22144,14 +22553,14 @@ Approved
 
 ---
 
-## Procedura Rifiuto
+## Workflow Rifiuto
 
 ```text
 Utente
 
 ↓
 
-Richiesta Verifica
+Richiesta
 
 ↓
 
@@ -22176,13 +22585,13 @@ Quando:
 verification_status = approved
 ```
 
-il sistema può assegnare automaticamente:
+può essere assegnato automaticamente:
 
 ```text
 Verified Merchant
 ```
 
-nella tabella:
+tramite:
 
 ```text
 user_badges
@@ -22204,11 +22613,13 @@ all'interno degli annunci.
 
 ## Compatibilità Matching
 
-Gli utenti possono filtrare opportunità provenienti da:
+Gli utenti possono filtrare:
 
 ```text
 Merchant Verificati
 ```
+
+all'interno delle opportunità.
 
 ---
 
@@ -22219,7 +22630,9 @@ Il profilo può mostrare:
 ```text
 Stato Verifica
 
-Tipo Attività
+Nome Attività
+
+Tipologia Attività
 
 Badge Merchant
 ```
@@ -22228,7 +22641,7 @@ Badge Merchant
 
 ## Compatibilità Notifiche
 
-La verifica può generare notifiche:
+La verifica può generare:
 
 ```text
 Richiesta Ricevuta
@@ -22246,13 +22659,13 @@ Verifica Revocata
 
 ## Compatibilità User Scores
 
-L'approvazione può influenzare:
+Può contribuire a:
 
 ```text
 reputation_score
 ```
 
-secondo le regole di business future.
+secondo le regole applicative.
 
 ---
 
@@ -22302,11 +22715,9 @@ Utente
 
 ↓
 
-merchant_verifications
+Merchant Verification
 
 ↓
-
-Business Name
 
 PokéStore Milano
 
@@ -22324,27 +22735,11 @@ Approved
 
 ↓
 
-Badge Verified Merchant
-
----
-
-Utente
+Verified Merchant
 
 ↓
 
-merchant_verifications
-
-↓
-
-Collector House
-
-↓
-
-Dealer
-
-↓
-
-Under Review
+Documentazione Archiviata
 
 ---
 
@@ -22353,28 +22748,28 @@ Under Review
 La separazione tra:
 
 ```text
-users
+merchant_verifications
 ```
 
 e
 
 ```text
-merchant_verifications
+media_files
 ```
 
-consente di gestire l'identificazione professionale senza alterare il modello utente principale.
+consente di mantenere separati:
 
-Questo approccio permette:
+- dati della verifica
+- documentazione allegata
 
-- verifiche amministrative
-- badge professionali
-- maggiore fiducia nel Marketplace
-- distinzione tra privati e commercianti
-- futuro supporto a programmi premium per professionisti
+Questo approccio:
 
-senza introdurre complessità nel sistema di autenticazione.
+- migliora la sicurezza
+- migliora la moderazione
+- migliora la tracciabilità
+- supporta audit futuri
 
-La tabella costituisce il nucleo del sistema di verifica commercianti di CollectorVerse.
+e costituisce il sistema ufficiale di verifica professionale di CollectorVerse.
 
 ---
 
