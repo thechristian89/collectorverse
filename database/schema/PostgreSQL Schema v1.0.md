@@ -2756,7 +2756,14 @@ Interazioni Bloccate
 
 Rappresenta una recensione lasciata da un utente nei confronti di un altro utente.
 
-La tabella viene utilizzata per costruire il sistema reputazionale della piattaforma.
+Le recensioni consentono alla community di valutare:
+
+- affidabilità
+- correttezza
+- qualità della comunicazione
+- esperienza complessiva
+
+Le recensioni possono essere lasciate esclusivamente tra utenti che hanno effettivamente interagito tramite una conversazione sulla piattaforma.
 
 ---
 
@@ -2782,28 +2789,16 @@ id UUID PRIMARY KEY
 
 | Colonna | Tipo | Obbligatorio | Descrizione |
 |----------|----------|----------|----------|
-| id | UUID | SI | Identificativo univoco recensione |
+| id | UUID | SI | Identificativo recensione |
 | reviewer_user_id | UUID | SI | Utente autore recensione |
 | reviewed_user_id | UUID | SI | Utente recensito |
-| rating | INTEGER | SI | Valutazione numerica |
-| title | VARCHAR(150) | NO | Titolo recensione |
+| conversation_thread_id | UUID | SI | Conversazione che abilita la recensione |
+| rating | INTEGER | SI | Valutazione |
 | review_text | TEXT | NO | Testo recensione |
 | is_visible | BOOLEAN | SI | Visibilità recensione |
-| created_at | TIMESTAMP | SI | Data creazione |
-| updated_at | TIMESTAMP | SI | Data ultima modifica |
-| deleted_at | TIMESTAMP | NO | Soft Delete |
-
----
-
-## Valori Consentiti
-
-### rating
-
-- 1
-- 2
-- 3
-- 4
-- 5
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
 
 ---
 
@@ -2813,21 +2808,84 @@ is_visible = TRUE
 
 ---
 
+## Valori Consentiti
+
+### rating
+
+```text
+1
+
+2
+
+3
+
+4
+
+5
+```
+
+---
+
+## Significato Valutazioni
+
+### 1
+
+Esperienza molto negativa.
+
+---
+
+### 2
+
+Esperienza negativa.
+
+---
+
+### 3
+
+Esperienza neutra.
+
+---
+
+### 4
+
+Esperienza positiva.
+
+---
+
+### 5
+
+Esperienza eccellente.
+
+---
+
 ## Foreign Keys
 
 reviewer_user_id
+
 → users.id
 
+---
+
 reviewed_user_id
+
 → users.id
+
+---
+
+conversation_thread_id
+
+→ conversation_threads.id
 
 ---
 
 ## Relazioni
 
 users (1)
+
 ↓
+
 (N)
+
 user_reviews
 
 (recensore)
@@ -2835,25 +2893,82 @@ user_reviews
 ---
 
 users (1)
+
 ↓
+
 (N)
+
 user_reviews
 
 (recensito)
 
 ---
 
+conversation_threads (1)
+
+↓
+
+(N)
+
+user_reviews
+
+---
+
 ## Vincoli
 
-reviewer_user_id deve essere diverso da reviewed_user_id.
+reviewer_user_id deve esistere.
 
-rating deve essere compreso tra 1 e 5.
+reviewed_user_id deve esistere.
 
-reviewer_user_id deve esistere nella tabella users.
+conversation_thread_id deve esistere.
 
-reviewed_user_id deve esistere nella tabella users.
+rating deve essere compreso tra:
 
-Può esistere una sola recensione tra la stessa coppia recensore-recensito.
+```text
+1
+
+e
+
+5
+```
+
+---
+
+## Vincolo Anti-Autorecensione
+
+Non è consentito:
+
+```text
+reviewer_user_id
+
+=
+
+reviewed_user_id
+```
+
+---
+
+## Vincolo Conversazione
+
+L'utente recensore e l'utente recensito devono essere partecipanti della Conversazione indicata.
+
+La conversazione deve esistere.
+
+Non è consentito recensire utenti con cui non è mai esistita una conversazione.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Un utente può possedere una sola recensione verso uno specifico utente.
+
+```text
+UNIQUE
+(
+reviewer_user_id,
+reviewed_user_id
+)
+```
 
 ---
 
@@ -2863,64 +2978,182 @@ PRIMARY KEY (id)
 
 UNIQUE (reviewer_user_id, reviewed_user_id)
 
-INDEX (rating)
+INDEX (reviewer_user_id)
 
-INDEX (created_at)
+INDEX (reviewed_user_id)
+
+INDEX (conversation_thread_id)
+
+INDEX (rating)
 
 INDEX (is_visible)
 
+INDEX (created_at)
+
 ---
 
-## Note Architetturali
+## Regole Business
 
-Ogni utente può lasciare una sola recensione per un altro utente.
+Le recensioni contribuiscono alla reputazione dell'utente.
 
-Quando una recensione viene modificata:
+Le recensioni archiviate devono rimanere nello storico.
 
-- viene aggiornata la riga esistente
-- viene aggiornato updated_at
+Le recensioni possono essere moderate dagli amministratori.
 
-Non viene creata una nuova recensione.
+---
 
-La recensione rappresenta una valutazione puntuale.
+## Aggiornamento Recensione
 
-I valori aggregati come:
+Se un utente tenta di recensire nuovamente lo stesso utente:
 
-- media recensioni
-- numero recensioni
-- indice affidabilità
+```text
+NON viene creato un nuovo record.
+```
 
-non vengono salvati in questa tabella.
+---
 
-Tali valori verranno calcolati da:
+Il sistema deve aggiornare il record esistente.
 
-- query aggregate
-- viste PostgreSQL
-- statistiche dedicate
+Devono essere aggiornati:
+
+```text
+rating
+
+review_text
+
+updated_at
+
+conversation_thread_id
+```
 
 ---
 
 ## Compatibilità Marketplace
 
-Le recensioni possono essere lasciate dopo:
-
-- compravendita completata
-- scambio completato
-- interazione verificata tra utenti
-
-Le regole definitive verranno implementate tramite logica applicativa.
+Le recensioni possono nascere da conversazioni originate da annunci Marketplace.
 
 ---
 
 ## Compatibilità Matching
 
-I risultati del Matching potranno utilizzare:
+Le recensioni possono nascere da conversazioni originate da opportunità di Matching.
 
-- media recensioni
-- numero recensioni
-- reputazione utente
+---
 
-per migliorare il ranking delle opportunità.
+## Compatibilità Messaggistica
+
+La Conversazione rappresenta la prova dell'effettiva interazione tra gli utenti.
+
+---
+
+## Compatibilità User Scores
+
+Le recensioni contribuiscono al calcolo di:
+
+```text
+reputation_score
+```
+
+presente in:
+
+```text
+user_scores
+```
+
+---
+
+## Compatibilità Profilo Utente
+
+Il profilo può mostrare:
+
+```text
+Media Recensioni
+
+Numero Recensioni
+
+Ultime Recensioni
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Moderare
+
+Nascondere
+
+Ripristinare
+```
+
+recensioni abusive.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Media Recensioni
+
+Numero Recensioni
+
+Distribuzione Voti
+
+Migliori Utenti
+
+Utenti Più Recensiti
+```
+
+---
+
+## Esempio Logico
+
+Conversation Thread
+
+↓
+
+Marketplace
+
+↓
+
+Utente A
+
+↓
+
+Utente B
+
+↓
+
+Recensione
+
+↓
+
+5 Stelle
+
+↓
+
+"Eccellente comunicazione"
+
+---
+
+## Motivazione Architetturale
+
+La recensione è consentita soltanto dopo una reale interazione documentata tramite Conversazione.
+
+Questo approccio:
+
+- riduce recensioni false
+- aumenta affidabilità
+- migliora reputazione
+- protegge gli utenti
+
+e costituisce la base del sistema di fiducia di CollectorVerse.
 
 ---
 
