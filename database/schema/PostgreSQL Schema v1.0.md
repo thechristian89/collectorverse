@@ -13288,3 +13288,7952 @@ e costituisce la base per l'evoluzione futura del motore intelligente di Collect
 
 ---
 
+# Parte 6 - Catalogo Collaborativo
+
+# Tabella: catalog_contributions
+
+## Scopo
+
+Rappresenta una proposta di modifica o aggiunta al Catalogo Universale effettuata da un utente.
+
+La tabella costituisce il punto centrale del Catalogo Collaborativo.
+
+Attraverso questa tabella gli utenti possono proporre:
+
+- Nuove Collezioni
+- Nuove Serie
+- Nuovi Item
+- Nuove Versioni
+- Nuove Varianti
+- Nuove Rarità
+- Nuove Immagini
+- Correzioni Catalogo
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+catalog_contributions
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco contributo |
+| contributor_user_id | UUID | SI | Utente autore proposta |
+| contribution_type | VARCHAR(50) | SI | Tipologia contributo |
+| status | VARCHAR(30) | SI | Stato contributo |
+| title | VARCHAR(255) | SI | Titolo proposta |
+| description | TEXT | SI | Descrizione dettagliata |
+| target_table | VARCHAR(100) | NO | Tabella catalogo interessata |
+| target_record_id | UUID | NO | Record coinvolto |
+| reviewed_by_user_id | UUID | NO | Revisore amministratore |
+| reviewed_at | TIMESTAMPTZ | NO | Data revisione |
+| review_notes | TEXT | NO | Note revisione |
+| approved_at | TIMESTAMPTZ | NO | Data approvazione |
+| rejected_at | TIMESTAMPTZ | NO | Data rifiuto |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = pending
+
+---
+
+## Valori Consentiti
+
+### contribution_type
+
+```text
+new_collection
+
+new_series
+
+new_item
+
+new_version
+
+new_variant
+
+new_rarity
+
+new_image
+
+correction
+```
+
+---
+
+### status
+
+```text
+pending
+
+under_review
+
+approved
+
+rejected
+
+implemented
+
+archived
+```
+
+---
+
+## Significato Stati
+
+### pending
+
+Proposta ricevuta.
+
+In attesa di revisione.
+
+---
+
+### under_review
+
+Proposta in fase di analisi.
+
+---
+
+### approved
+
+Proposta approvata.
+
+---
+
+### rejected
+
+Proposta rifiutata.
+
+---
+
+### implemented
+
+Implementata nel Catalogo Universale.
+
+---
+
+### archived
+
+Archiviata.
+
+---
+
+## Foreign Keys
+
+contributor_user_id
+
+→ users.id
+
+---
+
+reviewed_by_user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+catalog_contributions
+
+(autore)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+catalog_contributions
+
+(revisore)
+
+---
+
+catalog_contributions (1)
+
+↓
+
+(N)
+
+catalog_contribution_votes
+
+(Futuro)
+
+---
+
+catalog_contributions (1)
+
+↓
+
+(N)
+
+catalog_contribution_attachments
+
+(Futuro)
+
+---
+
+## Vincoli
+
+contributor_user_id deve esistere.
+
+title non può essere vuoto.
+
+description non può essere vuota.
+
+contribution_type deve contenere un valore valido.
+
+status deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (contributor_user_id)
+
+INDEX (reviewed_by_user_id)
+
+INDEX (contribution_type)
+
+INDEX (status)
+
+INDEX (created_at)
+
+---
+
+## Regole Business
+
+Ogni contributo appartiene ad un solo utente.
+
+Un utente può creare molti contributi.
+
+Ogni contributo deve essere revisionato prima di modificare il Catalogo Universale.
+
+---
+
+## Esempio Nuovo Item
+
+Utente:
+
+```text
+Propone Charizard Crystal
+```
+
+↓
+
+Tipo:
+
+```text
+new_item
+```
+
+↓
+
+Status:
+
+```text
+pending
+```
+
+---
+
+## Esempio Nuova Variante
+
+Utente:
+
+```text
+Propone Variante Error Print
+```
+
+↓
+
+Tipo:
+
+```text
+new_variant
+```
+
+---
+
+## Esempio Correzione
+
+Utente:
+
+```text
+Segnala Numero Catalogo Errato
+```
+
+↓
+
+Tipo:
+
+```text
+correction
+```
+
+---
+
+## Workflow Standard
+
+```text
+Utente
+
+↓
+
+Catalog Contribution
+
+↓
+
+Pending
+
+↓
+
+Under Review
+
+↓
+
+Approved
+
+↓
+
+Implemented
+
+↓
+
+Catalogo Universale
+```
+
+---
+
+## Workflow Rifiuto
+
+```text
+Utente
+
+↓
+
+Catalog Contribution
+
+↓
+
+Pending
+
+↓
+
+Under Review
+
+↓
+
+Rejected
+```
+
+---
+
+## Compatibilità Catalogo Universale
+
+Le modifiche approvate possono generare:
+
+```text
+Nuove Serie
+
+Nuovi Item
+
+Nuove Versioni
+
+Nuove Varianti
+
+Nuove Rarità
+
+Nuove Immagini
+```
+
+---
+
+## Compatibilità Gamification
+
+I contributi possono assegnare:
+
+```text
+CollectorScore
+
+Badge
+
+Achievement
+
+Livelli Community
+```
+
+---
+
+## Compatibilità Notifiche
+
+L'utente può ricevere notifiche per:
+
+```text
+Contributo Approvato
+
+Contributo Rifiutato
+
+Richiesta Informazioni
+
+Implementazione Avvenuta
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Revisionare
+
+Approvare
+
+Rifiutare
+
+Implementare
+
+Archiviare
+```
+
+i contributi.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Contributi
+
+Contributi Approvati
+
+Contributi Rifiutati
+
+Tempo Medio Revisione
+
+Utenti Più Attivi
+```
+
+---
+
+## Esempio Logico
+
+Catalog Contribution
+
+↓
+
+New Item
+
+↓
+
+Charizard Crystal
+
+↓
+
+Pending
+
+↓
+
+Approved
+
+↓
+
+Implemented
+
+↓
+
+Items
+
+---
+
+Catalog Contribution
+
+↓
+
+Correction
+
+↓
+
+Numero Catalogo Errato
+
+↓
+
+Pending
+
+↓
+
+Rejected
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+Catalogo Universale
+```
+
+e
+
+```text
+Catalog Contributions
+```
+
+garantisce che nessun utente possa modificare direttamente i dati ufficiali.
+
+Questo approccio consente:
+
+- crescita collaborativa
+- controllo qualità
+- moderazione
+- audit storico
+- gamification della community
+
+senza compromettere l'integrità del Catalogo Universale.
+
+La tabella costituisce il punto centrale dell'intero sistema di Catalogo Collaborativo.
+
+---
+
+# Tabella: catalog_contribution_attachments
+
+## Scopo
+
+Rappresenta gli allegati associati ad un contributo del Catalogo Collaborativo.
+
+Gli allegati consentono agli utenti di fornire prove, documentazione e materiale di supporto per facilitare la revisione delle proposte.
+
+La tabella viene utilizzata per:
+
+- immagini
+- fotografie
+- scansioni
+- documentazione
+- riferimenti catalografici
+- prove di autenticità
+- esempi visivi
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+catalog_contribution_attachments
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco allegato |
+| catalog_contribution_id | UUID | SI | Contributo associato |
+| attachment_type | VARCHAR(30) | SI | Tipologia allegato |
+| file_url | TEXT | SI | URL file |
+| file_name | VARCHAR(255) | SI | Nome file originale |
+| file_size_bytes | BIGINT | NO | Dimensione file |
+| mime_type | VARCHAR(100) | NO | Tipo file |
+| image_width | INTEGER | NO | Larghezza immagine |
+| image_height | INTEGER | NO | Altezza immagine |
+| description | TEXT | NO | Descrizione allegato |
+| is_primary | BOOLEAN | SI | Allegato principale |
+| created_at | TIMESTAMPTZ | SI | Data caricamento |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+is_primary = FALSE
+
+---
+
+## Valori Consentiti
+
+### attachment_type
+
+```text
+image
+
+scan
+
+document
+
+reference
+
+proof
+
+other
+```
+
+---
+
+## Significato Tipologie
+
+### image
+
+Fotografia o immagine generica.
+
+---
+
+### scan
+
+Scansione ad alta qualità.
+
+---
+
+### document
+
+Documento allegato.
+
+---
+
+### reference
+
+Materiale di riferimento esterno.
+
+---
+
+### proof
+
+Prova di autenticità o esistenza.
+
+---
+
+### other
+
+Tipologia non classificata.
+
+---
+
+## Foreign Keys
+
+catalog_contribution_id
+
+→ catalog_contributions.id
+
+---
+
+## Relazioni
+
+catalog_contributions (1)
+
+↓
+
+(N)
+
+catalog_contribution_attachments
+
+---
+
+## Vincoli
+
+catalog_contribution_id deve esistere.
+
+file_url non può essere vuoto.
+
+file_name non può essere vuoto.
+
+file_size_bytes deve essere maggiore di zero se valorizzato.
+
+image_width deve essere maggiore di zero se valorizzato.
+
+image_height deve essere maggiore di zero se valorizzato.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (catalog_contribution_id)
+
+INDEX (attachment_type)
+
+INDEX (is_primary)
+
+INDEX (created_at)
+
+---
+
+## Regole Business
+
+Un contributo può avere:
+
+```text
+Nessun Allegato
+
+Uno
+
+Molti Allegati
+```
+
+---
+
+Ogni allegato appartiene ad un solo contributo.
+
+---
+
+## Allegato Principale
+
+Per ogni contributo può esistere un solo allegato con:
+
+```text
+is_primary = TRUE
+```
+
+---
+
+## Vincolo Logico
+
+```text
+Per ogni catalog_contribution:
+
+Può esistere un solo allegato principale.
+```
+
+---
+
+## Esempio Nuovo Item
+
+Contributo:
+
+```text
+Nuovo Item
+
+↓
+
+Charizard Crystal
+```
+
+---
+
+Allegati:
+
+```text
+Foto Fronte
+
+Foto Retro
+
+Scansione Alta Risoluzione
+```
+
+---
+
+## Esempio Nuova Variante
+
+Contributo:
+
+```text
+Nuova Variante
+
+↓
+
+Error Print
+```
+
+---
+
+Allegati:
+
+```text
+Foto Errore
+
+Dettaglio Errore
+
+Confronto Versione Standard
+```
+
+---
+
+## Esempio Correzione Catalogo
+
+Contributo:
+
+```text
+Numero Catalogo Errato
+```
+
+---
+
+Allegato:
+
+```text
+Pagina Catalogo Ufficiale
+```
+
+---
+
+## Compatibilità Revisione
+
+I revisori devono poter visualizzare tutti gli allegati associati ad una proposta.
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Scaricare
+
+Moderare
+
+Rifiutare
+
+Archiviare
+```
+
+gli allegati.
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Gli allegati costituiscono il materiale di supporto per:
+
+```text
+Nuove Collezioni
+
+Nuove Serie
+
+Nuovi Item
+
+Nuove Versioni
+
+Nuove Varianti
+
+Nuove Rarità
+
+Nuove Immagini
+
+Correzioni
+```
+
+---
+
+## Compatibilità Moderazione
+
+Gli allegati devono poter essere:
+
+```text
+Revisionati
+
+Segnalati
+
+Rimossi
+
+Archiviati
+```
+
+in caso di contenuti non conformi.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Allegati
+
+Numero Immagini
+
+Numero Documenti
+
+Dimensione Totale Archiviata
+
+Contributi con Allegati
+```
+
+---
+
+## Esempio Logico
+
+Catalog Contribution
+
+↓
+
+New Item
+
+↓
+
+Charizard Crystal
+
+↓
+
+catalog_contribution_attachments
+
+↓
+
+front.jpg
+
+back.jpg
+
+scan.png
+
+---
+
+Catalog Contribution
+
+↓
+
+Correction
+
+↓
+
+Numero Catalogo
+
+↓
+
+catalog_contribution_attachments
+
+↓
+
+reference.pdf
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+catalog_contributions
+```
+
+e
+
+```text
+catalog_contribution_attachments
+```
+
+consente:
+
+- più allegati per proposta
+- prove documentali
+- audit completo
+- moderazione indipendente
+- gestione immagini e documenti
+
+senza appesantire il record principale del contributo.
+
+Questa tabella costituisce il sistema di supporto documentale del Catalogo Collaborativo e garantisce una revisione più accurata e trasparente delle proposte della community.
+
+---
+
+# Tabella: catalog_contribution_votes
+
+## Scopo
+
+Rappresenta il voto espresso da un utente nei confronti di una proposta del Catalogo Collaborativo.
+
+La tabella viene utilizzata per raccogliere il parere della community prima della decisione finale degli amministratori.
+
+I voti della community NON modificano automaticamente il Catalogo Universale.
+
+Costituiscono un supporto al processo decisionale.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+catalog_contribution_votes
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco voto |
+| catalog_contribution_id | UUID | SI | Contributo votato |
+| user_id | UUID | SI | Utente votante |
+| vote_type | VARCHAR(20) | SI | Tipo voto |
+| rejection_reason | TEXT | NO | Motivazione del voto negativo |
+| created_at | TIMESTAMPTZ | SI | Data voto |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Consentiti
+
+### vote_type
+
+```text
+approve
+
+reject
+
+unknown
+```
+
+---
+
+## Significato Voti
+
+### approve
+
+L'utente ritiene che la proposta sia corretta e debba essere approvata.
+
+---
+
+### reject
+
+L'utente ritiene che la proposta presenti problemi o non debba essere approvata.
+
+L'utente può inserire una motivazione.
+
+---
+
+### unknown
+
+L'utente non possiede informazioni sufficienti per esprimere un giudizio.
+
+Questo voto consente alla community di segnalare interesse verso la proposta senza influenzare positivamente o negativamente il risultato.
+
+---
+
+## Foreign Keys
+
+catalog_contribution_id
+
+→ catalog_contributions.id
+
+---
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+catalog_contributions (1)
+
+↓
+
+(N)
+
+catalog_contribution_votes
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+catalog_contribution_votes
+
+---
+
+## Vincoli
+
+catalog_contribution_id deve esistere.
+
+user_id deve esistere.
+
+vote_type deve contenere un valore valido.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Lo stesso utente può votare una sola volta per lo stesso contributo.
+
+---
+
+### Non consentito
+
+```text
+Utente A
+
+↓
+
+Contributo 123
+
+↓
+
+Approve
+```
+
+---
+
+e successivamente:
+
+```text
+Utente A
+
+↓
+
+Contributo 123
+
+↓
+
+Approve
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (catalog_contribution_id)
+
+INDEX (user_id)
+
+INDEX (vote_type)
+
+INDEX (created_at)
+
+UNIQUE (catalog_contribution_id, user_id)
+
+---
+
+## Regole Business
+
+Un voto appartiene ad un singolo contributo.
+
+Un utente può votare molti contributi.
+
+Un contributo può ricevere molti voti.
+
+---
+
+## Motivazione Voto Negativo
+
+Quando il voto è:
+
+```text
+reject
+```
+
+l'utente può inserire una motivazione facoltativa.
+
+---
+
+### Esempi
+
+```text
+Oggetto già presente nel catalogo.
+```
+
+---
+
+```text
+Numero catalogo errato.
+```
+
+---
+
+```text
+Le immagini caricate non sono sufficienti.
+```
+
+---
+
+```text
+Informazioni non verificabili.
+```
+
+---
+
+## Modifica Voto
+
+L'utente può modificare il proprio voto.
+
+In questo caso:
+
+```text
+viene aggiornato il record esistente
+```
+
+e
+
+```text
+updated_at
+```
+
+viene aggiornato.
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+I voti vengono mostrati all'interno della proposta.
+
+---
+
+### Esempio
+
+```text
+Approve = 37
+
+Reject = 4
+
+Unknown = 12
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter visualizzare:
+
+```text
+Numero Approve
+
+Numero Reject
+
+Numero Unknown
+
+Motivazioni Reject
+```
+
+prima della decisione finale.
+
+---
+
+## Compatibilità Gamification
+
+La partecipazione alle votazioni può contribuire a:
+
+```text
+CollectorScore
+
+Badge Community
+
+Achievement Collaborazione
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Voti Espressi
+
+Numero Approve
+
+Numero Reject
+
+Numero Unknown
+
+Tasso Partecipazione
+
+Contributi Più Votati
+```
+
+---
+
+## Esempio Logico
+
+Catalog Contribution
+
+↓
+
+Nuovo Item
+
+↓
+
+Charizard Crystal
+
+↓
+
+Catalog Contribution Votes
+
+↓
+
+Approve
+
+Approve
+
+Approve
+
+Reject
+(Motivazione: Item già presente)
+
+Unknown
+
+↓
+
+Supporto Decisione Admin
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+catalog_contributions
+```
+
+e
+
+```text
+catalog_contribution_votes
+```
+
+consente di raccogliere il consenso della community senza modificare direttamente il Catalogo Universale.
+
+L'introduzione del voto:
+
+```text
+unknown
+```
+
+riduce i voti casuali o forzati da parte degli utenti meno esperti.
+
+La motivazione opzionale per:
+
+```text
+reject
+```
+
+fornisce contesto utile ai revisori e migliora la qualità del processo collaborativo.
+
+Questa tabella costituisce il sistema di validazione sociale del Catalogo Collaborativo CollectorVerse.
+
+---
+
+# Parte 7 - Scanner
+
+# Tabella: scan_sessions
+
+## Scopo
+
+Rappresenta una singola scansione effettuata da un utente.
+
+Una Sessione di Scansione corrisponde ad una singola immagine inviata al sistema di riconoscimento.
+
+L'immagine può provenire da:
+
+- Fotocamera
+- Upload Manuale
+
+Il sistema analizzerà l'immagine e produrrà uno o più risultati possibili.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+scan_sessions
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco sessione |
+| user_id | UUID | SI | Proprietario sessione |
+| source_image_url | TEXT | SI | Immagine analizzata |
+| status | VARCHAR(30) | SI | Stato scansione |
+| scan_source | VARCHAR(30) | SI | Origine immagine |
+| total_matches | INTEGER | SI | Numero risultati trovati |
+| ai_confidence | NUMERIC(5,2) | NO | Affidabilità generale |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| completed_at | TIMESTAMPTZ | NO | Data completamento |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = processing
+
+total_matches = 0
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+processing
+
+completed
+
+partial_match
+
+no_match
+
+failed
+
+cancelled
+```
+
+---
+
+### scan_source
+
+```text
+camera
+
+upload
+```
+
+---
+
+## Significato Status
+
+### processing
+
+Scansione in elaborazione.
+
+---
+
+### completed
+
+Riconoscimento completato.
+
+Il sistema ha individuato almeno un risultato valido.
+
+---
+
+### partial_match
+
+Il sistema ha trovato risultati plausibili ma richiede conferma utente.
+
+---
+
+### no_match
+
+Nessuna corrispondenza trovata.
+
+---
+
+### failed
+
+Errore tecnico.
+
+---
+
+### cancelled
+
+Scansione annullata.
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+scan_sessions
+
+---
+
+scan_sessions (1)
+
+↓
+
+(N)
+
+scan_results
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+source_image_url non può essere vuoto.
+
+status deve contenere un valore valido.
+
+scan_source deve contenere un valore valido.
+
+total_matches deve essere maggiore o uguale a zero.
+
+ai_confidence deve essere compreso tra:
+
+```text
+0
+
+e
+
+100
+```
+
+se valorizzato.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (user_id)
+
+INDEX (status)
+
+INDEX (scan_source)
+
+INDEX (created_at)
+
+INDEX (completed_at)
+
+---
+
+## Regole Business
+
+Ogni Sessione di Scansione appartiene ad un solo utente.
+
+Ogni Sessione utilizza una sola immagine.
+
+Una Sessione può produrre:
+
+```text
+Nessun Risultato
+
+Uno
+
+Molti Risultati Possibili
+```
+
+---
+
+## Esempio Match Perfetto
+
+Utente
+
+↓
+
+Carica Immagine
+
+↓
+
+Charizard Gold
+
+↓
+
+Match 99%
+
+↓
+
+completed
+
+---
+
+## Esempio Match Parziale
+
+Utente
+
+↓
+
+Carica Immagine
+
+↓
+
+Possibili Risultati
+
+↓
+
+Charizard Gold
+
+95%
+
+↓
+
+Charizard Reverse
+
+82%
+
+↓
+
+partial_match
+
+---
+
+## Esempio Nessun Match
+
+Utente
+
+↓
+
+Carica Immagine
+
+↓
+
+Nessun Risultato
+
+↓
+
+no_match
+
+---
+
+## Compatibilità Catalogo Universale
+
+Le scansioni possono identificare:
+
+```text
+Item
+
+Versione
+
+Variante
+```
+
+---
+
+## Compatibilità Collezioni Personali
+
+Dopo la conferma dell'utente:
+
+```text
+scan_session
+```
+
+↓
+
+```text
+scan_result
+```
+
+↓
+
+```text
+user_items
+```
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Se il sistema restituisce:
+
+```text
+no_match
+```
+
+l'utente può proporre:
+
+```text
+Nuovo Item
+
+Nuova Versione
+
+Nuova Variante
+```
+
+tramite Catalogo Collaborativo.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Scansioni
+
+Numero Match
+
+Numero No Match
+
+Precisione Scanner
+
+Tempo Medio Elaborazione
+```
+
+---
+
+## Compatibilità Gamification
+
+Le scansioni possono contribuire a:
+
+```text
+CollectorScore
+
+Achievement
+
+Livelli Scanner
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Analizzare
+
+Monitorare
+```
+
+l'utilizzo dello Scanner.
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+scan_session
+
+↓
+
+source_image_url
+
+↓
+
+Charizard.jpg
+
+↓
+
+completed
+
+↓
+
+scan_results
+
+↓
+
+Charizard Gold
+
+98%
+
+---
+
+## Motivazione Architetturale
+
+Una Sessione di Scansione rappresenta un singolo tentativo di riconoscimento.
+
+La separazione tra:
+
+```text
+scan_sessions
+```
+
+e
+
+```text
+scan_results
+```
+
+consente:
+
+- storico scansioni
+- audit
+- statistiche
+- miglioramento AI
+- supporto OCR
+
+senza duplicare dati del Catalogo Universale.
+
+La tabella costituisce il punto di ingresso dell'intero sistema Scanner CollectorVerse.
+
+---
+
+# Tabella: scan_results
+
+## Scopo
+
+Rappresenta un possibile risultato prodotto dal motore di riconoscimento durante una Sessione di Scansione.
+
+Una singola scansione può generare:
+
+```text
+0 risultati
+
+1 risultato
+
+N risultati possibili
+```
+
+ordinati per affidabilità.
+
+Questa tabella contiene le possibili corrispondenze individuate dal sistema.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+scan_results
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco risultato |
+| scan_session_id | UUID | SI | Sessione di scansione associata |
+| item_id | UUID | SI | Item identificato |
+| item_version_id | UUID | NO | Versione identificata |
+| item_variant_id | UUID | NO | Variante identificata |
+| confidence_score | NUMERIC(5,2) | SI | Livello di affidabilità |
+| rank_position | INTEGER | SI | Posizione nel ranking |
+| is_selected | BOOLEAN | SI | Risultato scelto dall'utente |
+| user_confirmed | BOOLEAN | SI | Conferma esplicita utente |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_selected = FALSE
+
+user_confirmed = FALSE
+
+rank_position = 1
+
+---
+
+## Foreign Keys
+
+scan_session_id
+
+→ scan_sessions.id
+
+---
+
+item_id
+
+→ items.id
+
+---
+
+item_version_id
+
+→ item_versions.id
+
+---
+
+item_variant_id
+
+→ item_variants.id
+
+---
+
+## Relazioni
+
+scan_sessions (1)
+
+↓
+
+(N)
+
+scan_results
+
+---
+
+items (1)
+
+↓
+
+(N)
+
+scan_results
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+scan_results
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+scan_results
+
+---
+
+## Vincoli
+
+scan_session_id deve esistere.
+
+item_id deve esistere.
+
+confidence_score deve essere compreso tra:
+
+```text
+0
+
+e
+
+100
+```
+
+---
+
+rank_position deve essere maggiore di zero.
+
+---
+
+## Vincolo Gerarchico
+
+Se valorizzato:
+
+```text
+item_version_id
+```
+
+deve appartenere all'Item indicato.
+
+---
+
+Se valorizzato:
+
+```text
+item_variant_id
+```
+
+deve appartenere alla Versione indicata.
+
+---
+
+## Vincolo Selezione
+
+Per ogni sessione può esistere un solo risultato con:
+
+```text
+is_selected = TRUE
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (scan_session_id)
+
+INDEX (item_id)
+
+INDEX (item_version_id)
+
+INDEX (item_variant_id)
+
+INDEX (confidence_score)
+
+INDEX (rank_position)
+
+INDEX (is_selected)
+
+INDEX (user_confirmed)
+
+---
+
+## Regole Business
+
+Ogni risultato appartiene ad una sola Sessione di Scansione.
+
+Una Sessione può produrre molti risultati.
+
+I risultati devono essere ordinati dal più probabile al meno probabile.
+
+---
+
+## Ranking
+
+Il sistema deve ordinare i risultati utilizzando:
+
+```text
+confidence_score
+```
+
+in ordine decrescente.
+
+---
+
+### Esempio
+
+```text
+Charizard Gold
+
+98.50%
+```
+
+↓
+
+Posizione 1
+
+---
+
+```text
+Charizard Reverse Holo
+
+85.20%
+```
+
+↓
+
+Posizione 2
+
+---
+
+```text
+Charizard Japanese
+
+76.10%
+```
+
+↓
+
+Posizione 3
+
+---
+
+## Risultato Selezionato
+
+Quando l'utente conferma un risultato:
+
+```text
+is_selected = TRUE
+```
+
+---
+
+ed eventualmente:
+
+```text
+user_confirmed = TRUE
+```
+
+---
+
+## Esempio
+
+Scanner:
+
+```text
+Charizard Gold
+
+98%
+```
+
+---
+
+Utente:
+
+```text
+Conferma
+```
+
+---
+
+Risultato:
+
+```text
+is_selected = TRUE
+
+user_confirmed = TRUE
+```
+
+---
+
+## Compatibilità Collezioni Personali
+
+Dopo la conferma:
+
+```text
+scan_result
+```
+
+↓
+
+```text
+user_items
+```
+
+↓
+
+Aggiunta Collezione Personale
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Se tutti i risultati hanno affidabilità molto bassa:
+
+```text
+Possibile Nuovo Item
+```
+
+---
+
+Il sistema può suggerire:
+
+```text
+Catalog Contribution
+```
+
+---
+
+## Compatibilità AI
+
+La tabella viene utilizzata per:
+
+```text
+Training Dataset
+
+Miglioramento Algoritmi
+
+Correzione Errori
+
+Monitoraggio Precisione
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Match Corretti
+
+Match Errati
+
+Precisione AI
+
+Risultati Confermati
+
+Risultati Rifiutati
+```
+
+---
+
+## Compatibilità Gamification
+
+Le scansioni confermate possono contribuire a:
+
+```text
+CollectorScore
+
+Achievement Scanner
+
+Livelli Scanner
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Analizzare
+
+Confrontare
+
+Correggere
+```
+
+i risultati generati dal sistema.
+
+---
+
+## Esempio Logico
+
+scan_session
+
+↓
+
+Charizard.jpg
+
+↓
+
+scan_results
+
+↓
+
+1. Charizard Gold
+98%
+
+↓
+
+2. Charizard Reverse
+85%
+
+↓
+
+3. Charizard Japanese
+76%
+
+↓
+
+Utente Conferma
+
+↓
+
+Charizard Gold
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+scan_sessions
+```
+
+e
+
+```text
+scan_results
+```
+
+consente di conservare tutte le possibili interpretazioni generate dal motore di riconoscimento.
+
+Questo approccio permette:
+
+- trasparenza del processo
+- miglioramento continuo dell'AI
+- conferma manuale dell'utente
+- statistiche accurate
+- audit storico
+
+senza alterare il Catalogo Universale.
+
+La tabella costituisce il nucleo operativo del sistema Scanner CollectorVerse.
+
+---
+
+# Parte 8 - Gamification
+
+# Tabella: user_scores
+
+## Scopo
+
+Rappresenta il profilo di progressione dell'utente all'interno di CollectorVerse.
+
+La tabella centralizza tutte le informazioni principali relative alla crescita dell'utente nella piattaforma.
+
+Questa tabella viene utilizzata per:
+
+- CollectorScore
+- Livello Utente
+- Esperienza
+- Ranking
+- Progressione
+- Achievement
+- Badge
+- Classifiche
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_scores
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco punteggio |
+| user_id | UUID | SI | Proprietario punteggio |
+| collector_score | BIGINT | SI | Punteggio totale CollectorVerse |
+| experience_points | BIGINT | SI | Esperienza accumulata |
+| current_level | INTEGER | SI | Livello corrente |
+| reputation_score | NUMERIC(5,2) | SI | Punteggio reputazione |
+| contribution_score | BIGINT | SI | Punteggio contributi catalogo |
+| marketplace_score | BIGINT | SI | Punteggio marketplace |
+| scanner_score | BIGINT | SI | Punteggio scanner |
+| achievement_points | BIGINT | SI | Punti achievement |
+| last_level_up_at | TIMESTAMPTZ | NO | Ultimo avanzamento livello |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+collector_score = 0
+
+experience_points = 0
+
+current_level = 1
+
+reputation_score = 0
+
+contribution_score = 0
+
+marketplace_score = 0
+
+scanner_score = 0
+
+achievement_points = 0
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(1)
+
+user_scores
+
+---
+
+user_scores
+
+↓
+
+Influenza
+
+↓
+
+user_badges
+
+(Futuro)
+
+---
+
+user_scores
+
+↓
+
+Influenza
+
+↓
+
+user_achievements
+
+(Futuro)
+
+---
+
+user_scores
+
+↓
+
+Influenza
+
+↓
+
+leaderboards
+
+(Futuro)
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+user_id deve essere univoco.
+
+collector_score deve essere maggiore o uguale a zero.
+
+experience_points deve essere maggiore o uguale a zero.
+
+current_level deve essere maggiore di zero.
+
+reputation_score deve essere compreso tra:
+
+```text
+0
+
+e
+
+100
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+INDEX (collector_score)
+
+INDEX (current_level)
+
+INDEX (reputation_score)
+
+INDEX (updated_at)
+
+---
+
+## Regole Business
+
+Ogni utente possiede un solo profilo punteggio.
+
+Il profilo viene creato automaticamente durante la registrazione.
+
+---
+
+## CollectorScore
+
+Il CollectorScore rappresenta il punteggio globale dell'utente.
+
+Può essere influenzato da:
+
+```text
+Collezione Personale
+
+Marketplace
+
+Scanner
+
+Catalogo Collaborativo
+
+Achievement
+
+Badge
+```
+
+---
+
+## Experience Points
+
+I punti esperienza rappresentano la progressione generale dell'utente.
+
+---
+
+### Esempio
+
+```text
+Acquisizione Oggetto
+
++
+
+Scansione Confermata
+
++
+
+Contributo Approvato
+
+↓
+
+Esperienza
+```
+
+---
+
+## Livelli
+
+I livelli vengono calcolati tramite:
+
+```text
+experience_points
+```
+
+---
+
+### Esempio
+
+```text
+Livello 1
+
+0 XP
+```
+
+---
+
+```text
+Livello 2
+
+100 XP
+```
+
+---
+
+```text
+Livello 10
+
+5000 XP
+```
+
+---
+
+Le soglie definitive verranno definite nelle regole applicative.
+
+---
+
+## Reputation Score
+
+Misura l'affidabilità dell'utente.
+
+Può essere influenzato da:
+
+```text
+Recensioni Positive
+
+Recensioni Negative
+
+Marketplace
+
+Comportamento Community
+```
+
+---
+
+## Contribution Score
+
+Punteggio ottenuto tramite:
+
+```text
+Catalogo Collaborativo
+
+Proposte Approvate
+
+Voti Community
+```
+
+---
+
+## Marketplace Score
+
+Punteggio ottenuto tramite:
+
+```text
+Annunci
+
+Offerte
+
+Attività Marketplace
+```
+
+---
+
+## Scanner Score
+
+Punteggio ottenuto tramite:
+
+```text
+Scansioni
+
+Conferme Scanner
+
+Correzioni AI
+```
+
+---
+
+## Achievement Points
+
+Punti assegnati dagli Achievement.
+
+---
+
+## Compatibilità Collezioni Personali
+
+Le attività che possono contribuire al punteggio includono:
+
+```text
+Nuovi Oggetti
+
+Nuove Serie Completate
+
+Nuove Collezioni
+```
+
+---
+
+## Compatibilità Marketplace
+
+Attività considerate:
+
+```text
+Pubblicazione Annunci
+
+Offerte
+
+Interazioni
+
+Partecipazione
+```
+
+---
+
+## Compatibilità Matching
+
+Le interazioni positive possono contribuire al punteggio.
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Attività considerate:
+
+```text
+Contributi
+
+Approvazioni
+
+Partecipazione Community
+```
+
+---
+
+## Compatibilità Scanner
+
+Attività considerate:
+
+```text
+Scansioni Corrette
+
+Conferme Utente
+
+Miglioramento Dataset
+```
+
+---
+
+## Compatibilità Notifiche
+
+I cambi di livello possono generare notifiche:
+
+```text
+Level Up
+
+Nuovo Badge
+
+Nuovo Achievement
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente può visualizzare:
+
+```text
+CollectorScore
+
+Livello
+
+Esperienza
+
+Progressione
+
+Ranking
+```
+
+---
+
+## Compatibilità Classifiche
+
+Le classifiche possono utilizzare:
+
+```text
+CollectorScore
+
+Livello
+
+Experience Points
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Ricalcolare
+
+Correggere
+
+Monitorare
+```
+
+i punteggi.
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+user_scores
+
+↓
+
+CollectorScore = 12500
+
+↓
+
+Level = 18
+
+↓
+
+Reputation = 96
+
+↓
+
+Marketplace Score = 2500
+
+↓
+
+Contribution Score = 1800
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+users
+```
+
+e
+
+```text
+user_scores
+```
+
+consente di gestire la progressione senza modificare continuamente il profilo utente.
+
+Questo approccio permette:
+
+- scalabilità
+- classifiche
+- achievement
+- badge
+- reputazione
+- statistiche avanzate
+
+senza duplicare informazioni nel resto del sistema.
+
+La tabella costituisce il nucleo centrale dell'intero sistema Gamification di CollectorVerse.
+
+---
+
+# Tabella: achievements
+
+## Scopo
+
+Rappresenta il catalogo ufficiale degli Achievement disponibili nella piattaforma CollectorVerse.
+
+Gli Achievement costituiscono obiettivi permanenti che gli utenti possono sbloccare svolgendo attività specifiche.
+
+Questa tabella definisce:
+
+- obiettivo
+- descrizione
+- requisiti
+- punteggio assegnato
+- categoria
+- livello di difficoltà
+
+Gli Achievement NON appartengono direttamente agli utenti.
+
+L'assegnazione agli utenti verrà gestita nella tabella:
+
+```text
+user_achievements
+```
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+achievements
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco achievement |
+| code | VARCHAR(100) | SI | Codice interno univoco |
+| name | VARCHAR(150) | SI | Nome achievement |
+| description | TEXT | SI | Descrizione achievement |
+| category | VARCHAR(30) | SI | Categoria achievement |
+| difficulty | VARCHAR(30) | SI | Livello difficoltà |
+| points_reward | INTEGER | SI | Punti assegnati |
+| icon_url | TEXT | NO | Icona visualizzata |
+| is_hidden | BOOLEAN | SI | Achievement segreto |
+| is_active | BOOLEAN | SI | Achievement disponibile |
+| sort_order | INTEGER | SI | Ordinamento visualizzazione |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+points_reward = 0
+
+is_hidden = FALSE
+
+is_active = TRUE
+
+sort_order = 0
+
+---
+
+## Valori Consentiti
+
+### category
+
+```text
+collection
+
+marketplace
+
+scanner
+
+community
+
+matching
+
+milestone
+
+special
+```
+
+---
+
+### difficulty
+
+```text
+bronze
+
+silver
+
+gold
+
+platinum
+
+legendary
+```
+
+---
+
+## Significato Categorie
+
+### collection
+
+Achievement legati alla collezione personale.
+
+---
+
+### marketplace
+
+Achievement legati al Marketplace.
+
+---
+
+### scanner
+
+Achievement legati allo Scanner.
+
+---
+
+### community
+
+Achievement legati alla partecipazione nella Community.
+
+---
+
+### matching
+
+Achievement legati al sistema di Matching.
+
+---
+
+### milestone
+
+Achievement di avanzamento generale.
+
+---
+
+### special
+
+Achievement speciali o eventi temporanei.
+
+---
+
+## Significato Difficoltà
+
+### bronze
+
+Obiettivo semplice.
+
+---
+
+### silver
+
+Obiettivo intermedio.
+
+---
+
+### gold
+
+Obiettivo avanzato.
+
+---
+
+### platinum
+
+Obiettivo molto difficile.
+
+---
+
+### legendary
+
+Achievement raro e prestigioso.
+
+---
+
+## Relazioni
+
+achievements (1)
+
+↓
+
+(N)
+
+user_achievements
+
+(Futuro)
+
+---
+
+## Vincoli
+
+code deve essere univoco.
+
+name deve essere univoco.
+
+points_reward deve essere maggiore o uguale a zero.
+
+sort_order deve essere maggiore o uguale a zero.
+
+category deve contenere un valore valido.
+
+difficulty deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (code)
+
+UNIQUE (name)
+
+INDEX (category)
+
+INDEX (difficulty)
+
+INDEX (is_hidden)
+
+INDEX (is_active)
+
+INDEX (sort_order)
+
+---
+
+## Regole Business
+
+Gli Achievement sono definiti esclusivamente dagli amministratori.
+
+Gli utenti non possono creare Achievement.
+
+---
+
+## Achievement Segreti
+
+Se:
+
+```text
+is_hidden = TRUE
+```
+
+l'Achievement non deve essere visibile fino allo sblocco.
+
+---
+
+### Esempio
+
+```text
+Collezionista Leggendario
+```
+
+↓
+
+Visibile solo dopo il completamento.
+
+---
+
+## Esempi Collection
+
+```text
+Primo Oggetto
+
+Possiedi il primo oggetto.
+```
+
+---
+
+```text
+Collezionista Pokémon
+
+Possiedi 100 oggetti Pokémon.
+```
+
+---
+
+```text
+Completista
+
+Completa una Serie.
+```
+
+---
+
+## Esempi Marketplace
+
+```text
+Primo Annuncio
+
+Pubblica il primo annuncio.
+```
+
+---
+
+```text
+Mercante Attivo
+
+Pubblica 100 annunci.
+```
+
+---
+
+## Esempi Scanner
+
+```text
+Prima Scansione
+
+Completa la prima scansione.
+```
+
+---
+
+```text
+Scanner Esperto
+
+Completa 1000 scansioni.
+```
+
+---
+
+## Esempi Community
+
+```text
+Primo Contributo
+
+Invia una proposta catalogo.
+```
+
+---
+
+```text
+Curatore Community
+
+Ottieni 50 contributi approvati.
+```
+
+---
+
+## Compatibilità User Scores
+
+Gli Achievement assegnano punti utilizzati per:
+
+```text
+CollectorScore
+
+Experience Points
+
+Progressione Utente
+```
+
+---
+
+## Compatibilità Gamification
+
+Gli Achievement possono sbloccare:
+
+```text
+Badge
+
+Titoli
+
+Cornici Profilo
+
+Ricompense Speciali
+```
+
+---
+
+## Compatibilità Notifiche
+
+Lo sblocco di un Achievement può generare:
+
+```text
+Notifica
+
+Animazione
+
+Messaggio di Congratulazioni
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+Gli utenti devono poter vedere:
+
+```text
+Achievement Ottenuti
+
+Achievement Mancanti
+
+Progressione Achievement
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Disattivare
+
+Riordinare
+```
+
+gli Achievement senza modificare il codice applicativo.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Achievement Più Ottenuti
+
+Achievement Più Rari
+
+Percentuale Completamento
+
+Distribuzione Difficoltà
+```
+
+---
+
+## Esempio Logico
+
+Achievement
+
+↓
+
+Primo Oggetto
+
+↓
+
+Category
+
+Collection
+
+↓
+
+Difficulty
+
+Bronze
+
+↓
+
+Reward
+
+50 Punti
+
+---
+
+Achievement
+
+↓
+
+Scanner Master
+
+↓
+
+Category
+
+Scanner
+
+↓
+
+Difficulty
+
+Gold
+
+↓
+
+Reward
+
+1000 Punti
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+achievements
+```
+
+e
+
+```text
+user_achievements
+```
+
+consente di mantenere un catalogo centrale degli obiettivi senza duplicare informazioni sugli utenti.
+
+Questo approccio permette:
+
+- gestione centralizzata
+- modifica regole
+- statistiche globali
+- crescita futura della gamification
+
+senza alterare i dati degli utenti.
+
+La tabella costituisce il catalogo ufficiale degli Achievement di CollectorVerse.
+
+---
+
+# Tabella: user_achievements
+
+## Scopo
+
+Rappresenta gli Achievement ottenuti dagli utenti.
+
+La tabella collega:
+
+```text
+Utente
+```
+
+e
+
+```text
+Achievement
+```
+
+registrando:
+
+- stato avanzamento
+- data sblocco
+- punti ottenuti
+- progresso raggiunto
+
+Questa tabella rappresenta lo storico reale della progressione dell'utente nel sistema Gamification.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_achievements
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco assegnazione |
+| user_id | UUID | SI | Proprietario achievement |
+| achievement_id | UUID | SI | Achievement associato |
+| status | VARCHAR(30) | SI | Stato achievement |
+| progress_value | INTEGER | SI | Avanzamento corrente |
+| target_value | INTEGER | SI | Obiettivo richiesto |
+| completion_percentage | NUMERIC(5,2) | SI | Percentuale completamento |
+| points_awarded | INTEGER | SI | Punti assegnati |
+| unlocked_at | TIMESTAMPTZ | NO | Data sblocco |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+status = in_progress
+
+progress_value = 0
+
+completion_percentage = 0
+
+points_awarded = 0
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+in_progress
+
+completed
+
+claimed
+
+expired
+```
+
+---
+
+## Significato Stati
+
+### in_progress
+
+Achievement in corso.
+
+---
+
+### completed
+
+Achievement completato.
+
+---
+
+### claimed
+
+Ricompensa assegnata all'utente.
+
+---
+
+### expired
+
+Achievement non più ottenibile.
+
+Utilizzato principalmente per eventi speciali.
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+achievement_id
+
+→ achievements.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+user_achievements
+
+---
+
+achievements (1)
+
+↓
+
+(N)
+
+user_achievements
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+achievement_id deve esistere.
+
+progress_value deve essere maggiore o uguale a zero.
+
+target_value deve essere maggiore di zero.
+
+completion_percentage deve essere compresa tra:
+
+```text
+0
+
+e
+
+100
+```
+
+---
+
+points_awarded deve essere maggiore o uguale a zero.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Lo stesso utente può possedere una sola registrazione per ciascun Achievement.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id, achievement_id)
+
+INDEX (user_id)
+
+INDEX (achievement_id)
+
+INDEX (status)
+
+INDEX (completion_percentage)
+
+INDEX (unlocked_at)
+
+---
+
+## Regole Business
+
+Un Achievement può essere assegnato a molti utenti.
+
+Un utente può ottenere molti Achievement.
+
+---
+
+## Progressione Achievement
+
+Gli Achievement possono essere:
+
+```text
+Istantanei
+```
+
+oppure
+
+```text
+Progressivi
+```
+
+---
+
+### Achievement Istantaneo
+
+```text
+Primo Oggetto
+
+↓
+
+Possiedi il primo oggetto
+```
+
+↓
+
+```text
+Completato immediatamente
+```
+
+---
+
+### Achievement Progressivo
+
+```text
+Collezionista Pokémon
+
+↓
+
+Possiedi 100 oggetti Pokémon
+```
+
+---
+
+Esempio:
+
+```text
+34 / 100
+
+↓
+
+34%
+```
+
+---
+
+## Sblocco Achievement
+
+Quando:
+
+```text
+progress_value
+
+=
+
+target_value
+```
+
+↓
+
+```text
+status = completed
+```
+
+↓
+
+```text
+unlocked_at valorizzato
+```
+
+---
+
+## Assegnazione Punti
+
+Al completamento:
+
+```text
+achievement.points_reward
+```
+
+↓
+
+```text
+points_awarded
+```
+
+↓
+
+```text
+user_scores
+```
+
+---
+
+## Compatibilità User Scores
+
+Gli Achievement contribuiscono a:
+
+```text
+CollectorScore
+
+Experience Points
+
+Achievement Points
+```
+
+---
+
+## Compatibilità Badge
+
+Gli Achievement possono sbloccare:
+
+```text
+Badge
+
+Titoli
+
+Cornici Profilo
+```
+
+nelle tabelle successive.
+
+---
+
+## Compatibilità Notifiche
+
+Quando un Achievement viene completato:
+
+```text
+Notifica
+
+Animazione
+
+Messaggio Congratulazioni
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente deve visualizzare:
+
+```text
+Achievement Completati
+
+Achievement In Corso
+
+Progressione
+
+Ricompense
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Achievement
+
+Achievement Completati
+
+Achievement Rari
+
+Percentuale Completamento
+
+Punteggio Totale Achievement
+```
+
+---
+
+## Compatibilità Gamification
+
+La tabella costituisce uno dei principali generatori di:
+
+```text
+CollectorScore
+
+Livelli
+
+Progressione Utente
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Correggere
+
+Ricalcolare
+
+Assegnare
+
+Revocare
+```
+
+Achievement in casi eccezionali.
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+Achievement
+
+↓
+
+Primo Oggetto
+
+↓
+
+Target = 1
+
+↓
+
+Progress = 1
+
+↓
+
+Completed
+
+↓
+
+Unlocked
+
+↓
+
+50 Punti
+
+---
+
+Utente
+
+↓
+
+Achievement
+
+↓
+
+Collezionista Pokémon
+
+↓
+
+Target = 100
+
+↓
+
+Progress = 34
+
+↓
+
+34%
+
+↓
+
+In Progress
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+achievements
+```
+
+e
+
+```text
+user_achievements
+```
+
+consente di mantenere un catalogo centrale degli obiettivi e registrare separatamente la progressione dei singoli utenti.
+
+Questo approccio permette:
+
+- tracking avanzato della progressione
+- achievement progressivi
+- statistiche dettagliate
+- notifiche automatiche
+- integrazione con livelli e punteggi
+
+senza modificare la definizione originale degli Achievement.
+
+La tabella costituisce il collegamento principale tra gli utenti e il sistema di Achievement di CollectorVerse.
+
+---
+
+# Tabella: badges
+
+## Scopo
+
+Rappresenta il catalogo ufficiale dei Badge disponibili nella piattaforma CollectorVerse.
+
+I Badge sono elementi visivi che identificano risultati, specializzazioni, riconoscimenti e status ottenuti dagli utenti.
+
+A differenza degli Achievement:
+
+```text
+Achievement
+=
+Obiettivo completato
+
+Badge
+=
+Riconoscimento visuale ottenuto
+```
+
+Un Badge può essere ottenuto:
+
+- tramite Achievement
+- tramite attività Marketplace
+- tramite Catalogo Collaborativo
+- tramite eventi speciali
+- tramite verifiche amministrative
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+badges
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco badge |
+| code | VARCHAR(100) | SI | Codice interno badge |
+| name | VARCHAR(150) | SI | Nome badge |
+| description | TEXT | SI | Descrizione badge |
+| badge_type | VARCHAR(30) | SI | Tipologia badge |
+| rarity_level | VARCHAR(30) | SI | Rarità badge |
+| icon_url | TEXT | NO | Icona badge |
+| color_hex | VARCHAR(20) | NO | Colore rappresentativo |
+| is_hidden | BOOLEAN | SI | Badge nascosto |
+| is_active | BOOLEAN | SI | Badge attivo |
+| sort_order | INTEGER | SI | Ordinamento visualizzazione |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_hidden = FALSE
+
+is_active = TRUE
+
+sort_order = 0
+
+---
+
+## Valori Consentiti
+
+### badge_type
+
+```text
+achievement
+
+collection
+
+marketplace
+
+scanner
+
+community
+
+verification
+
+special
+```
+
+---
+
+### rarity_level
+
+```text
+common
+
+rare
+
+epic
+
+legendary
+```
+
+---
+
+## Significato Badge Type
+
+### achievement
+
+Badge ottenuto tramite Achievement.
+
+---
+
+### collection
+
+Badge ottenuto tramite attività collezionistiche.
+
+---
+
+### marketplace
+
+Badge ottenuto tramite attività Marketplace.
+
+---
+
+### scanner
+
+Badge ottenuto tramite utilizzo Scanner.
+
+---
+
+### community
+
+Badge ottenuto tramite partecipazione Community.
+
+---
+
+### verification
+
+Badge assegnato tramite verifica ufficiale.
+
+---
+
+### special
+
+Badge speciale o evento limitato.
+
+---
+
+## Significato Rarity Level
+
+### common
+
+Badge comune.
+
+---
+
+### rare
+
+Badge raro.
+
+---
+
+### epic
+
+Badge molto raro.
+
+---
+
+### legendary
+
+Badge prestigioso e difficile da ottenere.
+
+---
+
+## Relazioni
+
+badges (1)
+
+↓
+
+(N)
+
+user_badges
+
+(Futuro)
+
+---
+
+## Vincoli
+
+code deve essere univoco.
+
+name deve essere univoco.
+
+badge_type deve contenere un valore valido.
+
+rarity_level deve contenere un valore valido.
+
+sort_order deve essere maggiore o uguale a zero.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (code)
+
+UNIQUE (name)
+
+INDEX (badge_type)
+
+INDEX (rarity_level)
+
+INDEX (is_hidden)
+
+INDEX (is_active)
+
+INDEX (sort_order)
+
+---
+
+## Regole Business
+
+I Badge vengono definiti esclusivamente dagli amministratori.
+
+Gli utenti non possono creare Badge.
+
+---
+
+## Badge Nascosti
+
+Se:
+
+```text
+is_hidden = TRUE
+```
+
+il Badge non è visibile fino al suo ottenimento.
+
+---
+
+## Esempi Achievement
+
+```text
+Primo Oggetto
+```
+
+↓
+
+```text
+Badge Collezionista Esordiente
+```
+
+---
+
+```text
+100 Achievement Points
+```
+
+↓
+
+```text
+Badge Achievement Hunter
+```
+
+---
+
+## Esempi Collection
+
+```text
+Completamento Serie
+```
+
+↓
+
+```text
+Badge Completista
+```
+
+---
+
+```text
+1000 Oggetti Posseduti
+```
+
+↓
+
+```text
+Badge Mega Collezionista
+```
+
+---
+
+## Esempi Marketplace
+
+```text
+100 Annunci Pubblicati
+```
+
+↓
+
+```text
+Badge Mercante Attivo
+```
+
+---
+
+## Esempi Scanner
+
+```text
+1000 Scansioni Corrette
+```
+
+↓
+
+```text
+Badge Scanner Master
+```
+
+---
+
+## Esempi Community
+
+```text
+50 Contributi Approvati
+```
+
+↓
+
+```text
+Badge Curatore Community
+```
+
+---
+
+## Esempi Verification
+
+```text
+Merchant Verificato
+```
+
+↓
+
+```text
+Badge Verified Merchant
+```
+
+---
+
+## Compatibilità User Profiles
+
+I Badge possono essere visualizzati nel profilo utente.
+
+---
+
+## Compatibilità Gamification
+
+I Badge rappresentano uno dei principali elementi visuali della progressione.
+
+---
+
+## Compatibilità Notifiche
+
+L'ottenimento di un Badge può generare:
+
+```text
+Notifica
+
+Animazione
+
+Messaggio Speciale
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente può visualizzare:
+
+```text
+Badge Ottenuti
+
+Badge Rari
+
+Badge Mancanti
+
+Progressione Badge
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Disattivare
+
+Nascondere
+
+Riordinare
+```
+
+i Badge senza modifiche applicative.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Badge Più Ottenuti
+
+Badge Più Rari
+
+Distribuzione Badge
+
+Badge Leggendari
+```
+
+---
+
+## Esempio Logico
+
+Badge
+
+↓
+
+Collezionista Esordiente
+
+↓
+
+Collection
+
+↓
+
+Common
+
+---
+
+Badge
+
+↓
+
+Scanner Master
+
+↓
+
+Scanner
+
+↓
+
+Epic
+
+---
+
+Badge
+
+↓
+
+Verified Merchant
+
+↓
+
+Verification
+
+↓
+
+Rare
+
+---
+
+Badge
+
+↓
+
+Legendary Collector
+
+↓
+
+Special
+
+↓
+
+Legendary
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+badges
+```
+
+e
+
+```text
+user_badges
+```
+
+consente di mantenere un catalogo centrale dei riconoscimenti visuali senza duplicare dati sugli utenti.
+
+Questo approccio permette:
+
+- gestione centralizzata
+- badge dinamici
+- eventi speciali
+- badge temporanei
+- statistiche globali
+- espansione futura
+
+senza modificare i profili utente.
+
+La tabella costituisce il catalogo ufficiale dei Badge di CollectorVerse.
+
+---
+
+# Tabella: user_badges
+
+## Scopo
+
+Rappresenta i Badge ottenuti dagli utenti.
+
+La tabella collega:
+
+```text
+Utente
+```
+
+e
+
+```text
+Badge
+```
+
+registrando:
+
+- data ottenimento
+- origine assegnazione
+- stato attivo
+- visibilità
+- badge in evidenza
+
+Questa tabella costituisce il profilo pubblico dei riconoscimenti ottenuti dall'utente.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_badges
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco assegnazione badge |
+| user_id | UUID | SI | Proprietario badge |
+| badge_id | UUID | SI | Badge ottenuto |
+| source_type | VARCHAR(30) | SI | Origine assegnazione |
+| is_featured | BOOLEAN | SI | Badge in evidenza |
+| is_visible | BOOLEAN | SI | Badge visibile nel profilo |
+| earned_at | TIMESTAMPTZ | SI | Data ottenimento |
+| expires_at | TIMESTAMPTZ | NO | Data scadenza |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_featured = FALSE
+
+is_visible = TRUE
+
+---
+
+## Valori Consentiti
+
+### source_type
+
+```text
+achievement
+
+marketplace
+
+scanner
+
+community
+
+verification
+
+admin
+
+event
+```
+
+---
+
+## Significato Origini
+
+### achievement
+
+Badge ottenuto tramite completamento Achievement.
+
+---
+
+### marketplace
+
+Badge ottenuto tramite attività Marketplace.
+
+---
+
+### scanner
+
+Badge ottenuto tramite Scanner.
+
+---
+
+### community
+
+Badge ottenuto tramite Catalogo Collaborativo o attività Community.
+
+---
+
+### verification
+
+Badge assegnato tramite verifica ufficiale.
+
+---
+
+### admin
+
+Badge assegnato manualmente da amministratori.
+
+---
+
+### event
+
+Badge ottenuto tramite eventi speciali.
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+badge_id
+
+→ badges.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+user_badges
+
+---
+
+badges (1)
+
+↓
+
+(N)
+
+user_badges
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+badge_id deve esistere.
+
+source_type deve contenere un valore valido.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Lo stesso utente non può ottenere più volte lo stesso Badge.
+
+---
+
+### Non Consentito
+
+```text
+Utente
+
+↓
+
+Badge Scanner Master
+
+↓
+
+Ottenuto
+```
+
+---
+
+e successivamente:
+
+```text
+Utente
+
+↓
+
+Badge Scanner Master
+
+↓
+
+Nuovo Inserimento
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id, badge_id)
+
+INDEX (user_id)
+
+INDEX (badge_id)
+
+INDEX (source_type)
+
+INDEX (is_featured)
+
+INDEX (is_visible)
+
+INDEX (earned_at)
+
+---
+
+## Regole Business
+
+Un Badge può essere assegnato a molti utenti.
+
+Un utente può ottenere molti Badge.
+
+---
+
+## Badge in Evidenza
+
+Un Badge può essere evidenziato nel profilo utente.
+
+---
+
+### Esempio
+
+Profilo Utente
+
+↓
+
+Badge Visibili
+
+```text
+Legendary Collector
+
+Verified Merchant
+
+Scanner Master
+```
+
+---
+
+## Vincolo Badge Evidenza
+
+Si consiglia di limitare il numero di Badge in evidenza.
+
+---
+
+### Esempio
+
+```text
+Massimo 3 Badge Evidenziati
+```
+
+per utente.
+
+---
+
+## Badge Temporanei
+
+Alcuni Badge possono avere una scadenza.
+
+---
+
+### Esempio
+
+```text
+Evento Natale 2027
+```
+
+↓
+
+```text
+expires_at
+```
+
+---
+
+## Badge Permanenti
+
+La maggior parte dei Badge non possiede una scadenza.
+
+---
+
+### Esempio
+
+```text
+Scanner Master
+```
+
+↓
+
+```text
+expires_at = NULL
+```
+
+---
+
+## Compatibilità User Profiles
+
+I Badge visibili possono essere mostrati nel profilo dell'utente.
+
+---
+
+## Compatibilità User Scores
+
+L'ottenimento di Badge può contribuire a:
+
+```text
+CollectorScore
+
+Experience Points
+
+Reputation Score
+```
+
+---
+
+## Compatibilità Achievement
+
+Molti Badge possono essere assegnati automaticamente dopo:
+
+```text
+Achievement Completato
+```
+
+---
+
+### Esempio
+
+Achievement:
+
+```text
+Scanner Expert
+```
+
+↓
+
+Badge:
+
+```text
+Scanner Master
+```
+
+---
+
+## Compatibilità Marketplace
+
+Badge visualizzabili in annunci:
+
+```text
+Verified Merchant
+
+Mercante Attivo
+
+Top Trader
+```
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Badge visualizzabili nei contributi:
+
+```text
+Curatore Community
+
+Esperto Catalogo
+
+Top Contributor
+```
+
+---
+
+## Compatibilità Notifiche
+
+Lo sblocco di un Badge può generare:
+
+```text
+Notifica
+
+Animazione
+
+Popup Celebrativo
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente può visualizzare:
+
+```text
+Badge Ottenuti
+
+Badge Rari
+
+Badge In Evidenza
+
+Cronologia Badge
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Assegnare
+
+Revocare
+
+Nascondere
+
+Ripristinare
+```
+
+Badge specifici.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Badge Totali
+
+Badge Rari
+
+Badge Leggendari
+
+Distribuzione Badge
+
+Badge Più Ottenuti
+```
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+user_badges
+
+↓
+
+Scanner Master
+
+↓
+
+earned_at
+
+↓
+
+2027-06-15
+
+↓
+
+Visible
+
+---
+
+Utente
+
+↓
+
+user_badges
+
+↓
+
+Verified Merchant
+
+↓
+
+Featured
+
+↓
+
+Visible
+
+---
+
+Utente
+
+↓
+
+user_badges
+
+↓
+
+Evento Natale
+
+↓
+
+Expires At
+
+↓
+
+2028-01-15
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+badges
+```
+
+e
+
+```text
+user_badges
+```
+
+consente di mantenere un catalogo centralizzato dei Badge e registrare separatamente quelli effettivamente ottenuti dagli utenti.
+
+Questo approccio permette:
+
+- gestione flessibile
+- badge permanenti
+- badge temporanei
+- badge evento
+- badge verificati
+- profili personalizzati
+
+senza modificare il catalogo ufficiale dei Badge.
+
+La tabella costituisce il collegamento principale tra i Badge e gli utenti all'interno del sistema Gamification CollectorVerse.
+
+---
+
+# Tabella: leaderboards
+
+## Scopo
+
+Rappresenta il catalogo ufficiale delle Classifiche disponibili nella piattaforma CollectorVerse.
+
+Le classifiche consentono di confrontare gli utenti sulla base di differenti criteri di ranking.
+
+Questa tabella definisce:
+
+- tipologia classifica
+- criterio di ordinamento
+- stato
+- periodicità
+- visibilità
+
+Le posizioni effettive degli utenti verranno memorizzate nella tabella:
+
+```text
+leaderboard_entries
+```
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+leaderboards
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco classifica |
+| code | VARCHAR(100) | SI | Codice interno classifica |
+| name | VARCHAR(150) | SI | Nome classifica |
+| description | TEXT | NO | Descrizione classifica |
+| leaderboard_type | VARCHAR(30) | SI | Tipologia classifica |
+| scoring_source | VARCHAR(50) | SI | Origine punteggio |
+| refresh_frequency | VARCHAR(30) | SI | Frequenza aggiornamento |
+| is_global | BOOLEAN | SI | Classifica globale |
+| is_public | BOOLEAN | SI | Visibile agli utenti |
+| is_active | BOOLEAN | SI | Classifica attiva |
+| sort_order | INTEGER | SI | Ordine visualizzazione |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_global = TRUE
+
+is_public = TRUE
+
+is_active = TRUE
+
+sort_order = 0
+
+refresh_frequency = daily
+
+---
+
+## Valori Consentiti
+
+### leaderboard_type
+
+```text
+global
+
+collection
+
+marketplace
+
+scanner
+
+community
+
+achievement
+
+special_event
+```
+
+---
+
+### scoring_source
+
+```text
+collector_score
+
+experience_points
+
+marketplace_score
+
+scanner_score
+
+contribution_score
+
+achievement_points
+
+reputation_score
+```
+
+---
+
+### refresh_frequency
+
+```text
+real_time
+
+hourly
+
+daily
+
+weekly
+
+monthly
+```
+
+---
+
+## Significato Tipologie
+
+### global
+
+Classifica generale della piattaforma.
+
+---
+
+### collection
+
+Classifica basata sull'attività collezionistica.
+
+---
+
+### marketplace
+
+Classifica relativa al Marketplace.
+
+---
+
+### scanner
+
+Classifica relativa all'utilizzo dello Scanner.
+
+---
+
+### community
+
+Classifica relativa al Catalogo Collaborativo.
+
+---
+
+### achievement
+
+Classifica relativa agli Achievement.
+
+---
+
+### special_event
+
+Classifica creata per eventi limitati nel tempo.
+
+---
+
+## Foreign Keys
+
+Nessuna.
+
+---
+
+## Relazioni
+
+leaderboards (1)
+
+↓
+
+(N)
+
+leaderboard_entries
+
+---
+
+## Vincoli
+
+code deve essere univoco.
+
+name deve essere univoco.
+
+leaderboard_type deve contenere un valore valido.
+
+scoring_source deve contenere un valore valido.
+
+refresh_frequency deve contenere un valore valido.
+
+sort_order deve essere maggiore o uguale a zero.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (code)
+
+UNIQUE (name)
+
+INDEX (leaderboard_type)
+
+INDEX (scoring_source)
+
+INDEX (is_active)
+
+INDEX (is_public)
+
+INDEX (sort_order)
+
+---
+
+## Regole Business
+
+Le classifiche sono definite esclusivamente dagli amministratori.
+
+Gli utenti non possono creare classifiche.
+
+---
+
+## Esempi Classifiche
+
+### Collector Score Globale
+
+```text
+Code
+
+global_collector_score
+```
+
+↓
+
+```text
+Scoring Source
+
+collector_score
+```
+
+---
+
+### Marketplace Ranking
+
+```text
+Code
+
+marketplace_ranking
+```
+
+↓
+
+```text
+Scoring Source
+
+marketplace_score
+```
+
+---
+
+### Scanner Ranking
+
+```text
+Code
+
+scanner_ranking
+```
+
+↓
+
+```text
+Scoring Source
+
+scanner_score
+```
+
+---
+
+### Community Ranking
+
+```text
+Code
+
+community_ranking
+```
+
+↓
+
+```text
+Scoring Source
+
+contribution_score
+```
+
+---
+
+### Achievement Ranking
+
+```text
+Code
+
+achievement_ranking
+```
+
+↓
+
+```text
+Scoring Source
+
+achievement_points
+```
+
+---
+
+## Compatibilità User Scores
+
+Le classifiche ottengono i valori da:
+
+```text
+user_scores
+```
+
+---
+
+## Compatibilità Gamification
+
+Le classifiche possono assegnare:
+
+```text
+Achievement
+
+Badge
+
+Titoli
+
+Cornici Profilo
+```
+
+---
+
+## Compatibilità Eventi Speciali
+
+È possibile creare classifiche temporanee.
+
+---
+
+### Esempio
+
+```text
+Evento Pokémon 2027
+```
+
+↓
+
+```text
+special_event
+```
+
+↓
+
+```text
+Classifica dedicata
+```
+
+---
+
+## Compatibilità Notifiche
+
+Le classifiche possono generare notifiche quando un utente:
+
+```text
+Entra in Top 100
+
+Entra in Top 10
+
+Raggiunge il Primo Posto
+
+Perde una Posizione Importante
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+Gli utenti devono poter visualizzare:
+
+```text
+Classifiche Disponibili
+
+Posizione Attuale
+
+Storico Ranking
+
+Top Utenti
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Attivare
+
+Disattivare
+
+Riordinare
+```
+
+le classifiche senza modifiche al codice applicativo.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Classifiche
+
+Partecipanti
+
+Distribuzione Punteggi
+
+Attività Utenti
+
+Trend Storici
+```
+
+---
+
+## Esempio Logico
+
+Leaderboards
+
+↓
+
+Global Collector Score
+
+↓
+
+Leaderboard Entries
+
+↓
+
+Utente A
+
+Rank #1
+
+---
+
+Leaderboards
+
+↓
+
+Marketplace Ranking
+
+↓
+
+Leaderboard Entries
+
+↓
+
+Utente B
+
+Rank #5
+
+---
+
+Leaderboards
+
+↓
+
+Scanner Ranking
+
+↓
+
+Leaderboard Entries
+
+↓
+
+Utente C
+
+Rank #2
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+leaderboards
+```
+
+e
+
+```text
+leaderboard_entries
+```
+
+consente di definire centralmente tutte le classifiche della piattaforma senza duplicare configurazioni.
+
+Questo approccio permette:
+
+- classifiche multiple
+- classifiche temporanee
+- classifiche stagionali
+- classifiche speciali
+- scalabilità futura
+
+senza modificare la struttura della Gamification.
+
+La tabella costituisce il catalogo ufficiale delle classifiche di CollectorVerse.
+
+---
+
+# Tabella: leaderboard_entries
+
+## Scopo
+
+Rappresenta la posizione di un utente all'interno di una Classifica.
+
+La tabella contiene le classifiche effettive generate dal sistema e permette di visualizzare:
+
+- posizione
+- punteggio
+- variazione classifica
+- storico ranking
+
+Questa tabella viene aggiornata dai processi di calcolo delle classifiche.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+leaderboard_entries
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco posizione |
+| leaderboard_id | UUID | SI | Classifica associata |
+| user_id | UUID | SI | Utente classificato |
+| rank_position | INTEGER | SI | Posizione attuale |
+| score_value | BIGINT | SI | Punteggio registrato |
+| previous_rank_position | INTEGER | NO | Posizione precedente |
+| rank_change | INTEGER | SI | Variazione posizione |
+| percentile_rank | NUMERIC(5,2) | NO | Percentile utente |
+| snapshot_date | TIMESTAMPTZ | SI | Data generazione classifica |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+rank_change = 0
+
+---
+
+## Foreign Keys
+
+leaderboard_id
+
+→ leaderboards.id
+
+---
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+leaderboards (1)
+
+↓
+
+(N)
+
+leaderboard_entries
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+leaderboard_entries
+
+---
+
+## Vincoli
+
+leaderboard_id deve esistere.
+
+user_id deve esistere.
+
+rank_position deve essere maggiore di zero.
+
+score_value deve essere maggiore o uguale a zero.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Per ogni generazione della classifica:
+
+```text
+Lo stesso utente può comparire una sola volta.
+```
+
+---
+
+### Regola
+
+```text
+leaderboard_id
++
+user_id
++
+snapshot_date
+```
+
+devono identificare un record univoco.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (leaderboard_id)
+
+INDEX (user_id)
+
+INDEX (rank_position)
+
+INDEX (score_value)
+
+INDEX (snapshot_date)
+
+UNIQUE (leaderboard_id, user_id, snapshot_date)
+
+---
+
+## Regole Business
+
+Ogni record rappresenta la situazione dell'utente in una specifica classifica in uno specifico momento.
+
+I record storici non devono essere sovrascritti.
+
+I record storici consentono l'analisi dell'evoluzione delle classifiche.
+
+---
+
+## Posizione
+
+La posizione viene assegnata in base al punteggio della classifica.
+
+---
+
+### Esempio
+
+```text
+Rank 1
+
+Score 15000
+```
+
+---
+
+```text
+Rank 2
+
+Score 14920
+```
+
+---
+
+```text
+Rank 3
+
+Score 14700
+```
+
+---
+
+## Rank Change
+
+Indica lo spostamento rispetto alla generazione precedente.
+
+---
+
+### Esempio
+
+Posizione Precedente
+
+```text
+15
+```
+
+↓
+
+Posizione Attuale
+
+```text
+8
+```
+
+↓
+
+```text
+rank_change = +7
+```
+
+---
+
+### Esempio
+
+Posizione Precedente
+
+```text
+3
+```
+
+↓
+
+Posizione Attuale
+
+```text
+9
+```
+
+↓
+
+```text
+rank_change = -6
+```
+
+---
+
+## Percentile
+
+Permette di determinare la collocazione relativa dell'utente.
+
+---
+
+### Esempio
+
+```text
+Percentile 99
+```
+
+↓
+
+Top 1%
+
+---
+
+### Esempio
+
+```text
+Percentile 90
+```
+
+↓
+
+Top 10%
+
+---
+
+## Compatibilità User Scores
+
+Le classifiche possono essere generate utilizzando:
+
+```text
+collector_score
+
+experience_points
+
+reputation_score
+
+scanner_score
+
+marketplace_score
+
+contribution_score
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente può visualizzare:
+
+```text
+Posizione Attuale
+
+Storico Posizioni
+
+Miglior Risultato
+
+Variazioni Ranking
+```
+
+---
+
+## Compatibilità Profilo Pubblico
+
+Il profilo può mostrare:
+
+```text
+Posizione Globale
+
+Top Categoria
+
+Miglior Classifica
+```
+
+---
+
+## Compatibilità Gamification
+
+Le classifiche possono assegnare:
+
+```text
+Achievement
+
+Badge
+
+Ricompense Stagionali
+
+Titoli Speciali
+```
+
+---
+
+## Compatibilità Notifiche
+
+Possono essere inviate notifiche quando:
+
+```text
+Ingresso Top 100
+
+Ingresso Top 10
+
+Nuovo Record Personale
+
+Perdita Posizione Importante
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Ricalcolare
+
+Rigenerare
+
+Analizzare
+```
+
+le classifiche.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Partecipanti
+
+Distribuzione Punteggi
+
+Top Utenti
+
+Variazione Ranking
+
+Storico Classifiche
+```
+
+---
+
+## Esempio Logico
+
+Leaderboard
+
+↓
+
+Collector Score Globale
+
+↓
+
+Leaderboard Entry
+
+↓
+
+Utente A
+
+↓
+
+Rank 1
+
+↓
+
+15000 Punti
+
+---
+
+Leaderboard
+
+↓
+
+Scanner Ranking
+
+↓
+
+Leaderboard Entry
+
+↓
+
+Utente B
+
+↓
+
+Rank 8
+
+↓
+
+2450 Punti
+
+---
+
+Leaderboard
+
+↓
+
+Community Ranking
+
+↓
+
+Utente C
+
+↓
+
+Rank 2
+
+↓
+
+890 Contributi
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+leaderboards
+```
+
+e
+
+```text
+leaderboard_entries
+```
+
+consente di mantenere una struttura altamente scalabile e storicizzabile.
+
+Questo approccio permette:
+
+- classifiche multiple
+- ranking storici
+- statistiche avanzate
+- stagioni competitive
+- progressione utente
+
+senza modificare direttamente i dati della gamification.
+
+La tabella costituisce il cuore del sistema classifiche di CollectorVerse.
+
+---
+
+# Parte 9 - Notifiche
+
+# Tabella: notifications
+
+## Scopo
+
+Rappresenta una notifica generata dal sistema CollectorVerse.
+
+La tabella costituisce il centro dell'intero sistema notifiche della piattaforma.
+
+Una notifica può essere generata da:
+
+- Marketplace
+- Matching
+- Wishlist
+- Scanner
+- Catalogo Collaborativo
+- Gamification
+- Messaggistica
+- Attività amministrative
+- Verifiche commerciante
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+notifications
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco notifica |
+| user_id | UUID | SI | Destinatario notifica |
+| notification_type | VARCHAR(50) | SI | Tipologia notifica |
+| title | VARCHAR(255) | SI | Titolo notifica |
+| message | TEXT | SI | Contenuto notifica |
+| reference_type | VARCHAR(50) | NO | Tipo entità collegata |
+| reference_id | UUID | NO | Entità collegata |
+| status | VARCHAR(30) | SI | Stato notifica |
+| priority_level | VARCHAR(20) | SI | Priorità |
+| read_at | TIMESTAMPTZ | NO | Data lettura |
+| expires_at | TIMESTAMPTZ | NO | Data scadenza |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+status = unread
+
+priority_level = normal
+
+---
+
+## Valori Consentiti
+
+### notification_type
+
+```text
+marketplace
+
+offer
+
+wishlist
+
+matching
+
+message
+
+review
+
+scanner
+
+achievement
+
+badge
+
+level_up
+
+catalog_contribution
+
+merchant_verification
+
+system
+
+security
+
+administrative
+```
+
+---
+
+### status
+
+```text
+unread
+
+read
+
+archived
+```
+
+---
+
+### priority_level
+
+```text
+low
+
+normal
+
+high
+
+critical
+```
+
+---
+
+## Significato Notification Type
+
+### marketplace
+
+Attività correlate agli annunci Marketplace.
+
+---
+
+### offer
+
+Nuove offerte e trattative.
+
+---
+
+### wishlist
+
+Oggetti wishlist diventati disponibili.
+
+---
+
+### matching
+
+Nuove opportunità generate dal Matching.
+
+---
+
+### message
+
+Nuovi messaggi ricevuti.
+
+---
+
+### review
+
+Nuove recensioni ricevute.
+
+---
+
+### scanner
+
+Risultati Scanner e aggiornamenti.
+
+---
+
+### achievement
+
+Achievement completato.
+
+---
+
+### badge
+
+Badge ottenuto.
+
+---
+
+### level_up
+
+Avanzamento livello.
+
+---
+
+### catalog_contribution
+
+Aggiornamenti contributi catalogo.
+
+---
+
+### merchant_verification
+
+Aggiornamento stato verifica commerciante.
+
+---
+
+### system
+
+Comunicazioni di sistema.
+
+---
+
+### security
+
+Avvisi di sicurezza.
+
+---
+
+### administrative
+
+Comunicazioni amministrative.
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+notifications
+
+---
+
+notifications (1)
+
+↓
+
+(N)
+
+notification_deliveries
+
+(Futuro)
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+title non può essere vuoto.
+
+message non può essere vuoto.
+
+notification_type deve contenere un valore valido.
+
+status deve contenere un valore valido.
+
+priority_level deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (user_id)
+
+INDEX (notification_type)
+
+INDEX (status)
+
+INDEX (priority_level)
+
+INDEX (created_at)
+
+INDEX (read_at)
+
+INDEX (expires_at)
+
+---
+
+## Regole Business
+
+Ogni notifica appartiene ad un solo utente.
+
+Un utente può ricevere molte notifiche.
+
+Una notifica può essere:
+
+```text
+Non letta
+
+Letta
+
+Archiviata
+```
+
+---
+
+## Lettura Notifica
+
+Quando l'utente visualizza la notifica:
+
+```text
+status = read
+```
+
+e
+
+```text
+read_at
+```
+
+viene valorizzato.
+
+---
+
+## Archiviazione
+
+Le notifiche archiviate non devono comparire tra quelle attive.
+
+Restano disponibili per finalità storiche.
+
+---
+
+## Entità Collegate
+
+Una notifica può riferirsi ad una entità della piattaforma.
+
+---
+
+### Esempio Marketplace
+
+```text
+reference_type
+
+marketplace_listing
+```
+
+↓
+
+```text
+reference_id
+
+UUID Annuncio
+```
+
+---
+
+### Esempio Achievement
+
+```text
+reference_type
+
+achievement
+```
+
+↓
+
+```text
+reference_id
+
+UUID Achievement
+```
+
+---
+
+### Esempio Messaggio
+
+```text
+reference_type
+
+message
+```
+
+↓
+
+```text
+reference_id
+
+UUID Messaggio
+```
+
+---
+
+## Compatibilità Marketplace
+
+Notifiche possibili:
+
+```text
+Nuova Offerta
+
+Offerta Accettata
+
+Offerta Rifiutata
+
+Nuovo Preferito
+
+Annuncio Scaduto
+```
+
+---
+
+## Compatibilità Wishlist
+
+Notifiche possibili:
+
+```text
+Oggetto Disponibile
+
+Nuovo Annuncio Compatibile
+
+Riduzione Prezzo
+```
+
+---
+
+## Compatibilità Matching
+
+Notifiche possibili:
+
+```text
+Nuovo Match
+
+Nuovo Trade Match
+
+Nuova Opportunità
+```
+
+---
+
+## Compatibilità Scanner
+
+Notifiche possibili:
+
+```text
+Scansione Completata
+
+Nuovo Risultato
+
+Conferma Richiesta
+```
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Notifiche possibili:
+
+```text
+Contributo Approvato
+
+Contributo Respinto
+
+Richiesta Revisione
+```
+
+---
+
+## Compatibilità Gamification
+
+Notifiche possibili:
+
+```text
+Achievement Sbloccato
+
+Badge Ottenuto
+
+Level Up
+
+Nuovo Ranking
+```
+
+---
+
+## Compatibilità Sicurezza
+
+Notifiche possibili:
+
+```text
+Nuovo Accesso
+
+Password Modificata
+
+Attività Sospetta
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente deve poter visualizzare:
+
+```text
+Notifiche Non Lette
+
+Storico Notifiche
+
+Filtro per Categoria
+
+Archivio Notifiche
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Inviare Notifiche Globali
+
+Inviare Notifiche Mirate
+
+Monitorare Consegne
+
+Analizzare Utilizzo
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Notifiche Generate
+
+Notifiche Letto
+
+Tasso Apertura
+
+Tempo Medio Lettura
+
+Categorie Più Attive
+```
+
+---
+
+## Esempio Logico
+
+Marketplace
+
+↓
+
+Nuova Offerta
+
+↓
+
+Notification
+
+↓
+
+Unread
+
+↓
+
+Read
+
+---
+
+Matching
+
+↓
+
+Nuova Opportunità
+
+↓
+
+Notification
+
+↓
+
+Unread
+
+---
+
+Gamification
+
+↓
+
+Achievement Sbloccato
+
+↓
+
+Notification
+
+↓
+
+Unread
+
+↓
+
+Read
+
+---
+
+## Motivazione Architetturale
+
+La tabella notifications rappresenta il centro unico di tutte le comunicazioni automatiche della piattaforma.
+
+Questo approccio consente:
+
+- un sistema notifiche uniforme
+- gestione centralizzata
+- statistiche globali
+- supporto multicanale
+- integrazione con tutte le funzionalità
+
+senza duplicare logiche nei singoli moduli.
+
+La tabella costituisce il nucleo del sistema Notifiche di CollectorVerse.
+
+---
+
+# Parte 10 - Messaggistica
+
+# Tabella: conversation_threads
+
+## Scopo
+
+Rappresenta una conversazione tra utenti all'interno della piattaforma.
+
+Una conversazione può essere generata da:
+
+- Marketplace
+- Matching
+- Wishlist
+- Catalogo Collaborativo
+- Messaggistica Diretta
+
+La conversazione costituisce il contenitore dei messaggi.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+conversation_threads
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo conversazione |
+| thread_type | VARCHAR(30) | SI | Tipo conversazione |
+| marketplace_listing_id | UUID | NO | Annuncio collegato |
+| matching_opportunity_id | UUID | NO | Match collegato |
+| created_by_user_id | UUID | SI | Utente creatore |
+| status | VARCHAR(30) | SI | Stato conversazione |
+| last_message_at | TIMESTAMPTZ | NO | Ultimo messaggio |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data aggiornamento |
+| closed_at | TIMESTAMPTZ | NO | Data chiusura |
+
+---
+
+## Valori Predefiniti
+
+status = active
+
+---
+
+## Valori Consentiti
+
+### thread_type
+
+```text
+marketplace
+
+matching
+
+direct
+```
+
+---
+
+### status
+
+```text
+active
+
+closed
+
+archived
+
+blocked
+```
+
+---
+
+## Foreign Keys
+
+created_by_user_id
+
+→ users.id
+
+---
+
+marketplace_listing_id
+
+→ marketplace_listings.id
+
+---
+
+matching_opportunity_id
+
+→ matching_opportunities.id
+
+---
+
+## Relazioni
+
+conversation_threads (1)
+
+↓
+
+(N)
+
+messages
+
+---
+
+## Vincoli
+
+created_by_user_id deve esistere.
+
+thread_type deve contenere un valore valido.
+
+status deve contenere un valore valido.
+
+---
+
+## Regole Business
+
+Una conversazione può essere collegata a:
+
+```text
+Marketplace
+```
+
+oppure:
+
+```text
+Matching
+```
+
+oppure:
+
+```text
+Messaggistica Diretta
+```
+
+---
+
+## Esempio Marketplace
+
+Annuncio
+
+↓
+
+Charizard Gold
+
+↓
+
+Contatta Venditore
+
+↓
+
+Nuova Conversazione
+
+---
+
+## Esempio Matching
+
+Match
+
+↓
+
+Scambio Possibile
+
+↓
+
+Nuova Conversazione
+
+---
+
+## Motivazione Architetturale
+
+La Conversazione rappresenta il contenitore dei messaggi e permette di mantenere il contesto della comunicazione.
+
+---
+
+# Tabella: conversation_participants
+
+## Scopo
+
+Rappresenta la partecipazione di un utente ad una Conversazione.
+
+La tabella collega:
+
+```text
+Utente
+```
+
+e
+
+```text
+Conversazione
+```
+
+e definisce:
+
+- chi può leggere
+- chi può scrivere
+- chi partecipa
+- stato partecipazione
+- ultima lettura
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+conversation_participants
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo partecipazione |
+| conversation_thread_id | UUID | SI | Conversazione associata |
+| user_id | UUID | SI | Utente partecipante |
+| participant_role | VARCHAR(30) | SI | Ruolo partecipante |
+| status | VARCHAR(30) | SI | Stato partecipazione |
+| last_read_message_id | UUID | NO | Ultimo messaggio letto |
+| last_read_at | TIMESTAMPTZ | NO | Data ultima lettura |
+| joined_at | TIMESTAMPTZ | SI | Data ingresso conversazione |
+| left_at | TIMESTAMPTZ | NO | Data uscita conversazione |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+participant_role = member
+
+status = active
+
+---
+
+## Valori Consentiti
+
+### participant_role
+
+```text
+owner
+
+member
+
+moderator
+```
+
+---
+
+### status
+
+```text
+active
+
+archived
+
+blocked
+
+left
+```
+
+---
+
+## Significato Ruoli
+
+### owner
+
+Creatore della conversazione.
+
+---
+
+### member
+
+Partecipante standard.
+
+---
+
+### moderator
+
+Partecipante con privilegi speciali.
+
+Attualmente utilizzato principalmente per attività amministrative.
+
+---
+
+## Significato Stati
+
+### active
+
+Partecipazione attiva.
+
+---
+
+### archived
+
+Conversazione archiviata per quell'utente.
+
+---
+
+### blocked
+
+Partecipazione bloccata.
+
+---
+
+### left
+
+L'utente ha lasciato la conversazione.
+
+---
+
+## Foreign Keys
+
+conversation_thread_id
+
+→ conversation_threads.id
+
+---
+
+user_id
+
+→ users.id
+
+---
+
+last_read_message_id
+
+→ messages.id
+
+(Futuro)
+
+---
+
+## Relazioni
+
+conversation_threads (1)
+
+↓
+
+(N)
+
+conversation_participants
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+conversation_participants
+
+---
+
+messages (1)
+
+↓
+
+(N)
+
+conversation_participants
+
+(tramite lettura)
+
+---
+
+## Vincoli
+
+conversation_thread_id deve esistere.
+
+user_id deve esistere.
+
+participant_role deve contenere un valore valido.
+
+status deve contenere un valore valido.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Lo stesso utente può comparire una sola volta nella stessa conversazione.
+
+---
+
+### Regola
+
+```text
+UNIQUE
+(
+conversation_thread_id,
+user_id
+)
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (conversation_thread_id)
+
+INDEX (user_id)
+
+INDEX (status)
+
+INDEX (last_read_at)
+
+UNIQUE (conversation_thread_id, user_id)
+
+---
+
+## Regole Business
+
+Una conversazione deve avere almeno due partecipanti attivi.
+
+---
+
+Ogni messaggio può essere visualizzato esclusivamente dai partecipanti della conversazione.
+
+---
+
+## Ultima Lettura
+
+Il sistema utilizza:
+
+```text
+last_read_message_id
+```
+
+e
+
+```text
+last_read_at
+```
+
+per determinare:
+
+```text
+Messaggi Letti
+
+Messaggi Non Letti
+```
+
+---
+
+## Esempio
+
+Conversazione
+
+↓
+
+Messaggi Totali = 50
+
+↓
+
+last_read_message_id = 48
+
+↓
+
+Messaggi Non Letti = 2
+
+---
+
+## Archiviazione Conversazione
+
+Se:
+
+```text
+status = archived
+```
+
+la conversazione non compare tra quelle attive dell'utente.
+
+---
+
+La conversazione continua ad esistere.
+
+---
+
+## Uscita Conversazione
+
+Se:
+
+```text
+status = left
+```
+
+↓
+
+```text
+left_at valorizzato
+```
+
+---
+
+I messaggi storici restano conservati.
+
+---
+
+## Compatibilità Marketplace
+
+Quando un utente contatta un venditore:
+
+```text
+Nuova Conversazione
+```
+
+↓
+
+```text
+2 Partecipanti
+```
+
+↓
+
+```text
+conversation_participants
+```
+
+---
+
+## Compatibilità Matching
+
+Un Match può generare:
+
+```text
+Conversazione
+```
+
+↓
+
+```text
+Partecipanti Coinvolti
+```
+
+---
+
+## Compatibilità Notifiche
+
+Le notifiche possono basarsi su:
+
+```text
+Nuovo Messaggio
+
+Messaggi Non Letti
+
+Nuova Conversazione
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente deve poter vedere:
+
+```text
+Conversazioni Attive
+
+Conversazioni Archiviate
+
+Messaggi Non Letti
+```
+
+---
+
+## Compatibilità Moderazione
+
+Gli amministratori devono poter:
+
+```text
+Bloccare Partecipanti
+
+Chiudere Conversazioni
+
+Revisionare Conversazioni Segnalate
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Conversazioni
+
+Numero Partecipanti
+
+Tempo Medio Risposta
+
+Messaggi Non Letti
+```
+
+---
+
+## Esempio Logico
+
+Conversation Thread
+
+↓
+
+Marketplace
+
+↓
+
+Charizard Gold
+
+↓
+
+Conversation Participants
+
+↓
+
+Utente A
+
+(owner)
+
+↓
+
+Utente B
+
+(member)
+
+↓
+
+Conversazione Attiva
+
+---
+
+Conversation Thread
+
+↓
+
+Matching
+
+↓
+
+Trade Match
+
+↓
+
+Conversation Participants
+
+↓
+
+Utente C
+
+↓
+
+Utente D
+
+↓
+
+Conversazione Attiva
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+conversation_threads
+```
+
+e
+
+```text
+conversation_participants
+```
+
+consente di gestire in modo corretto i partecipanti senza duplicare informazioni nella conversazione.
+
+Questo approccio permette:
+
+- gestione letture
+- archivio personale
+- supporto multiutente futuro
+- moderazione avanzata
+- maggiore scalabilità
+
+e costituisce la base necessaria per la successiva tabella:
+
+```text
+messages
+```
+
+che conterrà il contenuto effettivo della conversazione.
+
+---
+
+# Tabella: messages
+
+## Scopo
+
+Rappresenta un singolo messaggio inviato all'interno di una Conversazione.
+
+La tabella costituisce il cuore operativo del sistema di Messaggistica.
+
+Ogni messaggio appartiene ad una Conversazione ed è inviato da un partecipante autorizzato.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+messages
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco messaggio |
+| conversation_thread_id | UUID | SI | Conversazione associata |
+| sender_user_id | UUID | SI | Mittente messaggio |
+| message_type | VARCHAR(30) | SI | Tipo messaggio |
+| message_content | TEXT | SI | Contenuto messaggio |
+| reply_to_message_id | UUID | NO | Messaggio a cui si risponde |
+| edited_at | TIMESTAMPTZ | NO | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Data eliminazione logica |
+| created_at | TIMESTAMPTZ | SI | Data invio |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+message_type = text
+
+---
+
+## Valori Consentiti
+
+### message_type
+
+```text
+text
+
+system
+
+marketplace
+
+matching
+```
+
+---
+
+## Significato Tipologie
+
+### text
+
+Messaggio standard inviato da un utente.
+
+---
+
+### system
+
+Messaggio generato automaticamente dal sistema.
+
+---
+
+### marketplace
+
+Messaggio generato da un'azione Marketplace.
+
+---
+
+### matching
+
+Messaggio generato da un'azione Matching.
+
+---
+
+## Foreign Keys
+
+conversation_thread_id
+
+→ conversation_threads.id
+
+---
+
+sender_user_id
+
+→ users.id
+
+---
+
+reply_to_message_id
+
+→ messages.id
+
+---
+
+## Relazioni
+
+conversation_threads (1)
+
+↓
+
+(N)
+
+messages
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+messages
+
+---
+
+messages (1)
+
+↓
+
+(N)
+
+messages
+
+(risposte)
+
+---
+
+## Vincoli
+
+conversation_thread_id deve esistere.
+
+sender_user_id deve esistere.
+
+message_content non può essere vuoto.
+
+message_type deve contenere un valore valido.
+
+---
+
+## Vincolo Partecipazione
+
+Il mittente deve essere un partecipante attivo della conversazione.
+
+---
+
+### Regola
+
+Il sistema deve verificare l'esistenza di:
+
+```text
+conversation_participants
+
+↓
+
+conversation_thread_id
+
++
+
+sender_user_id
+
++
+
+status = active
+```
+
+---
+
+## Vincolo Risposta
+
+Se valorizzato:
+
+```text
+reply_to_message_id
+```
+
+deve appartenere alla stessa Conversazione.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (conversation_thread_id)
+
+INDEX (sender_user_id)
+
+INDEX (reply_to_message_id)
+
+INDEX (message_type)
+
+INDEX (created_at)
+
+INDEX (deleted_at)
+
+---
+
+## Regole Business
+
+Ogni messaggio appartiene ad una sola conversazione.
+
+Ogni messaggio ha un solo mittente.
+
+Una conversazione può contenere molti messaggi.
+
+---
+
+## Ordine Messaggi
+
+I messaggi devono essere mostrati in ordine di:
+
+```text
+created_at
+```
+
+---
+
+## Modifica Messaggi
+
+L'utente può modificare un messaggio.
+
+Quando ciò avviene:
+
+```text
+edited_at
+```
+
+deve essere valorizzato.
+
+---
+
+Il messaggio originale non deve essere perso.
+
+---
+
+## Eliminazione Messaggi
+
+L'eliminazione è logica.
+
+---
+
+### Regola
+
+```text
+deleted_at
+```
+
+viene valorizzato.
+
+---
+
+Il record rimane nel database.
+
+---
+
+## Risposte
+
+Un messaggio può essere una risposta diretta ad un altro messaggio.
+
+---
+
+### Esempio
+
+```text
+Messaggio #10
+
+↓
+
+"Ciao, è ancora disponibile?"
+```
+
+---
+
+```text
+Messaggio #11
+
+↓
+
+Risposta a #10
+
+↓
+
+"Sì, è disponibile."
+```
+
+---
+
+## Compatibilità Marketplace
+
+Quando un utente contatta un venditore:
+
+```text
+Conversation Thread
+
+↓
+
+Messages
+```
+
+---
+
+### Esempio
+
+```text
+Buongiorno, il Charizard è ancora disponibile?
+```
+
+---
+
+```text
+Sì, è ancora disponibile.
+```
+
+---
+
+## Compatibilità Matching
+
+Un Match può generare una conversazione.
+
+I messaggi permettono agli utenti di approfondire la proposta.
+
+---
+
+### Esempio
+
+```text
+Ho visto che cerchi Lugia.
+```
+
+---
+
+```text
+Io cerco Charizard.
+```
+
+---
+
+```text
+Possiamo organizzare uno scambio.
+```
+
+---
+
+## Compatibilità Notifiche
+
+Un nuovo messaggio può generare:
+
+```text
+Nuovo Messaggio Ricevuto
+```
+
+---
+
+## Compatibilità Moderazione
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Revisionare
+
+Segnalare
+
+Oscurare
+```
+
+messaggi in caso di abuso.
+
+---
+
+## Compatibilità Sicurezza
+
+I messaggi devono poter essere sottoposti a:
+
+```text
+Filtri Spam
+
+Filtri Linguaggio Abusivo
+
+Moderazione
+```
+
+senza alterare il contenuto originale.
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente deve poter visualizzare:
+
+```text
+Conversazioni
+
+Ultimi Messaggi
+
+Messaggi Non Letti
+
+Messaggi Inviati
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Messaggi
+
+Messaggi Ricevuti
+
+Messaggi Inviati
+
+Tempo Medio Risposta
+
+Conversazioni Attive
+```
+
+---
+
+## Esempio Logico
+
+Conversation Thread
+
+↓
+
+Marketplace
+
+↓
+
+Charizard Gold
+
+↓
+
+Messages
+
+↓
+
+"Ciao, è disponibile?"
+
+↓
+
+"Sì"
+
+↓
+
+"Prezzo trattabile?"
+
+↓
+
+"Possiamo parlarne"
+
+---
+
+Conversation Thread
+
+↓
+
+Matching
+
+↓
+
+Trade Match
+
+↓
+
+Messages
+
+↓
+
+"Ho visto che cerchi Lugia"
+
+↓
+
+"Esatto"
+
+↓
+
+"Potrei averne una disponibile"
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+conversation_threads
+```
+
+```text
+conversation_participants
+```
+
+e
+
+```text
+messages
+```
+
+consente di mantenere distinta:
+
+- la conversazione
+- i partecipanti
+- il contenuto dei messaggi
+
+Questo approccio garantisce:
+
+- scalabilità
+- moderazione
+- supporto thread di lunga durata
+- gestione letture
+- future estensioni con allegati
+
+senza modificare la struttura esistente.
+
+La tabella costituisce il nucleo operativo dell'intero sistema di Messaggistica CollectorVerse.
+
+---
+
