@@ -6344,3 +6344,6947 @@ PRONTO PER:
 ```
 
 ---
+
+# Parte 3 - Catalogazione Personale
+
+# Tabella: user_collections
+
+## Scopo
+
+Rappresenta una Collezione Personale creata da un utente.
+
+Le Collezioni Personali consentono di organizzare gli oggetti posseduti in gruppi logici definiti dall'utente.
+
+Questa tabella NON rappresenta le Collezioni del Catalogo Universale.
+
+Rappresenta esclusivamente contenitori personali.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_collections
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco collezione personale |
+| user_id | UUID | SI | Proprietario della collezione |
+| name | VARCHAR(150) | SI | Nome collezione |
+| description | TEXT | NO | Descrizione collezione |
+| is_default | BOOLEAN | SI | Collezione predefinita |
+| is_public | BOOLEAN | SI | Visibilità pubblica |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+is_default = FALSE
+
+is_public = TRUE
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+user_collections
+
+---
+
+user_collections (1)
+
+↓
+
+(N)
+
+user_items
+
+---
+
+## Vincoli
+
+user_id deve esistere nella tabella users.
+
+name non può essere vuoto.
+
+All'interno dello stesso utente non possono esistere due Collezioni Personali con lo stesso nome.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (user_id)
+
+INDEX (is_public)
+
+INDEX (is_default)
+
+UNIQUE (user_id, name)
+
+---
+
+## Regole Business
+
+Ogni Collezione Personale appartiene ad un solo utente.
+
+Un utente può possedere molte Collezioni Personali.
+
+---
+
+## Collezione Predefinita
+
+Ogni utente deve possedere almeno una Collezione Personale.
+
+Alla registrazione viene creata automaticamente:
+
+```text
+La Mia Collezione
+```
+
+---
+
+## Vincolo Collezione Predefinita
+
+Per ogni utente:
+
+```text
+Può esistere una sola Collezione Personale con:
+
+is_default = TRUE
+```
+
+---
+
+## Esempi
+
+```text
+La Mia Collezione
+```
+
+---
+
+```text
+Carte Pokémon
+```
+
+---
+
+```text
+Carte Gradate
+```
+
+---
+
+```text
+Doppioni da Scambiare
+```
+
+---
+
+```text
+Investimenti
+```
+
+---
+
+## Compatibilità Privacy
+
+La visibilità della Collezione Personale viene influenzata da:
+
+```text
+privacy_settings
+```
+
+e
+
+```text
+is_public
+```
+
+---
+
+## Compatibilità Collezioni Pubbliche
+
+Le Collezioni Personali pubbliche possono essere mostrate nel profilo utente.
+
+---
+
+## Compatibilità Marketplace
+
+Una Collezione Personale può contenere oggetti:
+
+```text
+Posseduti
+
+In Vendita
+
+Disponibili per Scambio
+```
+
+tramite le tabelle successive.
+
+---
+
+## Compatibilità Matching
+
+Le Collezioni Personali vengono utilizzate per:
+
+- suggerimenti
+- matching
+- statistiche
+- completamento raccolte
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Moderare
+
+Archiviare
+```
+
+le Collezioni Personali in caso di abuso.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche possibili:
+
+```text
+Numero Oggetti
+
+Numero Versioni
+
+Numero Varianti
+
+Valore Stimato
+
+Percentuale Completamento
+```
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+user_collections
+
+↓
+
+Carte Pokémon
+
+↓
+
+Oggetti Posseduti
+
+---
+
+Utente
+
+↓
+
+user_collections
+
+↓
+
+Doppioni
+
+↓
+
+Oggetti Disponibili per Scambio
+
+---
+
+## Motivazione Architetturale
+
+Le Collezioni Personali sono state separate dagli Oggetti Posseduti perché consentono:
+
+- organizzazione libera
+- categorie personalizzate
+- gestione doppioni
+- gestione investimenti
+- gestione scambi
+
+senza modificare il Catalogo Universale.
+
+La separazione garantisce massima flessibilità e supporta qualsiasi stile collezionistico.
+
+---
+
+# Tabella: user_items
+
+## Scopo
+
+Rappresenta il possesso di uno specifico oggetto da parte di uno specifico utente.
+
+Questa è una delle tabelle più importanti dell'intera piattaforma.
+
+Il Catalogo Universale definisce:
+
+```text
+Cosa esiste
+```
+
+La tabella user_items definisce:
+
+```text
+Cosa possiede realmente un utente
+```
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_items
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco possesso |
+| user_collection_id | UUID | SI | Collezione personale proprietaria |
+| item_id | UUID | SI | Item associato |
+| item_version_id | UUID | NO | Versione associata |
+| item_variant_id | UUID | NO | Variante associata |
+| quantity | INTEGER | SI | Quantità posseduta |
+| condition_code | VARCHAR(30) | NO | Stato conservazione |
+| purchase_price | NUMERIC(12,2) | NO | Prezzo acquisto |
+| purchase_currency_id | UUID | NO | Valuta acquisto |
+| estimated_value | NUMERIC(12,2) | NO | Valore stimato |
+| estimated_currency_id | UUID | NO | Valuta valore stimato |
+| acquisition_date | DATE | NO | Data acquisizione |
+| notes | TEXT | NO | Note personali |
+| is_for_sale | BOOLEAN | SI | Disponibile per vendita |
+| is_for_trade | BOOLEAN | SI | Disponibile per scambio |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+quantity = 1
+
+is_for_sale = FALSE
+
+is_for_trade = FALSE
+
+---
+
+## Valori Consentiti
+
+### condition_code
+
+```text
+new
+mint
+near_mint
+excellent
+good
+fair
+poor
+damaged
+```
+
+---
+
+## Significato Condizioni
+
+### new
+
+Oggetto nuovo.
+
+---
+
+### mint
+
+Condizioni perfette.
+
+---
+
+### near_mint
+
+Quasi perfette.
+
+---
+
+### excellent
+
+Lievi segni di utilizzo.
+
+---
+
+### good
+
+Normale usura.
+
+---
+
+### fair
+
+Usura evidente.
+
+---
+
+### poor
+
+Condizioni molto compromesse.
+
+---
+
+### damaged
+
+Oggetto danneggiato.
+
+---
+
+## Foreign Keys
+
+user_collection_id
+
+→ user_collections.id
+
+---
+
+item_id
+
+→ items.id
+
+---
+
+item_version_id
+
+→ item_versions.id
+
+---
+
+item_variant_id
+
+→ item_variants.id
+
+---
+
+purchase_currency_id
+
+→ currencies.id
+
+---
+
+estimated_currency_id
+
+→ currencies.id
+
+---
+
+## Relazioni
+
+user_collections (1)
+
+↓
+
+(N)
+
+user_items
+
+---
+
+items (1)
+
+↓
+
+(N)
+
+user_items
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+user_items
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+user_items
+
+---
+
+currencies (1)
+
+↓
+
+(N)
+
+user_items
+
+---
+
+## Vincoli
+
+user_collection_id deve esistere.
+
+item_id deve esistere.
+
+quantity deve essere maggiore di zero.
+
+purchase_price non può essere negativa.
+
+estimated_value non può essere negativa.
+
+condition_code deve contenere un valore valido se valorizzato.
+
+---
+
+## Vincolo Gerarchico
+
+Se viene specificata una Variante:
+
+```text
+item_variant_id
+```
+
+deve appartenere alla Versione indicata.
+
+---
+
+Se viene specificata una Versione:
+
+```text
+item_version_id
+```
+
+deve appartenere all'Item indicato.
+
+---
+
+## Regole Business
+
+Ogni record rappresenta un possesso reale dell'utente.
+
+---
+
+## Esempio 1
+
+```text
+Utente
+
+↓
+
+Charizard
+
+↓
+
+Versione Inglese
+
+↓
+
+Holo
+
+↓
+
+Quantità = 1
+```
+
+---
+
+## Esempio 2
+
+```text
+Utente
+
+↓
+
+Pikachu
+
+↓
+
+Versione Italiana
+
+↓
+
+Quantità = 3
+```
+
+---
+
+## Quantità
+
+La tabella supporta la gestione di:
+
+```text
+Copie singole
+
+Duplicati
+
+Lotti
+```
+
+---
+
+### Esempio
+
+```text
+Charizard
+
+Quantità = 4
+```
+
+significa:
+
+```text
+L'utente possiede 4 copie
+```
+
+---
+
+## Compatibilità Collezioni Personali
+
+Ogni Oggetto Posseduto appartiene ad una Collezione Personale.
+
+Esempio:
+
+```text
+Carte Pokémon
+```
+
+oppure
+
+```text
+Doppioni
+```
+
+oppure
+
+```text
+Investimenti
+```
+
+---
+
+## Compatibilità Marketplace
+
+Gli oggetti possono essere marcati come:
+
+```text
+is_for_sale = TRUE
+```
+
+oppure
+
+```text
+is_for_trade = TRUE
+```
+
+---
+
+Questo NON crea automaticamente un annuncio.
+
+L'annuncio verrà gestito dalle tabelle Marketplace.
+
+---
+
+## Compatibilità Matching
+
+Il Matching utilizza:
+
+```text
+Oggetti posseduti
+
+Oggetti in vendita
+
+Oggetti scambiabili
+```
+
+per individuare opportunità.
+
+---
+
+## Compatibilità Wishlist
+
+Il sistema può confrontare:
+
+```text
+Wishlist Utente A
+```
+
+con
+
+```text
+user_items Utente B
+```
+
+per proporre Match.
+
+---
+
+## Compatibilità Scanner
+
+Dopo una scansione riuscita:
+
+```text
+Scanner
+↓
+Identificazione
+↓
+Aggiunta a user_items
+```
+
+---
+
+## Compatibilità Statistiche
+
+La tabella alimenta:
+
+```text
+Numero Oggetti Posseduti
+
+Numero Versioni
+
+Numero Varianti
+
+Valore Stimato
+
+Collezione Totale
+
+Completamento Serie
+
+Completamento Collezione
+```
+
+---
+
+## Compatibilità Gamification
+
+La tabella viene utilizzata per calcolare:
+
+```text
+CollectorScore
+
+Livelli
+
+Badge
+
+Achievement
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Moderare
+
+Ripristinare
+
+Archiviare
+```
+
+record problematici.
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+Carte Pokémon
+
+↓
+
+Charizard
+
+↓
+
+Versione Inglese
+
+↓
+
+Holo
+
+↓
+
+Quantità = 2
+
+↓
+
+Disponibile per Scambio
+
+---
+
+Utente
+
+↓
+
+Monete Rare
+
+↓
+
+2 Euro Dante
+
+↓
+
+Versione Generica
+
+↓
+
+Quantità = 1
+
+↓
+
+Collezione Personale
+
+---
+
+## Motivazione Architetturale
+
+La tabella user_items rappresenta il collegamento tra:
+
+```text
+Catalogo Universale
+```
+
+e
+
+```text
+Possesso Reale dell'Utente
+```
+
+La separazione tra:
+
+```text
+Catalogo
+
+e
+
+Possesso
+```
+
+consente:
+
+- catalogo condiviso
+- collezioni personali illimitate
+- gestione duplicati
+- marketplace
+- matching
+- statistiche avanzate
+- gamification
+
+senza alterare il Catalogo Universale.
+
+---
+
+# Tabella: wishlists
+
+## Scopo
+
+Rappresenta una Wishlist appartenente ad uno specifico utente.
+
+Una Wishlist permette di organizzare gli oggetti desiderati dall'utente.
+
+La Wishlist NON contiene direttamente gli oggetti desiderati.
+
+Gli elementi desiderati verranno memorizzati nella tabella:
+
+```text
+wishlist_items
+```
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+wishlists
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco wishlist |
+| user_id | UUID | SI | Proprietario wishlist |
+| name | VARCHAR(150) | SI | Nome wishlist |
+| description | TEXT | NO | Descrizione wishlist |
+| is_default | BOOLEAN | SI | Wishlist predefinita |
+| is_public | BOOLEAN | SI | Wishlist pubblica |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+is_default = FALSE
+
+is_public = TRUE
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+wishlists
+
+---
+
+wishlists (1)
+
+↓
+
+(N)
+
+wishlist_items
+
+---
+
+## Vincoli
+
+user_id deve esistere nella tabella users.
+
+name non può essere vuoto.
+
+All'interno dello stesso utente non possono esistere due Wishlist con lo stesso nome.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (user_id)
+
+INDEX (is_default)
+
+INDEX (is_public)
+
+UNIQUE (user_id, name)
+
+---
+
+## Regole Business
+
+Ogni Wishlist appartiene ad un solo utente.
+
+Un utente può possedere più Wishlist.
+
+---
+
+## Wishlist Predefinita
+
+Alla registrazione viene creata automaticamente una Wishlist:
+
+```text
+La Mia Wishlist
+```
+
+---
+
+## Vincolo Wishlist Predefinita
+
+Per ogni utente:
+
+```text
+Può esistere una sola Wishlist con:
+
+is_default = TRUE
+```
+
+---
+
+## Esempi
+
+```text
+La Mia Wishlist
+```
+
+---
+
+```text
+Pokémon da Completare
+```
+
+---
+
+```text
+Carte da Investimento
+```
+
+---
+
+```text
+Ricerca Prioritaria
+```
+
+---
+
+```text
+Scambi Desiderati
+```
+
+---
+
+## Compatibilità Privacy
+
+La visibilità della Wishlist dipende da:
+
+```text
+privacy_settings
+```
+
+e
+
+```text
+is_public
+```
+
+---
+
+## Visibilità Effettiva
+
+Una Wishlist viene mostrata pubblicamente soltanto se:
+
+```text
+privacy_settings permette la visibilità
+```
+
+e
+
+```text
+is_public = TRUE
+```
+
+---
+
+## Compatibilità Matching
+
+Le Wishlist rappresentano il principale input del Matching.
+
+Il sistema confronta:
+
+```text
+wishlist_items
+```
+
+con:
+
+```text
+user_items
+```
+
+per individuare opportunità.
+
+---
+
+## Compatibilità Marketplace
+
+Le Wishlist permettono di individuare annunci potenzialmente interessanti.
+
+Esempio:
+
+```text
+Wishlist
+
+↓
+
+Charizard
+
+↓
+
+Nuovo Annuncio Marketplace
+
+↓
+
+Notifica Utente
+```
+
+---
+
+## Compatibilità Scanner
+
+Dopo una scansione:
+
+```text
+Oggetto non posseduto
+```
+
+↓
+
+```text
+Aggiunta alla Wishlist
+```
+
+---
+
+## Compatibilità Notifiche
+
+La Wishlist può generare notifiche per:
+
+```text
+Nuovi Annunci
+
+Nuovi Scambi
+
+Nuovi Possessori
+
+Nuove Opportunità Matching
+```
+
+---
+
+## Compatibilità Gamification
+
+Le Wishlist possono essere utilizzate per calcolare:
+
+```text
+Obiettivi Completati
+
+Oggetti Ricercati
+
+Progressione Collezione
+
+Achievement
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Moderare
+
+Ripristinare
+
+Archiviare
+```
+
+Wishlist problematiche.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Wishlist
+
+Numero Elementi Desiderati
+
+Wishlist Completate
+
+Wishlist Attive
+
+Tasso Completamento
+```
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+wishlists
+
+↓
+
+Pokémon da Completare
+
+↓
+
+wishlist_items
+
+↓
+
+Charizard
+
+Blastoise
+
+Venusaur
+
+---
+
+Utente
+
+↓
+
+wishlists
+
+↓
+
+Carte da Investimento
+
+↓
+
+wishlist_items
+
+↓
+
+Lugia
+
+Umbreon
+
+Gengar
+
+---
+
+## Motivazione Architetturale
+
+Le Wishlist sono state separate dagli elementi desiderati perché consentono:
+
+- più wishlist per utente
+- organizzazione personalizzata
+- priorità differenti
+- statistiche dedicate
+- matching più preciso
+- notifiche mirate
+
+senza modificare la struttura del Catalogo Universale.
+
+Questa separazione garantisce massima flessibilità e supporta qualsiasi tipologia di collezionista.
+
+---
+
+# Tabella: wishlist_items
+
+## Scopo
+
+Rappresenta un elemento desiderato all'interno di una Wishlist.
+
+Questa tabella contiene i collegamenti tra:
+
+```text
+Wishlist
+```
+
+e
+
+```text
+Item
+
+Versione
+
+Variante
+```
+
+La tabella costituisce il cuore del sistema di:
+
+- Matching
+- Ricerca Oggetti
+- Notifiche Marketplace
+- Completamento Collezioni
+- Suggerimenti Acquisto
+- Suggerimenti Scambio
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+wishlist_items
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco elemento wishlist |
+| wishlist_id | UUID | SI | Wishlist proprietaria |
+| item_id | UUID | SI | Item desiderato |
+| item_version_id | UUID | NO | Versione desiderata |
+| item_variant_id | UUID | NO | Variante desiderata |
+| quantity_desired | INTEGER | SI | Quantità desiderata |
+| priority_level | VARCHAR(20) | SI | Priorità |
+| notes | TEXT | NO | Note personali |
+| is_active | BOOLEAN | SI | Elemento attivo |
+| created_at | TIMESTAMPTZ | SI | Data inserimento |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+quantity_desired = 1
+
+priority_level = medium
+
+is_active = TRUE
+
+---
+
+## Valori Consentiti
+
+### priority_level
+
+```text
+low
+
+medium
+
+high
+
+critical
+```
+
+---
+
+## Significato Priorità
+
+### low
+
+Interesse basso.
+
+---
+
+### medium
+
+Interesse normale.
+
+---
+
+### high
+
+Ricerca attiva.
+
+---
+
+### critical
+
+Massima priorità.
+
+Oggetto ricercato con urgenza.
+
+---
+
+## Foreign Keys
+
+wishlist_id
+
+→ wishlists.id
+
+---
+
+item_id
+
+→ items.id
+
+---
+
+item_version_id
+
+→ item_versions.id
+
+---
+
+item_variant_id
+
+→ item_variants.id
+
+---
+
+## Relazioni
+
+wishlists (1)
+
+↓
+
+(N)
+
+wishlist_items
+
+---
+
+items (1)
+
+↓
+
+(N)
+
+wishlist_items
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+wishlist_items
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+wishlist_items
+
+---
+
+## Vincoli
+
+wishlist_id deve esistere.
+
+item_id deve esistere.
+
+quantity_desired deve essere maggiore di zero.
+
+priority_level deve contenere un valore valido.
+
+is_active deve contenere un valore valido.
+
+---
+
+## Vincolo Gerarchico
+
+Se viene specificata una Variante:
+
+```text
+item_variant_id
+```
+
+deve appartenere alla Versione indicata.
+
+---
+
+Se viene specificata una Versione:
+
+```text
+item_version_id
+```
+
+deve appartenere all'Item indicato.
+
+---
+
+## Vincolo Anti-Duplicato
+
+La stessa Wishlist non può contenere due volte:
+
+```text
+Lo stesso Item
+
++
+Stessa Versione
+
++
+Stessa Variante
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (wishlist_id)
+
+INDEX (item_id)
+
+INDEX (item_version_id)
+
+INDEX (item_variant_id)
+
+INDEX (priority_level)
+
+INDEX (is_active)
+
+---
+
+## Regole Business
+
+Un elemento Wishlist può riferirsi a:
+
+```text
+Solo Item
+```
+
+oppure:
+
+```text
+Item + Versione
+```
+
+oppure:
+
+```text
+Item + Versione + Variante
+```
+
+---
+
+## Esempio 1
+
+```text
+Charizard
+```
+
+Significa:
+
+```text
+Qualsiasi Charizard
+```
+
+---
+
+## Esempio 2
+
+```text
+Charizard
+
++
+
+Versione Inglese
+```
+
+Significa:
+
+```text
+Solo Charizard Inglese
+```
+
+---
+
+## Esempio 3
+
+```text
+Charizard
+
++
+
+Versione Inglese
+
++
+
+Gold
+```
+
+Significa:
+
+```text
+Solo Charizard Inglese Gold
+```
+
+---
+
+## Compatibilità Matching
+
+Il Matching confronta:
+
+```text
+wishlist_items
+```
+
+con:
+
+```text
+user_items
+```
+
+---
+
+### Esempio
+
+Utente A desidera:
+
+```text
+Charizard Inglese Gold
+```
+
+↓
+
+Utente B possiede:
+
+```text
+Charizard Inglese Gold
+```
+
+↓
+
+```text
+Match Potenziale
+```
+
+---
+
+## Compatibilità Marketplace
+
+Gli annunci vengono confrontati automaticamente con gli elementi Wishlist.
+
+---
+
+### Esempio
+
+Marketplace:
+
+```text
+Nuovo Annuncio
+
+↓
+
+Charizard Inglese Gold
+```
+
+↓
+
+wishlist_items
+
+↓
+
+Charizard Inglese Gold
+```
+
+↓
+
+```text
+Notifica Utente
+```
+
+---
+
+## Compatibilità Scanner
+
+Dopo una scansione:
+
+```text
+Oggetto Mancante
+```
+
+↓
+
+```text
+Aggiunta alla Wishlist
+```
+
+---
+
+## Compatibilità Collezioni Personali
+
+Quando un oggetto viene acquisito:
+
+```text
+wishlist_item
+```
+
+↓
+
+```text
+user_item
+```
+
+↓
+
+Possibile rimozione automatica dalla Wishlist.
+
+---
+
+## Compatibilità Notifiche
+
+La Wishlist può generare notifiche per:
+
+```text
+Nuovi Annunci
+
+Nuovi Possessori
+
+Nuove Opportunità di Scambio
+
+Match Perfetti
+
+Match Parziali
+```
+
+---
+
+## Compatibilità Gamification
+
+Gli elementi Wishlist vengono utilizzati per calcolare:
+
+```text
+Obiettivi Completati
+
+Progressione Collezione
+
+Achievement
+
+CollectorScore
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Oggetti Ricercati
+
+Numero Match Trovati
+
+Numero Acquisti Derivati
+
+Numero Wishlist Completate
+
+Percentuale Completamento Wishlist
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Moderare
+
+Ripristinare
+
+Archiviare
+```
+
+elementi problematici.
+
+---
+
+## Esempio Logico
+
+Wishlist
+
+↓
+
+Pokémon da Completare
+
+↓
+
+wishlist_items
+
+↓
+
+Charizard
+
+Blastoise
+
+Venusaur
+
+---
+
+Wishlist
+
+↓
+
+Investimenti
+
+↓
+
+wishlist_items
+
+↓
+
+Umbreon Gold Star
+
+Lugia First Edition
+
+Pikachu Illustrator
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+wishlists
+```
+
+e
+
+```text
+wishlist_items
+```
+
+consente:
+
+- più wishlist per utente
+- priorità differenti
+- matching avanzato
+- notifiche mirate
+- statistiche dettagliate
+- gestione indipendente degli elementi desiderati
+
+senza modificare il Catalogo Universale.
+
+Questa struttura è coerente con il Blueprint CollectorVerse e costituisce la base per Marketplace, Matching e Notifiche intelligenti.
+
+---
+
+# Parte 4 - Marketplace
+
+# Tabella: marketplace_listings
+
+## Scopo
+
+Rappresenta un annuncio Marketplace pubblicato da un utente.
+
+Un annuncio è sempre associato ad un oggetto realmente posseduto dall'utente.
+
+L'annuncio può riguardare:
+
+- vendita
+- scambio
+- vendita e scambio
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+marketplace_listings
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco annuncio |
+| seller_user_id | UUID | SI | Proprietario annuncio |
+| user_item_id | UUID | SI | Oggetto posseduto collegato |
+| listing_type | VARCHAR(30) | SI | Tipologia annuncio |
+| status | VARCHAR(30) | SI | Stato annuncio |
+| title | VARCHAR(255) | SI | Titolo annuncio |
+| description | TEXT | NO | Descrizione annuncio |
+| price_amount | NUMERIC(12,2) | NO | Prezzo richiesto |
+| currency_id | UUID | NO | Valuta |
+| quantity_available | INTEGER | SI | Quantità disponibile |
+| published_at | TIMESTAMPTZ | NO | Data pubblicazione |
+| expires_at | TIMESTAMPTZ | NO | Data scadenza |
+| view_count | INTEGER | SI | Numero visualizzazioni |
+| favorite_count | INTEGER | SI | Numero preferiti |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = draft
+
+view_count = 0
+
+favorite_count = 0
+
+quantity_available = 1
+
+---
+
+## Valori Consentiti
+
+### listing_type
+
+```text
+sale
+trade
+sale_trade
+```
+
+---
+
+### status
+
+```text
+draft
+
+active
+
+reserved
+
+completed
+
+expired
+
+cancelled
+
+suspended
+```
+
+---
+
+## Significato Listing Type
+
+### sale
+
+Annuncio di sola vendita.
+
+---
+
+### trade
+
+Annuncio di solo scambio.
+
+---
+
+### sale_trade
+
+Vendita oppure scambio.
+
+---
+
+## Significato Status
+
+### draft
+
+Bozza non pubblicata.
+
+---
+
+### active
+
+Annuncio visibile.
+
+---
+
+### reserved
+
+Oggetto temporaneamente impegnato.
+
+---
+
+### completed
+
+Operazione conclusa.
+
+---
+
+### expired
+
+Annuncio scaduto.
+
+---
+
+### cancelled
+
+Annuncio ritirato.
+
+---
+
+### suspended
+
+Annuncio sospeso dalla moderazione.
+
+---
+
+## Foreign Keys
+
+seller_user_id
+
+→ users.id
+
+---
+
+user_item_id
+
+→ user_items.id
+
+---
+
+currency_id
+
+→ currencies.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+marketplace_listings
+
+---
+
+user_items (1)
+
+↓
+
+(N)
+
+marketplace_listings
+
+---
+
+currencies (1)
+
+↓
+
+(N)
+
+marketplace_listings
+
+---
+
+marketplace_listings (1)
+
+↓
+
+(N)
+
+marketplace_favorites
+
+(Futuro)
+
+---
+
+marketplace_listings (1)
+
+↓
+
+(N)
+
+marketplace_reports
+
+(Futuro)
+
+---
+
+marketplace_listings (1)
+
+↓
+
+(N)
+
+marketplace_offers
+
+(Futuro)
+
+---
+
+## Vincoli
+
+seller_user_id deve esistere.
+
+user_item_id deve esistere.
+
+listing_type deve contenere un valore valido.
+
+status deve contenere un valore valido.
+
+quantity_available deve essere maggiore di zero.
+
+price_amount deve essere maggiore o uguale a zero se valorizzato.
+
+---
+
+## Vincolo Proprietà
+
+L'oggetto collegato:
+
+```text
+user_item_id
+```
+
+deve appartenere allo stesso utente indicato in:
+
+```text
+seller_user_id
+```
+
+---
+
+## Regole Business
+
+Un annuncio può essere creato esclusivamente per un oggetto realmente posseduto.
+
+---
+
+## Vendita
+
+Per annunci:
+
+```text
+sale
+
+oppure
+
+sale_trade
+```
+
+può essere valorizzato:
+
+```text
+price_amount
+```
+
+---
+
+## Scambio
+
+Per annunci:
+
+```text
+trade
+```
+
+il prezzo può essere assente.
+
+---
+
+## Quantità
+
+La quantità disponibile non può superare la quantità posseduta.
+
+---
+
+### Esempio
+
+```text
+User Item
+
+Quantità Posseduta = 5
+```
+
+↓
+
+```text
+Marketplace Listing
+
+Quantità Disponibile = 3
+```
+
+Valido.
+
+---
+
+```text
+Marketplace Listing
+
+Quantità Disponibile = 7
+```
+
+Non valido.
+
+---
+
+## Compatibilità Matching
+
+Il Matching utilizza:
+
+```text
+listing_type
+
+Item
+
+Versione
+
+Variante
+```
+
+per individuare opportunità.
+
+---
+
+## Compatibilità Wishlist
+
+Gli annunci vengono confrontati con:
+
+```text
+wishlist_items
+```
+
+---
+
+### Esempio
+
+Wishlist:
+
+```text
+Charizard Inglese Gold
+```
+
+↓
+
+Marketplace:
+
+```text
+Charizard Inglese Gold
+```
+
+↓
+
+```text
+Potenziale Match
+```
+
+---
+
+## Compatibilità Notifiche
+
+Un annuncio può generare notifiche quando:
+
+```text
+Nuovo Annuncio
+
+Cambio Prezzo
+
+Scadenza
+
+Nuovo Match
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Nascondere
+
+Sospendere
+
+Archiviare
+```
+
+gli annunci.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Visualizzazioni
+
+Preferiti
+
+Contatti Ricevuti
+
+Offerte Ricevute
+
+Conversioni
+
+Vendite
+```
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+user_items
+
+↓
+
+Charizard Inglese Gold
+
+↓
+
+marketplace_listing
+
+↓
+
+Vendita
+
+↓
+
+250,00 EUR
+
+↓
+
+Active
+
+---
+
+Utente
+
+↓
+
+user_items
+
+↓
+
+Blastoise Italiano
+
+↓
+
+marketplace_listing
+
+↓
+
+Trade
+
+↓
+
+Active
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+user_items
+```
+
+e
+
+```text
+marketplace_listings
+```
+
+consente:
+
+- possesso senza pubblicazione
+- pubblicazione selettiva
+- gestione quantità
+- vendite multiple
+- scambi
+- cronologia annunci
+
+senza alterare la struttura delle collezioni personali.
+
+Questa architettura costituisce il nucleo del Marketplace CollectorVerse e supporta milioni di annunci senza modifiche strutturali future.
+
+---
+
+# Tabella: marketplace_offers
+
+## Scopo
+
+Rappresenta una proposta effettuata su un annuncio Marketplace.
+
+La proposta può essere:
+
+- economica
+- di scambio
+- mista
+
+La tabella gestisce l'intero ciclo di negoziazione tra utenti.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+marketplace_offers
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco offerta |
+| marketplace_listing_id | UUID | SI | Annuncio destinatario |
+| buyer_user_id | UUID | SI | Utente offerente |
+| offer_type | VARCHAR(30) | SI | Tipologia offerta |
+| status | VARCHAR(30) | SI | Stato offerta |
+| offered_amount | NUMERIC(12,2) | NO | Importo offerto |
+| currency_id | UUID | NO | Valuta offerta |
+| message | TEXT | NO | Messaggio accompagnatorio |
+| expires_at | TIMESTAMPTZ | NO | Scadenza proposta |
+| responded_at | TIMESTAMPTZ | NO | Data risposta |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = pending
+
+---
+
+## Valori Consentiti
+
+### offer_type
+
+```text
+purchase
+trade
+purchase_trade
+```
+
+---
+
+### status
+
+```text
+pending
+
+accepted
+
+rejected
+
+cancelled
+
+expired
+
+countered
+```
+
+---
+
+## Significato Offer Type
+
+### purchase
+
+Proposta economica.
+
+---
+
+### trade
+
+Proposta di scambio.
+
+---
+
+### purchase_trade
+
+Proposta mista:
+
+```text
+Scambio
+
++
+
+Importo aggiuntivo
+```
+
+---
+
+## Significato Status
+
+### pending
+
+Offerta in attesa.
+
+---
+
+### accepted
+
+Offerta accettata.
+
+---
+
+### rejected
+
+Offerta rifiutata.
+
+---
+
+### cancelled
+
+Offerta annullata dall'offerente.
+
+---
+
+### expired
+
+Offerta scaduta.
+
+---
+
+### countered
+
+Controproposta generata.
+
+---
+
+## Foreign Keys
+
+marketplace_listing_id
+
+→ marketplace_listings.id
+
+---
+
+buyer_user_id
+
+→ users.id
+
+---
+
+currency_id
+
+→ currencies.id
+
+---
+
+## Relazioni
+
+marketplace_listings (1)
+
+↓
+
+(N)
+
+marketplace_offers
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+marketplace_offers
+
+---
+
+currencies (1)
+
+↓
+
+(N)
+
+marketplace_offers
+
+---
+
+marketplace_offers (1)
+
+↓
+
+(N)
+
+marketplace_offer_trade_items
+
+(Futuro)
+
+---
+
+marketplace_offers (1)
+
+↓
+
+(N)
+
+marketplace_offer_history
+
+(Futuro)
+
+---
+
+## Vincoli
+
+marketplace_listing_id deve esistere.
+
+buyer_user_id deve esistere.
+
+offer_type deve contenere un valore valido.
+
+status deve contenere un valore valido.
+
+offered_amount deve essere maggiore di zero se valorizzato.
+
+---
+
+## Vincolo Proprietà
+
+L'offerente non può essere il proprietario dell'annuncio.
+
+---
+
+### Non consentito
+
+```text
+seller_user_id
+
+=
+
+buyer_user_id
+```
+
+---
+
+## Regole Business
+
+Un annuncio può ricevere molte offerte.
+
+Una offerta appartiene ad un solo annuncio.
+
+Una offerta appartiene ad un solo offerente.
+
+---
+
+## Offerta Economica
+
+Per:
+
+```text
+purchase
+```
+
+deve essere valorizzato:
+
+```text
+offered_amount
+```
+
+---
+
+## Offerta di Scambio
+
+Per:
+
+```text
+trade
+```
+
+l'importo può essere assente.
+
+Gli oggetti proposti verranno gestiti tramite:
+
+```text
+marketplace_offer_trade_items
+```
+
+---
+
+## Offerta Mista
+
+Per:
+
+```text
+purchase_trade
+```
+
+sono consentiti:
+
+```text
+Importo
+
++
+
+Oggetti in Scambio
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (marketplace_listing_id)
+
+INDEX (buyer_user_id)
+
+INDEX (status)
+
+INDEX (offer_type)
+
+INDEX (expires_at)
+
+INDEX (created_at)
+
+---
+
+## Compatibilità Marketplace
+
+Le offerte costituiscono il sistema principale di trattativa.
+
+---
+
+### Esempio Vendita
+
+Annuncio:
+
+```text
+Charizard Gold
+```
+
+↓
+
+Prezzo:
+
+```text
+250 EUR
+```
+
+↓
+
+Offerta:
+
+```text
+220 EUR
+```
+
+---
+
+### Esempio Scambio
+
+Annuncio:
+
+```text
+Umbreon Gold Star
+```
+
+↓
+
+Offerta:
+
+```text
+Lugia First Edition
+```
+
+---
+
+### Esempio Misto
+
+Annuncio:
+
+```text
+Charizard Gold
+```
+
+↓
+
+Offerta:
+
+```text
+Blastoise First Edition
+
++
+
+100 EUR
+```
+
+---
+
+## Compatibilità Matching
+
+Le offerte vengono utilizzate per identificare:
+
+```text
+Interessi reali
+
+Trattative attive
+
+Tasso conversione
+```
+
+---
+
+## Compatibilità Notifiche
+
+Le offerte possono generare notifiche per:
+
+```text
+Nuova Offerta
+
+Offerta Accettata
+
+Offerta Rifiutata
+
+Controproposta
+
+Scadenza Offerta
+```
+
+---
+
+## Compatibilità Messaggistica
+
+Un'offerta può essere collegata ad una conversazione privata.
+
+---
+
+### Esempio
+
+```text
+Marketplace Offer
+
+↓
+
+Conversation
+
+↓
+
+Messages
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Offerte
+
+Offerte Accettate
+
+Offerte Rifiutate
+
+Tasso Conversione
+
+Tempo Medio Risposta
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Revisionare
+
+Bloccare
+
+Archiviare
+```
+
+offerte problematiche.
+
+---
+
+## Esempio Logico
+
+Marketplace Listing
+
+↓
+
+Charizard Gold
+
+↓
+
+Marketplace Offer
+
+↓
+
+220 EUR
+
+↓
+
+Pending
+
+↓
+
+Accepted
+
+---
+
+Marketplace Listing
+
+↓
+
+Lugia First Edition
+
+↓
+
+Marketplace Offer
+
+↓
+
+Umbreon Gold Star
+
+↓
+
+Trade
+
+↓
+
+Pending
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+marketplace_listings
+```
+
+e
+
+```text
+marketplace_offers
+```
+
+consente:
+
+- più offerte sullo stesso annuncio
+- gestione trattative
+- controproposte
+- storico negoziazioni
+- supporto vendita
+- supporto scambio
+- supporto formule miste
+
+senza modificare l'annuncio originale.
+
+Questa struttura costituisce il motore delle trattative del Marketplace CollectorVerse.
+
+---
+
+# Tabella: marketplace_offer_trade_items
+
+## Scopo
+
+Rappresenta gli oggetti proposti in una Offerta di Scambio.
+
+La tabella viene utilizzata quando una proposta Marketplace contiene:
+
+```text
+Scambio
+```
+
+oppure:
+
+```text
+Scambio + Importo Economico
+```
+
+Questa tabella permette di specificare con precisione quali oggetti vengono offerti dall'utente.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+marketplace_offer_trade_items
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco elemento di scambio |
+| marketplace_offer_id | UUID | SI | Offerta associata |
+| user_item_id | UUID | SI | Oggetto offerto nello scambio |
+| quantity | INTEGER | SI | Quantità proposta |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+quantity = 1
+
+---
+
+## Foreign Keys
+
+marketplace_offer_id
+
+→ marketplace_offers.id
+
+---
+
+user_item_id
+
+→ user_items.id
+
+---
+
+## Relazioni
+
+marketplace_offers (1)
+
+↓
+
+(N)
+
+marketplace_offer_trade_items
+
+---
+
+user_items (1)
+
+↓
+
+(N)
+
+marketplace_offer_trade_items
+
+---
+
+## Vincoli
+
+marketplace_offer_id deve esistere.
+
+user_item_id deve esistere.
+
+quantity deve essere maggiore di zero.
+
+---
+
+## Vincolo Proprietà
+
+L'oggetto indicato in:
+
+```text
+user_item_id
+```
+
+deve appartenere all'utente che ha creato l'offerta.
+
+---
+
+### Non consentito
+
+```text
+Utente A
+
+↓
+
+Offerta
+
+↓
+
+Oggetto appartenente a Utente B
+```
+
+---
+
+## Vincolo Disponibilità
+
+La quantità proposta nello scambio non può superare la quantità realmente posseduta.
+
+---
+
+### Esempio
+
+Utente possiede:
+
+```text
+5 Charizard
+```
+
+---
+
+Può proporre:
+
+```text
+1 Charizard
+
+oppure
+
+3 Charizard
+
+oppure
+
+5 Charizard
+```
+
+---
+
+Non può proporre:
+
+```text
+6 Charizard
+```
+
+---
+
+## Vincolo Anti-Duplicato
+
+All'interno della stessa offerta non può comparire due volte lo stesso:
+
+```text
+user_item
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (marketplace_offer_id)
+
+INDEX (user_item_id)
+
+UNIQUE (marketplace_offer_id, user_item_id)
+
+---
+
+## Regole Business
+
+Una Offerta può includere:
+
+```text
+Nessun Oggetto
+```
+
+per offerte economiche pure.
+
+---
+
+Oppure:
+
+```text
+Uno o più Oggetti
+```
+
+per gli scambi.
+
+---
+
+## Esempio Scambio Semplice
+
+Annuncio:
+
+```text
+Charizard Gold
+```
+
+---
+
+Offerta:
+
+```text
+Umbreon Gold Star
+```
+
+---
+
+marketplace_offer_trade_items
+
+```text
+Umbreon Gold Star
+```
+
+---
+
+## Esempio Scambio Multiplo
+
+Annuncio:
+
+```text
+Lugia First Edition
+```
+
+---
+
+Offerta:
+
+```text
+Charizard
+
++
+
+Blastoise
+
++
+
+Venusaur
+```
+
+---
+
+marketplace_offer_trade_items
+
+```text
+Charizard
+
+Blastoise
+
+Venusaur
+```
+
+---
+
+## Esempio Scambio Misto
+
+Annuncio:
+
+```text
+Pikachu Illustrator
+```
+
+---
+
+Offerta:
+
+```text
+Charizard Gold
+
++
+
+500 EUR
+```
+
+---
+
+marketplace_offers
+
+```text
+offered_amount = 500
+```
+
+---
+
+marketplace_offer_trade_items
+
+```text
+Charizard Gold
+```
+
+---
+
+## Compatibilità Marketplace
+
+La tabella costituisce il cuore degli scambi.
+
+Consente di supportare:
+
+```text
+1 contro 1
+
+1 contro molti
+
+Molti contro molti
+
+Scambio + denaro
+```
+
+---
+
+## Compatibilità Matching
+
+Gli oggetti proposti vengono utilizzati per identificare:
+
+```text
+Interessi reciproci
+
+Opportunità di scambio
+
+Match avanzati
+```
+
+---
+
+## Compatibilità Wishlist
+
+Durante l'analisi delle offerte il sistema può verificare se:
+
+```text
+Oggetto Offerto
+```
+
+è presente nella:
+
+```text
+Wishlist del venditore
+```
+
+---
+
+### Esempio
+
+Venditore cerca:
+
+```text
+Umbreon Gold Star
+```
+
+---
+
+Offerente propone:
+
+```text
+Umbreon Gold Star
+```
+
+---
+
+```text
+Match Migliorato
+```
+
+---
+
+## Compatibilità Notifiche
+
+Possono essere generate notifiche per:
+
+```text
+Nuova Offerta di Scambio
+
+Oggetto Correlato alla Wishlist
+
+Accettazione
+
+Rifiuto
+
+Controproposta
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Scambi Proposti
+
+Oggetti Proposti
+
+Oggetti Accettati
+
+Valore Stimato Scambi
+
+Tasso Accettazione
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Revisionare
+
+Archiviare
+
+Moderare
+```
+
+gli oggetti coinvolti nelle trattative.
+
+---
+
+## Esempio Logico
+
+Marketplace Listing
+
+↓
+
+Charizard Gold
+
+↓
+
+Marketplace Offer
+
+↓
+
+Trade
+
+↓
+
+marketplace_offer_trade_items
+
+↓
+
+Umbreon Gold Star
+
+↓
+
+Pending
+
+---
+
+Marketplace Listing
+
+↓
+
+Lugia First Edition
+
+↓
+
+Marketplace Offer
+
+↓
+
+Trade + Cash
+
+↓
+
+marketplace_offer_trade_items
+
+↓
+
+Charizard
+
+Blastoise
+
+↓
+
+500 EUR
+
+↓
+
+Pending
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+marketplace_offers
+```
+
+e
+
+```text
+marketplace_offer_trade_items
+```
+
+consente di gestire qualsiasi tipologia di scambio senza limitazioni strutturali.
+
+Questo approccio supporta:
+
+- scambi complessi
+- più oggetti
+- offerte miste
+- matching avanzato
+- statistiche dettagliate
+
+e rende il Marketplace CollectorVerse estendibile a qualsiasi categoria futura senza modifiche al database.
+
+---
+
+# Tabella: marketplace_favorites
+
+## Scopo
+
+Rappresenta il salvataggio di un annuncio Marketplace tra i preferiti di un utente.
+
+Questa funzionalità permette agli utenti di:
+
+- monitorare annunci interessanti
+- confrontare più annunci
+- seguire l'evoluzione dei prezzi
+- ricevere notifiche sugli annunci salvati
+- ritrovare facilmente annunci visualizzati in precedenza
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+marketplace_favorites
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco preferito |
+| user_id | UUID | SI | Utente che salva il preferito |
+| marketplace_listing_id | UUID | SI | Annuncio salvato |
+| created_at | TIMESTAMPTZ | SI | Data aggiunta ai preferiti |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+marketplace_listing_id
+
+→ marketplace_listings.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+marketplace_favorites
+
+---
+
+marketplace_listings (1)
+
+↓
+
+(N)
+
+marketplace_favorites
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+marketplace_listing_id deve esistere.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Lo stesso utente non può salvare più volte lo stesso annuncio.
+
+---
+
+### Non consentito
+
+```text
+Utente A
+
+↓
+
+Annuncio 123
+
+↓
+
+Preferito
+```
+
+---
+
+```text
+Utente A
+
+↓
+
+Annuncio 123
+
+↓
+
+Preferito
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (user_id)
+
+INDEX (marketplace_listing_id)
+
+INDEX (created_at)
+
+UNIQUE (user_id, marketplace_listing_id)
+
+---
+
+## Regole Business
+
+Un utente può aggiungere ai preferiti qualsiasi annuncio visibile.
+
+Un annuncio può essere aggiunto ai preferiti da molti utenti.
+
+---
+
+## Compatibilità Marketplace
+
+I preferiti consentono di:
+
+```text
+Seguire Annunci
+
+Monitorare Prezzi
+
+Confrontare Opportunità
+
+Creare Liste Personali
+```
+
+---
+
+## Compatibilità Notifiche
+
+Un annuncio preferito può generare notifiche quando:
+
+```text
+Cambio Prezzo
+
+Cambio Stato
+
+Scadenza Annuncio
+
+Nuove Offerte
+
+Annuncio Completato
+```
+
+---
+
+## Esempio
+
+Utente salva:
+
+```text
+Charizard Gold
+```
+
+---
+
+Successivamente:
+
+```text
+Prezzo 250 EUR
+↓
+Prezzo 220 EUR
+```
+
+↓
+
+```text
+Notifica Utente
+```
+
+---
+
+## Compatibilità Matching
+
+Gli annunci salvati rappresentano un forte indicatore di interesse.
+
+Possono essere utilizzati per:
+
+```text
+Migliorare Matching
+
+Suggerimenti
+
+Raccomandazioni
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Preferiti Totali
+
+Annunci più Salvati
+
+Utenti più Attivi
+
+Conversioni da Preferito a Acquisto
+```
+
+---
+
+## Compatibilità Profilo Utente
+
+Statistiche disponibili:
+
+```text
+Numero Annunci Salvati
+
+Cronologia Preferiti
+
+Interessi Marketplace
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Analizzare
+
+Moderare
+```
+
+i dati aggregati dei preferiti.
+
+---
+
+## Compatibilità Algoritmi Futuri
+
+I preferiti possono essere utilizzati per:
+
+```text
+Suggerimenti Personalizzati
+
+Consigli Acquisto
+
+Ranking Marketplace
+
+Ricerche Popolari
+```
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+marketplace_favorites
+
+↓
+
+Charizard Gold
+
+Lugia First Edition
+
+Umbreon Gold Star
+
+↓
+
+Monitoraggio Automatico
+
+---
+
+Marketplace Listing
+
+↓
+
+100 Utenti Preferiti
+
+↓
+
+Alta Popolarità
+
+↓
+
+Maggiore Visibilità
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+marketplace_listings
+```
+
+e
+
+```text
+marketplace_favorites
+```
+
+consente:
+
+- monitoraggio indipendente degli annunci
+- notifiche dedicate
+- statistiche avanzate
+- ranking Marketplace
+- raccomandazioni personalizzate
+
+senza modificare direttamente la struttura degli annunci.
+
+Questa tabella costituisce uno degli elementi fondamentali del Marketplace CollectorVerse per misurare interesse e popolarità degli annunci.
+
+---
+
+# Tabella: marketplace_reports
+
+## Scopo
+
+Rappresenta una segnalazione effettuata da un utente nei confronti di un annuncio Marketplace.
+
+La tabella viene utilizzata per:
+
+- contrastare frodi
+- contrastare truffe
+- contrastare spam
+- identificare oggetti falsi
+- identificare contenuti inappropriati
+- supportare il lavoro di moderazione
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+marketplace_reports
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco segnalazione |
+| marketplace_listing_id | UUID | SI | Annuncio segnalato |
+| reporter_user_id | UUID | SI | Utente segnalante |
+| report_reason | VARCHAR(50) | SI | Motivo segnalazione |
+| status | VARCHAR(30) | SI | Stato gestione |
+| description | TEXT | NO | Dettagli aggiuntivi |
+| reviewed_by_user_id | UUID | NO | Moderatore o amministratore che ha gestito il caso |
+| reviewed_at | TIMESTAMPTZ | NO | Data revisione |
+| resolution_notes | TEXT | NO | Note risoluzione |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = pending
+
+---
+
+## Valori Consentiti
+
+### report_reason
+
+```text
+fraud
+
+counterfeit
+
+duplicate_listing
+
+wrong_category
+
+misleading_description
+
+inappropriate_content
+
+spam
+
+stolen_item
+
+other
+```
+
+---
+
+### status
+
+```text
+pending
+
+under_review
+
+approved
+
+rejected
+
+closed
+```
+
+---
+
+## Significato Report Reason
+
+### fraud
+
+Possibile tentativo di truffa.
+
+---
+
+### counterfeit
+
+Possibile oggetto falso.
+
+---
+
+### duplicate_listing
+
+Annuncio duplicato.
+
+---
+
+### wrong_category
+
+Categoria errata.
+
+---
+
+### misleading_description
+
+Descrizione ingannevole.
+
+---
+
+### inappropriate_content
+
+Contenuti non consentiti.
+
+---
+
+### spam
+
+Spam o pubblicità abusiva.
+
+---
+
+### stolen_item
+
+Possibile bene rubato.
+
+---
+
+### other
+
+Motivazione non classificabile.
+
+---
+
+## Significato Status
+
+### pending
+
+Segnalazione ricevuta.
+
+In attesa di revisione.
+
+---
+
+### under_review
+
+Caso in fase di analisi.
+
+---
+
+### approved
+
+Segnalazione confermata.
+
+---
+
+### rejected
+
+Segnalazione respinta.
+
+---
+
+### closed
+
+Caso chiuso.
+
+---
+
+## Foreign Keys
+
+marketplace_listing_id
+
+→ marketplace_listings.id
+
+---
+
+reporter_user_id
+
+→ users.id
+
+---
+
+reviewed_by_user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+marketplace_listings (1)
+
+↓
+
+(N)
+
+marketplace_reports
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+marketplace_reports
+
+(segnalante)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+marketplace_reports
+
+(revisore)
+
+---
+
+## Vincoli
+
+marketplace_listing_id deve esistere.
+
+reporter_user_id deve esistere.
+
+report_reason deve contenere un valore valido.
+
+status deve contenere un valore valido.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Lo stesso utente non può avere più segnalazioni aperte sullo stesso annuncio.
+
+---
+
+### Non consentito
+
+```text
+Utente A
+
+↓
+
+Annuncio 123
+
+↓
+
+Segnalazione Pending
+```
+
+---
+
+```text
+Utente A
+
+↓
+
+Annuncio 123
+
+↓
+
+Nuova Segnalazione Pending
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (marketplace_listing_id)
+
+INDEX (reporter_user_id)
+
+INDEX (reviewed_by_user_id)
+
+INDEX (report_reason)
+
+INDEX (status)
+
+INDEX (created_at)
+
+---
+
+## Regole Business
+
+Una segnalazione riguarda un solo annuncio.
+
+Un annuncio può ricevere molte segnalazioni.
+
+Una segnalazione appartiene ad un solo segnalante.
+
+---
+
+## Workflow Moderazione
+
+```text
+Utente
+
+↓
+
+Segnala Annuncio
+
+↓
+
+Pending
+
+↓
+
+Under Review
+
+↓
+
+Approved / Rejected
+
+↓
+
+Closed
+```
+
+---
+
+## Effetti Possibili
+
+Una segnalazione approvata può causare:
+
+```text
+Nascondi Annuncio
+
+Sospendi Annuncio
+
+Limita Visibilità
+
+Avvia Verifica
+
+Blocca Utente
+
+Aumenta Livello Rischio
+```
+
+---
+
+## Compatibilità Marketplace
+
+Le segnalazioni influenzano:
+
+```text
+Qualità Marketplace
+
+Sicurezza
+
+Affidabilità Venditori
+
+Ranking Annunci
+```
+
+---
+
+## Compatibilità Profilo Utente
+
+Le segnalazioni approvate possono contribuire a:
+
+```text
+Riduzione Affidabilità
+
+Limitazioni Marketplace
+
+Azioni Moderative
+```
+
+---
+
+## Compatibilità Notifiche
+
+Le segnalazioni possono generare notifiche per:
+
+```text
+Nuova Segnalazione
+
+Cambio Stato
+
+Caso Chiuso
+
+Richiesta Informazioni
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+I moderatori e amministratori devono poter:
+
+```text
+Visualizzare
+
+Filtrare
+
+Revisionare
+
+Approvare
+
+Respingere
+
+Chiudere
+```
+
+segnalazioni.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Segnalazioni
+
+Segnalazioni Approvate
+
+Segnalazioni Respinte
+
+Tempo Medio Revisione
+
+Categorie Più Segnalate
+
+Utenti Più Segnalati
+```
+
+---
+
+## Esempio Logico
+
+Marketplace Listing
+
+↓
+
+Charizard Gold
+
+↓
+
+Marketplace Report
+
+↓
+
+Counterfeit
+
+↓
+
+Pending
+
+↓
+
+Approved
+
+↓
+
+Annuncio Sospeso
+
+---
+
+Marketplace Listing
+
+↓
+
+Lugia First Edition
+
+↓
+
+Marketplace Report
+
+↓
+
+Duplicate Listing
+
+↓
+
+Under Review
+
+↓
+
+Rejected
+
+↓
+
+Annuncio Attivo
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+marketplace_listings
+```
+
+e
+
+```text
+marketplace_reports
+```
+
+consente:
+
+- moderazione indipendente
+- cronologia segnalazioni
+- statistiche dedicate
+- prevenzione abusi
+- miglioramento sicurezza
+
+senza modificare direttamente gli annunci.
+
+Questa tabella costituisce il nucleo del sistema di moderazione del Marketplace CollectorVerse e garantisce la qualità dell'ecosistema nel tempo.
+
+---
+
+# Tabella: marketplace_listing_status_history
+
+## Scopo
+
+Rappresenta la cronologia degli stati di un annuncio Marketplace.
+
+La tabella consente di tracciare tutti i cambiamenti di stato subiti da un annuncio nel corso del tempo.
+
+Questa tabella viene utilizzata per:
+
+- audit amministrativo
+- statistiche
+- cronologia attività
+- analisi performance annunci
+- monitoraggio moderazione
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+marketplace_listing_status_history
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco storico |
+| marketplace_listing_id | UUID | SI | Annuncio associato |
+| previous_status | VARCHAR(30) | NO | Stato precedente |
+| new_status | VARCHAR(30) | SI | Nuovo stato |
+| changed_by_user_id | UUID | NO | Utente che ha causato il cambio |
+| change_reason | VARCHAR(100) | NO | Motivazione del cambio |
+| notes | TEXT | NO | Note aggiuntive |
+| created_at | TIMESTAMPTZ | SI | Data cambio stato |
+
+---
+
+## Valori Consentiti
+
+### previous_status
+
+Può contenere:
+
+```text
+draft
+
+active
+
+reserved
+
+completed
+
+expired
+
+cancelled
+
+suspended
+```
+
+oppure essere:
+
+```text
+NULL
+```
+
+quando viene registrato il primo stato dell'annuncio.
+
+---
+
+### new_status
+
+```text
+draft
+
+active
+
+reserved
+
+completed
+
+expired
+
+cancelled
+
+suspended
+```
+
+---
+
+### change_reason
+
+Valori consigliati:
+
+```text
+user_action
+
+automatic_expiration
+
+offer_accepted
+
+manual_close
+
+moderation_action
+
+system_update
+
+other
+```
+
+---
+
+## Foreign Keys
+
+marketplace_listing_id
+
+→ marketplace_listings.id
+
+---
+
+changed_by_user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+marketplace_listings (1)
+
+↓
+
+(N)
+
+marketplace_listing_status_history
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+marketplace_listing_status_history
+
+---
+
+## Vincoli
+
+marketplace_listing_id deve esistere.
+
+new_status deve contenere un valore valido.
+
+Se valorizzato:
+
+```text
+previous_status
+```
+
+deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (marketplace_listing_id)
+
+INDEX (changed_by_user_id)
+
+INDEX (new_status)
+
+INDEX (created_at)
+
+---
+
+## Regole Business
+
+Ogni modifica dello stato dell'annuncio deve generare automaticamente un nuovo record.
+
+I record storici non devono essere modificati.
+
+I record storici non devono essere eliminati.
+
+---
+
+## Esempio Ciclo Normale
+
+```text
+Draft
+
+↓
+
+Active
+
+↓
+
+Reserved
+
+↓
+
+Completed
+```
+
+---
+
+## Storico Registrato
+
+```text
+Record 1
+
+NULL
+↓
+
+Draft
+```
+
+---
+
+```text
+Record 2
+
+Draft
+↓
+
+Active
+```
+
+---
+
+```text
+Record 3
+
+Active
+↓
+
+Reserved
+```
+
+---
+
+```text
+Record 4
+
+Reserved
+↓
+
+Completed
+```
+
+---
+
+## Esempio Moderazione
+
+```text
+Active
+
+↓
+
+Suspended
+```
+
+---
+
+Motivazione:
+
+```text
+moderation_action
+```
+
+---
+
+## Compatibilità Marketplace
+
+Permette di conoscere:
+
+```text
+Quando è stato pubblicato
+
+Quando è stato sospeso
+
+Quando è stato riservato
+
+Quando è stato chiuso
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche possibili:
+
+```text
+Tempo Medio Pubblicazione
+
+Tempo Medio Vendita
+
+Tempo Medio Riserva
+
+Tempo Medio Chiusura
+
+Tasso Scadenza Annunci
+```
+
+---
+
+## Compatibilità Profilo Utente
+
+Statistiche possibili:
+
+```text
+Annunci Pubblicati
+
+Annunci Completati
+
+Annunci Scaduti
+
+Annunci Cancellati
+```
+
+---
+
+## Compatibilità Moderazione
+
+Consente agli amministratori di vedere:
+
+```text
+Chi ha modificato
+
+Quando ha modificato
+
+Stato precedente
+
+Nuovo stato
+
+Motivazione
+```
+
+---
+
+## Compatibilità Audit
+
+Nessuna modifica deve cancellare la cronologia.
+
+La tabella costituisce il log ufficiale degli stati degli annunci Marketplace.
+
+---
+
+## Compatibilità Notifiche
+
+I cambiamenti di stato possono generare notifiche:
+
+```text
+Annuncio Pubblicato
+
+Annuncio Riservato
+
+Annuncio Completato
+
+Annuncio Sospeso
+
+Annuncio Scaduto
+```
+
+---
+
+## Esempio Logico
+
+Marketplace Listing
+
+↓
+
+Charizard Gold
+
+↓
+
+Status History
+
+↓
+
+Draft
+
+↓
+
+Active
+
+↓
+
+Reserved
+
+↓
+
+Completed
+
+---
+
+Marketplace Listing
+
+↓
+
+Umbreon Gold Star
+
+↓
+
+Status History
+
+↓
+
+Draft
+
+↓
+
+Active
+
+↓
+
+Suspended
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+marketplace_listings
+```
+
+e
+
+```text
+marketplace_listing_status_history
+```
+
+consente di mantenere una cronologia permanente delle modifiche senza alterare il record principale dell'annuncio.
+
+Questo approccio supporta:
+
+- audit
+- statistiche
+- moderazione
+- notifiche
+- storico attività
+
+senza introdurre concetti finanziari o transazioni economiche non gestite da CollectorVerse.
+
+---
+
+# Tabella: saved_searches
+
+## Scopo
+
+Rappresenta una ricerca salvata da un utente.
+
+Le ricerche salvate consentono agli utenti di monitorare automaticamente il Marketplace senza dover ripetere manualmente le stesse ricerche.
+
+Questa funzionalità costituisce la base per:
+
+- notifiche automatiche
+- monitoraggio nuovi annunci
+- monitoraggio variazioni prezzo
+- monitoraggio disponibilità oggetti
+- suggerimenti personalizzati
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+saved_searches
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco ricerca |
+| user_id | UUID | SI | Proprietario ricerca |
+| name | VARCHAR(150) | SI | Nome ricerca salvata |
+| search_query | TEXT | NO | Testo originale ricerca |
+| category_id | UUID | NO | Categoria filtrata |
+| collection_id | UUID | NO | Collezione filtrata |
+| series_id | UUID | NO | Serie filtrata |
+| item_id | UUID | NO | Item specifico |
+| item_version_id | UUID | NO | Versione specifica |
+| item_variant_id | UUID | NO | Variante specifica |
+| min_price | NUMERIC(12,2) | NO | Prezzo minimo |
+| max_price | NUMERIC(12,2) | NO | Prezzo massimo |
+| currency_id | UUID | NO | Valuta riferimento |
+| listing_type | VARCHAR(30) | NO | Tipologia annuncio |
+| notify_new_listings | BOOLEAN | SI | Notifica nuovi annunci |
+| notify_price_changes | BOOLEAN | SI | Notifica variazioni prezzo |
+| is_active | BOOLEAN | SI | Ricerca attiva |
+| last_match_at | TIMESTAMPTZ | NO | Ultimo risultato trovato |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+notify_new_listings = TRUE
+
+notify_price_changes = TRUE
+
+is_active = TRUE
+
+---
+
+## Valori Consentiti
+
+### listing_type
+
+```text
+sale
+
+trade
+
+sale_trade
+```
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+category_id
+
+→ categories.id
+
+---
+
+collection_id
+
+→ collections.id
+
+---
+
+series_id
+
+→ series.id
+
+---
+
+item_id
+
+→ items.id
+
+---
+
+item_version_id
+
+→ item_versions.id
+
+---
+
+item_variant_id
+
+→ item_variants.id
+
+---
+
+currency_id
+
+→ currencies.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+saved_searches
+
+---
+
+categories (1)
+
+↓
+
+(N)
+
+saved_searches
+
+---
+
+collections (1)
+
+↓
+
+(N)
+
+saved_searches
+
+---
+
+series (1)
+
+↓
+
+(N)
+
+saved_searches
+
+---
+
+items (1)
+
+↓
+
+(N)
+
+saved_searches
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+saved_searches
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+saved_searches
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+min_price deve essere maggiore o uguale a zero se valorizzato.
+
+max_price deve essere maggiore o uguale a zero se valorizzato.
+
+Se valorizzati:
+
+```text
+min_price ≤ max_price
+```
+
+---
+
+listing_type deve contenere un valore valido se valorizzato.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (user_id)
+
+INDEX (category_id)
+
+INDEX (collection_id)
+
+INDEX (series_id)
+
+INDEX (item_id)
+
+INDEX (item_version_id)
+
+INDEX (item_variant_id)
+
+INDEX (is_active)
+
+INDEX (last_match_at)
+
+---
+
+## Regole Business
+
+Una ricerca può essere:
+
+```text
+Generica
+```
+
+oppure:
+
+```text
+Molto Specifica
+```
+
+---
+
+## Esempio Ricerca Generica
+
+```text
+Pokémon
+```
+
+---
+
+## Esempio Ricerca Categoria
+
+```text
+Carte Collezionabili
+```
+
+---
+
+## Esempio Ricerca Collezione
+
+```text
+Pokémon
+```
+
+---
+
+## Esempio Ricerca Serie
+
+```text
+Set Base
+```
+
+---
+
+## Esempio Ricerca Item
+
+```text
+Charizard
+```
+
+---
+
+## Esempio Ricerca Completa
+
+```text
+Charizard
+
+↓
+
+Versione Inglese
+
+↓
+
+Gold
+
+↓
+
+Prezzo Max = 500 EUR
+```
+
+---
+
+## Compatibilità Marketplace
+
+Le ricerche salvate vengono confrontate periodicamente con:
+
+```text
+marketplace_listings
+```
+
+per individuare nuovi risultati compatibili.
+
+---
+
+## Compatibilità Notifiche
+
+Possono generare notifiche per:
+
+```text
+Nuovo Annuncio
+
+Riduzione Prezzo
+
+Nuovo Match
+
+Nuova Variante Disponibile
+```
+
+---
+
+## Esempio
+
+Ricerca Salvata:
+
+```text
+Charizard Gold
+```
+
+---
+
+Nuovo Annuncio:
+
+```text
+Charizard Gold
+
+220 EUR
+```
+
+↓
+
+```text
+Notifica Utente
+```
+
+---
+
+## Compatibilità Matching
+
+Le ricerche salvate rappresentano un forte segnale di interesse.
+
+Possono essere utilizzate per:
+
+```text
+Suggerimenti
+
+Raccomandazioni
+
+Ranking Opportunità
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Ricerche Salvate
+
+Numero Match Trovati
+
+Numero Notifiche Generate
+
+Numero Acquisti Successivi
+```
+
+---
+
+## Compatibilità Profilo Utente
+
+Dati utilizzabili per:
+
+```text
+Oggetti Più Ricercati
+
+Categorie Preferite
+
+Interessi Principali
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Analizzare
+
+Aggregare
+
+Monitorare
+```
+
+trend e richieste degli utenti.
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+saved_searches
+
+↓
+
+Charizard Gold
+
+↓
+
+Marketplace
+
+↓
+
+Nuovo Annuncio
+
+↓
+
+Notifica
+
+---
+
+Utente
+
+↓
+
+saved_searches
+
+↓
+
+2 Euro Commemorativi Italia
+
+↓
+
+Marketplace
+
+↓
+
+Nuovo Annuncio
+
+↓
+
+Notifica
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+saved_searches
+```
+
+e
+
+```text
+marketplace_listings
+```
+
+consente:
+
+- monitoraggio continuo
+- notifiche automatiche
+- personalizzazione avanzata
+- suggerimenti intelligenti
+- statistiche di interesse
+
+senza modificare la struttura del Marketplace.
+
+Questa tabella costituisce una delle basi delle funzionalità proattive di CollectorVerse e migliora significativamente l'esperienza utente nel tempo.
+
+---
+
+# Parte 5 - Matching
+
+# Tabella: matching_opportunities
+
+## Scopo
+
+Rappresenta una opportunità di Matching generata automaticamente dal sistema.
+
+Una opportunità viene creata quando il motore di Matching individua una possibile relazione tra:
+
+- oggetti posseduti
+- wishlist
+- annunci marketplace
+- interessi utenti
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+matching_opportunities
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco opportunità |
+| target_user_id | UUID | SI | Utente destinatario opportunità |
+| source_user_id | UUID | NO | Utente che genera l'opportunità |
+| marketplace_listing_id | UUID | NO | Annuncio coinvolto |
+| wishlist_item_id | UUID | NO | Elemento wishlist coinvolto |
+| user_item_id | UUID | NO | Oggetto posseduto coinvolto |
+| match_type | VARCHAR(30) | SI | Tipo di matching |
+| match_score | NUMERIC(5,2) | SI | Punteggio matching |
+| status | VARCHAR(30) | SI | Stato opportunità |
+| generated_at | TIMESTAMPTZ | SI | Data generazione |
+| viewed_at | TIMESTAMPTZ | NO | Data visualizzazione |
+| dismissed_at | TIMESTAMPTZ | NO | Data ignorata |
+| expires_at | TIMESTAMPTZ | NO | Data scadenza |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+status = active
+
+match_score = 0
+
+---
+
+## Valori Consentiti
+
+### match_type
+
+```text
+wishlist_match
+
+marketplace_match
+
+trade_match
+
+collection_match
+
+duplicate_match
+```
+
+---
+
+### status
+
+```text
+active
+
+viewed
+
+dismissed
+
+expired
+```
+
+---
+
+## Significato Match Type
+
+### wishlist_match
+
+Un utente possiede un oggetto presente nella wishlist di un altro utente.
+
+---
+
+### marketplace_match
+
+Un annuncio Marketplace corrisponde ad una wishlist.
+
+---
+
+### trade_match
+
+Possibile opportunità di scambio reciproco.
+
+---
+
+### collection_match
+
+Interessi collezionistici compatibili.
+
+---
+
+### duplicate_match
+
+Oggetto duplicato potenzialmente interessante per altri utenti.
+
+---
+
+## Foreign Keys
+
+target_user_id
+
+→ users.id
+
+---
+
+source_user_id
+
+→ users.id
+
+---
+
+marketplace_listing_id
+
+→ marketplace_listings.id
+
+---
+
+wishlist_item_id
+
+→ wishlist_items.id
+
+---
+
+user_item_id
+
+→ user_items.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+matching_opportunities
+
+(destinatario)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+matching_opportunities
+
+(generatore opportunità)
+
+---
+
+marketplace_listings (1)
+
+↓
+
+(N)
+
+matching_opportunities
+
+---
+
+wishlist_items (1)
+
+↓
+
+(N)
+
+matching_opportunities
+
+---
+
+user_items (1)
+
+↓
+
+(N)
+
+matching_opportunities
+
+---
+
+## Vincoli
+
+target_user_id deve esistere.
+
+match_type deve contenere un valore valido.
+
+status deve contenere un valore valido.
+
+match_score deve essere compreso tra:
+
+```text
+0
+
+e
+
+100
+```
+
+---
+
+## Regole Business
+
+Una opportunità deve sempre appartenere ad un utente destinatario.
+
+Una opportunità può coinvolgere:
+
+```text
+Marketplace
+
+oppure
+
+Wishlist
+
+oppure
+
+User Item
+
+oppure
+
+più elementi contemporaneamente
+```
+
+---
+
+## Match Score
+
+Il punteggio rappresenta la qualità dell'opportunità.
+
+---
+
+### Esempio
+
+```text
+100
+
+↓
+
+Match Perfetto
+```
+
+---
+
+```text
+75
+
+↓
+
+Match Molto Forte
+```
+
+---
+
+```text
+50
+
+↓
+
+Match Interessante
+```
+
+---
+
+```text
+25
+
+↓
+
+Match Debole
+```
+
+---
+
+## Esempio Wishlist Match
+
+Utente A cerca:
+
+```text
+Charizard Gold
+```
+
+---
+
+Utente B possiede:
+
+```text
+Charizard Gold
+```
+
+---
+
+Sistema:
+
+```text
+matching_opportunity
+
+↓
+
+wishlist_match
+
+↓
+
+score 100
+```
+
+---
+
+## Esempio Marketplace Match
+
+Utente A cerca:
+
+```text
+Umbreon Gold Star
+```
+
+---
+
+Marketplace:
+
+```text
+Nuovo Annuncio
+```
+
+---
+
+Sistema:
+
+```text
+marketplace_match
+```
+
+---
+
+## Esempio Trade Match
+
+Utente A desidera:
+
+```text
+Lugia
+```
+
+---
+
+Utente B possiede:
+
+```text
+Lugia
+```
+
+---
+
+Utente B desidera:
+
+```text
+Charizard
+```
+
+---
+
+Utente A possiede:
+
+```text
+Charizard
+```
+
+---
+
+Sistema:
+
+```text
+trade_match
+
+score 100
+```
+
+---
+
+## Compatibilità Notifiche
+
+Le opportunità possono generare notifiche:
+
+```text
+Nuovo Match
+
+Nuovo Scambio
+
+Nuovo Annuncio Compatibile
+
+Nuova Opportunità Marketplace
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+La dashboard può mostrare:
+
+```text
+Match Attivi
+
+Nuove Opportunità
+
+Match Perfetti
+
+Opportunità Scambio
+```
+
+---
+
+## Compatibilità Gamification
+
+Le opportunità possono contribuire a:
+
+```text
+Achievement
+
+CollectorScore
+
+Obiettivi Completamento
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Match Generati
+
+Match Visualizzati
+
+Match Completati
+
+Match Ignorati
+
+Tasso Conversione
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Monitorare
+
+Analizzare
+
+Ricalcolare
+
+Eliminare
+```
+
+opportunità errate.
+
+---
+
+## Esempio Logico
+
+Wishlist
+
+↓
+
+Charizard Gold
+
+↓
+
+Marketplace Listing
+
+↓
+
+Charizard Gold
+
+↓
+
+matching_opportunities
+
+↓
+
+score 100
+
+↓
+
+active
+
+---
+
+User A
+
+↓
+
+Charizard
+
+↓
+
+User B
+
+↓
+
+Lugia
+
+↓
+
+Interessi Reciproci
+
+↓
+
+trade_match
+
+↓
+
+score 100
+
+---
+
+## Motivazione Architetturale
+
+La tabella matching_opportunities rappresenta il risultato del motore intelligente di CollectorVerse.
+
+La separazione delle opportunità dai dati sorgente consente:
+
+- ricalcolo indipendente
+- prestazioni elevate
+- notifiche efficienti
+- statistiche dedicate
+- storico opportunità
+
+senza dover rieseguire continuamente algoritmi complessi sul database operativo.
+
+Questa tabella costituisce il cuore del sistema di Matching della piattaforma.
+
+---
+
+# Tabella: matching_preferences
+
+## Scopo
+
+Rappresenta le preferenze personali utilizzate dal motore di Matching.
+
+Questa tabella consente ad ogni utente di configurare il comportamento del sistema di suggerimenti automatici.
+
+Le preferenze influenzano:
+
+- Matching Marketplace
+- Matching Scambi
+- Matching Collezionisti
+- Matching Wishlist
+- Notifiche Opportunità
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+matching_preferences
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco preferenze |
+| user_id | UUID | SI | Proprietario preferenze |
+| enable_marketplace_matches | BOOLEAN | SI | Abilita matching marketplace |
+| enable_trade_matches | BOOLEAN | SI | Abilita matching scambi |
+| enable_collection_matches | BOOLEAN | SI | Abilita matching collezionisti |
+| enable_duplicate_matches | BOOLEAN | SI | Abilita matching duplicati |
+| enable_wishlist_matches | BOOLEAN | SI | Abilita matching wishlist |
+| minimum_match_score | NUMERIC(5,2) | SI | Soglia minima matching |
+| notify_new_matches | BOOLEAN | SI | Notifica nuove opportunità |
+| notify_trade_matches | BOOLEAN | SI | Notifica opportunità di scambio |
+| notify_marketplace_matches | BOOLEAN | SI | Notifica opportunità marketplace |
+| notify_collection_matches | BOOLEAN | SI | Notifica compatibilità collezionisti |
+| include_merchants | BOOLEAN | SI | Considera commercianti |
+| include_private_collectors | BOOLEAN | SI | Considera collezionisti privati |
+| is_active | BOOLEAN | SI | Matching attivo |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+enable_marketplace_matches = TRUE
+
+enable_trade_matches = TRUE
+
+enable_collection_matches = TRUE
+
+enable_duplicate_matches = TRUE
+
+enable_wishlist_matches = TRUE
+
+minimum_match_score = 50
+
+notify_new_matches = TRUE
+
+notify_trade_matches = TRUE
+
+notify_marketplace_matches = TRUE
+
+notify_collection_matches = TRUE
+
+include_merchants = TRUE
+
+include_private_collectors = TRUE
+
+is_active = TRUE
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(1)
+
+matching_preferences
+
+---
+
+matching_preferences
+
+↓
+
+Influenza
+
+↓
+
+matching_opportunities
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+user_id deve essere univoco.
+
+minimum_match_score deve essere compreso tra:
+
+```text
+0
+
+e
+
+100
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+INDEX (is_active)
+
+INDEX (minimum_match_score)
+
+---
+
+## Regole Business
+
+Ogni utente possiede una sola configurazione Matching.
+
+La configurazione viene creata automaticamente durante la registrazione.
+
+---
+
+## Matching Disattivato
+
+Se:
+
+```text
+is_active = FALSE
+```
+
+il sistema non deve:
+
+```text
+Generare Matching
+
+Inviare Notifiche Matching
+```
+
+---
+
+Le opportunità storiche restano disponibili.
+
+---
+
+## Soglia Matching
+
+La soglia minima controlla la qualità delle opportunità.
+
+---
+
+### Esempio
+
+```text
+minimum_match_score = 80
+```
+
+↓
+
+Mostrare solo match di alta qualità.
+
+---
+
+### Esempio
+
+```text
+minimum_match_score = 30
+```
+
+↓
+
+Mostrare anche opportunità deboli.
+
+---
+
+## Matching Marketplace
+
+Se:
+
+```text
+enable_marketplace_matches = TRUE
+```
+
+il sistema confronta:
+
+```text
+Wishlist
+
+↓
+
+Marketplace Listings
+```
+
+---
+
+## Matching Scambi
+
+Se:
+
+```text
+enable_trade_matches = TRUE
+```
+
+il sistema confronta:
+
+```text
+Wishlist
+
+↓
+
+User Items
+
+↓
+
+Possibili Scambi
+```
+
+---
+
+## Matching Duplicati
+
+Se:
+
+```text
+enable_duplicate_matches = TRUE
+```
+
+il sistema considera:
+
+```text
+Oggetti Duplicati
+```
+
+come potenziali opportunità.
+
+---
+
+## Matching Collezionisti
+
+Se:
+
+```text
+enable_collection_matches = TRUE
+```
+
+il sistema può suggerire:
+
+```text
+Utenti con interessi simili
+
+Utenti compatibili
+
+Commercianti specializzati
+```
+
+---
+
+## Compatibilità Marketplace
+
+Le preferenze influenzano:
+
+```text
+Notifiche Nuovi Annunci
+
+Suggerimenti
+
+Ranking Opportunità
+```
+
+---
+
+## Compatibilità Wishlist
+
+Le preferenze influenzano:
+
+```text
+Monitoraggio Oggetti Ricercati
+
+Segnalazioni Nuove Disponibilità
+```
+
+---
+
+## Compatibilità Notifiche
+
+Le notifiche vengono inviate soltanto se:
+
+```text
+Matching Attivo
+
++
+
+Preferenza Notifica Attiva
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente deve poter:
+
+```text
+Attivare
+
+Disattivare
+
+Configurare
+
+Personalizzare
+```
+
+l'intero sistema Matching.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Numero Match Ricevuti
+
+Numero Match Ignorati
+
+Numero Match Accettati
+
+Tasso Conversione
+
+Punteggio Medio Match
+```
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+matching_preferences
+
+↓
+
+Marketplace ✅
+
+Scambi ✅
+
+Duplicati ✅
+
+Commercianti ✅
+
+Score Minimo = 70
+
+↓
+
+matching_opportunities
+
+↓
+
+Solo Match ≥ 70
+
+---
+
+Utente
+
+↓
+
+matching_preferences
+
+↓
+
+Marketplace ✅
+
+Scambi ❌
+
+Duplicati ❌
+
+Commercianti ❌
+
+Score Minimo = 90
+
+↓
+
+Solo Match Molto Forti
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+matching_preferences
+```
+
+e
+
+```text
+matching_opportunities
+```
+
+consente di:
+
+- personalizzare il Matching
+- ridurre rumore informativo
+- aumentare qualità suggerimenti
+- controllare le notifiche
+- migliorare l'esperienza utente
+
+senza modificare il motore di Matching.
+
+Questa tabella costituisce il livello di configurazione personale dell'intero sistema intelligente di CollectorVerse.
+
+---
+
+# Tabella: matching_interactions
+
+## Scopo
+
+Rappresenta le interazioni effettuate dagli utenti sulle opportunità generate dal sistema di Matching.
+
+Questa tabella permette di registrare:
+
+- visualizzazioni
+- aperture
+- interessi
+- contatti
+- ignorati
+- conversioni
+
+e costituisce il principale strumento di apprendimento del motore di Matching.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+matching_interactions
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco interazione |
+| matching_opportunity_id | UUID | SI | Opportunità coinvolta |
+| user_id | UUID | SI | Utente che esegue l'azione |
+| interaction_type | VARCHAR(30) | SI | Tipo interazione |
+| interaction_score | INTEGER | SI | Punteggio rilevanza |
+| notes | TEXT | NO | Note aggiuntive |
+| created_at | TIMESTAMPTZ | SI | Data interazione |
+
+---
+
+## Valori Predefiniti
+
+interaction_score = 0
+
+---
+
+## Valori Consentiti
+
+### interaction_type
+
+```text
+viewed
+
+opened
+
+favorited
+
+contacted
+
+offer_created
+
+accepted
+
+dismissed
+
+ignored
+```
+
+---
+
+## Significato Interazioni
+
+### viewed
+
+L'opportunità è stata visualizzata.
+
+---
+
+### opened
+
+L'utente ha aperto il dettaglio.
+
+---
+
+### favorited
+
+L'utente ha aggiunto ai preferiti.
+
+---
+
+### contacted
+
+L'utente ha contattato la controparte.
+
+---
+
+### offer_created
+
+L'utente ha creato un'offerta.
+
+---
+
+### accepted
+
+L'utente ha accettato l'opportunità.
+
+---
+
+### dismissed
+
+L'opportunità è stata esplicitamente rifiutata.
+
+---
+
+### ignored
+
+L'opportunità è stata ignorata.
+
+---
+
+## Foreign Keys
+
+matching_opportunity_id
+
+→ matching_opportunities.id
+
+---
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+matching_opportunities (1)
+
+↓
+
+(N)
+
+matching_interactions
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+matching_interactions
+
+---
+
+## Vincoli
+
+matching_opportunity_id deve esistere.
+
+user_id deve esistere.
+
+interaction_type deve contenere un valore valido.
+
+interaction_score deve essere compreso tra:
+
+```text
+-100
+
+e
+
+100
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (matching_opportunity_id)
+
+INDEX (user_id)
+
+INDEX (interaction_type)
+
+INDEX (created_at)
+
+---
+
+## Regole Business
+
+Una opportunità può generare molte interazioni.
+
+Le interazioni non devono essere cancellate.
+
+Le interazioni costituiscono dati storici e analitici.
+
+---
+
+## Punteggio Interazione
+
+Il punteggio rappresenta il valore dell'azione per il sistema.
+
+---
+
+### Esempio Configurazione
+
+```text
+viewed = 5
+
+opened = 10
+
+favorited = 20
+
+contacted = 40
+
+offer_created = 70
+
+accepted = 100
+
+dismissed = -25
+
+ignored = -10
+```
+
+---
+
+## Compatibilità Matching
+
+Le interazioni vengono utilizzate per migliorare:
+
+```text
+Match Score
+
+Raccomandazioni
+
+Prioritizzazione Risultati
+```
+
+---
+
+## Esempio
+
+Utente:
+
+```text
+Visualizza sempre Match Pokémon
+```
+
+---
+
+Sistema:
+
+```text
+Aumenta priorità Pokémon
+```
+
+---
+
+## Compatibilità Marketplace
+
+Interazioni positive verso:
+
+```text
+Marketplace Match
+```
+
+possono migliorare:
+
+```text
+Suggerimenti Futuri
+```
+
+---
+
+## Compatibilità Wishlist
+
+Se l'utente interagisce spesso con:
+
+```text
+Carte Gradate
+```
+
+↓
+
+Il Matching può privilegiare:
+
+```text
+Carte Gradate
+```
+
+nelle opportunità successive.
+
+---
+
+## Compatibilità Notifiche
+
+Le interazioni consentono al sistema di capire:
+
+```text
+Quali notifiche funzionano
+
+Quali notifiche vengono ignorate
+```
+
+---
+
+## Compatibilità Gamification
+
+Le interazioni possono contribuire a:
+
+```text
+Achievement
+
+CollectorScore
+
+Badges
+```
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Match Visualizzati
+
+Match Aperti
+
+Match Ignorati
+
+Match Convertiti
+
+Tasso Conversione
+
+Interesse per Categoria
+```
+
+---
+
+## Compatibilità Dashboard Utente
+
+L'utente può visualizzare:
+
+```text
+Storico Match
+
+Storico Opportunità
+
+Storico Interazioni
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Analizzare
+
+Aggregare
+
+Studiare
+
+Ottimizzare
+```
+
+il comportamento del sistema Matching.
+
+---
+
+## Esempio Logico
+
+matching_opportunity
+
+↓
+
+Charizard Gold
+
+↓
+
+matching_interaction
+
+↓
+
+viewed
+
+↓
+
+opened
+
+↓
+
+contacted
+
+↓
+
+offer_created
+
+---
+
+matching_opportunity
+
+↓
+
+Umbreon Gold Star
+
+↓
+
+matching_interaction
+
+↓
+
+viewed
+
+↓
+
+dismissed
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+matching_opportunities
+```
+
+e
+
+```text
+matching_interactions
+```
+
+consente di misurare il comportamento reale degli utenti senza modificare le opportunità originali.
+
+Questo approccio permette:
+
+- apprendimento del sistema
+- statistiche avanzate
+- ottimizzazione algoritmi
+- raccomandazioni personalizzate
+- analisi conversioni
+
+e costituisce la base per l'evoluzione futura del motore intelligente di CollectorVerse.
+
+---
+
