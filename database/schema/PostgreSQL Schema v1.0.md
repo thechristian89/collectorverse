@@ -191,9 +191,629 @@ INDEX (is_active)
 
 # Tabella: users
 
+## Scopo
+
+Rappresenta tutti gli account registrati nella piattaforma CollectorVerse.
+
+Ogni utente autenticato possiede una sola registrazione nella tabella users.
+
+La tabella contiene esclusivamente le informazioni necessarie per:
+
+- autenticazione
+- autorizzazione
+- gestione stato account
+- collegamento alle altre aree della piattaforma
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+users
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco dell'utente |
+| email | VARCHAR(320) | SI | Email utilizzata per l'accesso |
+| username | VARCHAR(50) | SI | Nome utente univoco |
+| role_id | UUID | SI | Ruolo associato all'utente |
+| account_status | VARCHAR(30) | SI | Stato account |
+| is_email_verified | BOOLEAN | SI | Stato verifica email |
+| created_at | TIMESTAMPTZ | SI | Data creazione account |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+account_status = active
+
+is_email_verified = FALSE
+
+---
+
+## Valori Consentiti
+
+### account_status
+
+- active
+- suspended
+- blocked
+- deleted
+
+---
+
+## Foreign Keys
+
+role_id
+
+→ user_roles.id
+
+---
+
+## Relazioni
+
+user_roles (1)
+
+↓
+
+(N)
+
+users
+
+---
+
+users (1)
+
+↓
+
+(1)
+
+user_profiles
+
+---
+
+users (1)
+
+↓
+
+(1)
+
+user_subscriptions
+
+---
+
+users (1)
+
+↓
+
+(1)
+
+privacy_settings
+
+---
+
+users (1)
+
+↓
+
+(1)
+
+notification_preferences
+
+---
+
+users (1)
+
+↓
+
+(1)
+
+user_preferences
+
+---
+
+users (1)
+
+↓
+
+(0..1)
+
+merchant_profiles
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+contact_requests
+
+(mittente)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+contact_requests
+
+(destinatario)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+user_reviews
+
+(recensore)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+user_reviews
+
+(recensito)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+user_blocks
+
+(utente che blocca)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+user_blocks
+
+(utente bloccato)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+messages
+
+(mittente)
+
+---
+
+## Vincoli
+
+email deve essere univoca.
+
+username deve essere univoco.
+
+role_id deve esistere nella tabella user_roles.
+
+account_status deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (email)
+
+UNIQUE (username)
+
+INDEX (role_id)
+
+INDEX (account_status)
+
+---
+
+## Stati Account
+
+### active
+
+Account pienamente operativo.
+
+Può utilizzare tutte le funzionalità consentite da:
+
+- piano
+- ruolo
+- impostazioni privacy
+
+---
+
+### suspended
+
+Account temporaneamente limitato.
+
+L'accesso e le funzionalità disponibili dipendono dalle regole amministrative.
+
+---
+
+### blocked
+
+Accesso negato.
+
+L'utente non può utilizzare la piattaforma.
+
+---
+
+### deleted
+
+Account eliminato logicamente.
+
+I dati vengono gestiti secondo le policy GDPR e le regole di conservazione del Catalogo Universale.
+
+---
+
+## Note Architetturali
+
+La tabella users rappresenta esclusivamente l'account dell'utente.
+
+Le informazioni pubbliche vengono memorizzate nella tabella:
+
+```text
+user_profiles
+```
+
+Le informazioni relative alla gamification non vengono salvate nella tabella users.
+
+I dati relativi a:
+
+- CollectorScore
+- Livelli
+- Badge
+- Cornici Profilo
+- Streak
+
+saranno gestiti dalle tabelle della sezione:
+
+```text
+Gamification
+```
+
+---
+
+## Compatibilità Supabase
+
+La tabella è progettata per integrarsi con:
+
+```text
+Supabase Auth
+```
+
+mediante sincronizzazione dell'identificativo utente.
+
+L'ID dell'utente autenticato deve corrispondere all'ID registrato nella tabella users.
+
+---
+
+## Motivazione Architetturale
+
+La tabella users rappresenta il nucleo identitario della piattaforma.
+
+La separazione tra:
+
+```text
+users
+```
+
+e
+
+```text
+user_profiles
+```
+
+consente di isolare:
+
+- dati di autenticazione
+- dati pubblici
+- sicurezza
+- privacy
+
+riducendo la complessità delle policy RLS e migliorando la sicurezza complessiva della piattaforma.
+
 ---
 
 # Tabella: user_profiles
+
+## Scopo
+
+Rappresenta il profilo pubblico dell'utente.
+
+La tabella contiene esclusivamente le informazioni pubbliche o semi-pubbliche visualizzabili dagli altri utenti in base alle impostazioni definite nella tabella:
+
+```text
+privacy_settings
+```
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_profiles
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco del profilo |
+| user_id | UUID | SI | Proprietario del profilo |
+| display_name | VARCHAR(100) | SI | Nome pubblico visualizzato |
+| avatar_url | TEXT | NO | Avatar del profilo |
+| cover_image_url | TEXT | NO | Immagine di copertina |
+| bio | TEXT | NO | Biografia utente |
+| country_code | VARCHAR(10) | NO | Codice paese |
+| region | VARCHAR(100) | NO | Regione |
+| city | VARCHAR(100) | NO | Città |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultimo aggiornamento |
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(1)
+
+user_profiles
+
+---
+
+users (1)
+
+↓
+
+(0..1)
+
+merchant_profiles
+
+---
+
+## Vincoli
+
+Ogni utente può possedere un solo profilo.
+
+display_name deve essere univoco.
+
+display_name non può essere vuoto.
+
+user_id deve essere univoco.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+UNIQUE (display_name)
+
+INDEX (country_code)
+
+INDEX (region)
+
+INDEX (city)
+
+---
+
+## Regole Business
+
+Il profilo rappresenta l'identità pubblica dell'utente.
+
+Le informazioni mostrate agli altri utenti dipendono dalle impostazioni registrate in:
+
+```text
+privacy_settings
+```
+
+---
+
+## Informazioni Visualizzabili
+
+Il profilo può mostrare:
+
+- Avatar
+- Cover
+- Display Name
+- Biografia
+- Localizzazione
+- Livello
+- Badge
+- CollectorScore
+- Collezioni Pubbliche
+- Wishlist Pubbliche
+- Recensioni
+- Statistiche Pubbliche
+
+---
+
+## Regola Privacy
+
+La tabella:
+
+```text
+user_profiles
+```
+
+non gestisce direttamente la visibilità.
+
+Tutta la logica di visibilità viene gestita esclusivamente tramite:
+
+```text
+privacy_settings
+```
+
+per evitare duplicazione dei dati e conflitti applicativi.
+
+---
+
+## Note Architetturali
+
+display_name rappresenta l'identità pubblica dell'utente.
+
+Per evitare omonimie all'interno della piattaforma:
+
+```text
+display_name deve essere univoco
+```
+
+---
+
+La tabella contiene esclusivamente dati pubblici o semi-pubblici.
+
+Non devono essere memorizzati:
+
+- password
+- email
+- ruoli
+- permessi
+- stato account
+- informazioni di autenticazione
+- dati di abbonamento
+
+---
+
+Questi dati appartengono a:
+
+```text
+users
+user_roles
+user_subscriptions
+```
+
+---
+
+## Compatibilità Marketplace
+
+Il profilo pubblico può essere utilizzato per visualizzare:
+
+- recensioni
+- reputazione
+- collezioni pubbliche
+- attività pubblica marketplace
+
+secondo le regole configurate nella privacy.
+
+---
+
+## Compatibilità Matching
+
+Le informazioni pubbliche del profilo possono essere utilizzate per:
+
+- suggerimenti utenti
+- ricerca collezionisti
+- scoperta commercianti
+- ranking risultati
+
+sempre nel rispetto delle impostazioni privacy.
+
+---
+
+## Compatibilità Gamification
+
+Il profilo costituisce il punto di aggregazione visuale di:
+
+- Livelli
+- Badge
+- Achievement
+- CollectorScore
+- Statistiche
+
+che verranno memorizzati nelle tabelle dedicate della sezione Gamification.
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+users
+```
+
+e
+
+```text
+user_profiles
+```
+
+consente:
+
+- maggiore sicurezza
+- migliore gestione privacy
+- query più efficienti
+- compatibilità con Supabase Auth
+- compatibilità con RLS
+
+ed evita l'esposizione accidentale di dati sensibili.
 
 --- 
 
@@ -3373,26 +3993,1814 @@ senza richiedere modifiche strutturali al database.
 
 # Tabella: rarities
 
+## Scopo
+
+Rappresenta le rarità disponibili all'interno di una specifica Collezione.
+
+Le rarità NON sono globali.
+
+Ogni Collezione possiede il proprio insieme di rarità.
+
+Questo approccio consente di supportare qualsiasi tipologia di collezione senza imporre uno standard universale.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+rarities
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco rarità |
+| collection_id | UUID | SI | Collezione proprietaria |
+| name | VARCHAR(150) | SI | Nome rarità |
+| description | TEXT | NO | Descrizione rarità |
+| color_hex | VARCHAR(20) | NO | Colore rappresentativo |
+| sort_order | INTEGER | SI | Ordine visualizzazione |
+| is_active | BOOLEAN | SI | Rarità utilizzabile |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+sort_order = 0
+
+is_active = TRUE
+
+---
+
+## Foreign Keys
+
+collection_id
+
+→ collections.id
+
+---
+
+## Relazioni
+
+collections (1)
+
+↓
+
+(N)
+
+rarities
+
+---
+
+rarities (1)
+
+↓
+
+(N)
+
+items
+
+---
+
+## Vincoli
+
+collection_id deve esistere nella tabella collections.
+
+name non può essere vuoto.
+
+sort_order deve essere maggiore o uguale a zero.
+
+All'interno della stessa Collezione non possono esistere due Rarità con lo stesso nome.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (collection_id)
+
+INDEX (sort_order)
+
+INDEX (is_active)
+
+UNIQUE (collection_id, name)
+
+---
+
+## Regole Business
+
+Una Rarità appartiene ad una sola Collezione.
+
+Una Collezione può possedere molte Rarità.
+
+La stessa rarità può esistere in Collezioni differenti.
+
+---
+
+## Esempio Pokémon
+
+```text
+Common
+
+Uncommon
+
+Rare
+
+Ultra Rare
+
+Illustration Rare
+
+Special Illustration Rare
+
+Secret Rare
+```
+
+---
+
+## Esempio Magic
+
+```text
+Common
+
+Uncommon
+
+Rare
+
+Mythic Rare
+```
+
+---
+
+## Esempio Funko
+
+```text
+Common
+
+Exclusive
+
+Limited Edition
+
+Chase
+
+Grail
+```
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Gli utenti possono proporre nuove Rarità.
+
+Workflow:
+
+```text
+Nuova Rarità
+↓
+Catalogo Collaborativo
+↓
+Revisione Community
+↓
+Decisione Amministratore
+↓
+Pubblicazione
+```
+
+---
+
+## Compatibilità Marketplace
+
+La rarità viene ereditata automaticamente dagli Item.
+
+Non viene duplicata sugli annunci.
+
+---
+
+## Compatibilità Matching
+
+La rarità può essere utilizzata come filtro:
+
+```text
+Ultra Rare
+
+Mythic Rare
+
+Legendary
+```
+
+oppure come criterio di ranking.
+
+---
+
+## Motivazione Architetturale
+
+Le rarità sono entità indipendenti perché:
+
+- appartengono alla Collezione
+- sono riutilizzate da molti Item
+- possono essere corrette centralmente
+- evitano duplicazioni
+
+supportando qualsiasi categoria futura.
+
 ---
 
 # Tabella: series
+
+## Scopo
+
+Rappresenta una Serie appartenente ad una specifica Collezione.
+
+La Serie costituisce il contenitore principale degli Item.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+series
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco serie |
+| collection_id | UUID | SI | Collezione proprietaria |
+| name | VARCHAR(200) | SI | Nome serie |
+| code | VARCHAR(100) | NO | Codice serie |
+| release_date | DATE | SI | Data ufficiale uscita |
+| description | TEXT | NO | Descrizione |
+| status | VARCHAR(30) | SI | Stato serie |
+| sort_order | INTEGER | SI | Ordinamento manuale |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = active
+
+sort_order = 0
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+active
+hidden
+archived
+```
+
+---
+
+## Foreign Keys
+
+collection_id
+
+→ collections.id
+
+---
+
+## Relazioni
+
+collections (1)
+
+↓
+
+(N)
+
+series
+
+---
+
+series (1)
+
+↓
+
+(N)
+
+items
+
+---
+
+## Vincoli
+
+collection_id deve esistere nella tabella collections.
+
+name non può essere vuoto.
+
+release_date è obbligatoria.
+
+sort_order deve essere maggiore o uguale a zero.
+
+status deve contenere un valore valido.
+
+All'interno della stessa Collezione non possono esistere due Serie con lo stesso nome.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (collection_id)
+
+INDEX (release_date)
+
+INDEX (status)
+
+INDEX (sort_order)
+
+UNIQUE (collection_id, name)
+
+---
+
+## Regole Business
+
+Una Serie appartiene ad una sola Collezione.
+
+Una Collezione può possedere molte Serie.
+
+Una Serie può possedere molti Item.
+
+---
+
+## Ordinamento Ufficiale
+
+La Serie deve essere ordinata principalmente tramite:
+
+```text
+release_date
+```
+
+---
+
+## Esempio Pokémon
+
+```text
+Set Base
+
+Jungle
+
+Fossil
+
+Team Rocket
+```
+
+---
+
+## Esempio Magic
+
+```text
+Alpha
+
+Beta
+
+Unlimited
+
+Revised
+```
+
+---
+
+## Compatibilità Collezioni Personali
+
+Le percentuali di completamento vengono calcolate a livello Serie.
+
+---
+
+## Compatibilità Marketplace
+
+Ogni annuncio deve essere riconducibile ad una specifica Serie.
+
+---
+
+## Compatibilità Matching
+
+Il Matching può utilizzare la Serie come filtro di precisione.
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Nascondere
+
+Archiviare
+
+Riordinare
+```
+
+le Serie senza modifiche al codice applicativo.
+
+---
+
+## Motivazione Architetturale
+
+La Serie rappresenta il vero contenitore logico degli Item.
+
+La sua esistenza consente:
+
+- completamento collezioni
+- statistiche avanzate
+- matching più preciso
+- ordinamento cronologico
+
+senza duplicare informazioni sugli Item.
 
 ---
 
 # Tabella: items
 
+## Scopo
+
+Rappresenta l'entità collezionabile principale del Catalogo Universale.
+
+L'Item costituisce il riferimento centrale per:
+
+- Catalogo
+- Scanner
+- Marketplace
+- Matching
+- Wishlist
+- Collezioni Personali
+
+Versioni e Varianti rappresentano specializzazioni dello stesso Item.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+items
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco item |
+| series_id | UUID | SI | Serie di appartenenza |
+| rarity_id | UUID | SI | Rarità associata |
+| name | VARCHAR(255) | SI | Nome item |
+| code | VARCHAR(100) | NO | Codice interno |
+| catalog_number | VARCHAR(100) | NO | Numero catalogo |
+| description | TEXT | NO | Descrizione |
+| status | VARCHAR(30) | SI | Stato item |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = active
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+active
+hidden
+archived
+```
+
+---
+
+## Foreign Keys
+
+series_id
+
+→ series.id
+
+---
+
+rarity_id
+
+→ rarities.id
+
+---
+
+## Relazioni
+
+series (1)
+
+↓
+
+(N)
+
+items
+
+---
+
+rarities (1)
+
+↓
+
+(N)
+
+items
+
+---
+
+items (1)
+
+↓
+
+(N)
+
+item_versions
+
+---
+
+items (1)
+
+↓
+
+(N)
+
+user_items
+
+(Futuro)
+
+---
+
+items (1)
+
+↓
+
+(N)
+
+wishlist_items
+
+(Futuro)
+
+---
+
+items (1)
+
+↓
+
+(N)
+
+marketplace_listings
+
+(Futuro)
+
+---
+
+## Vincoli
+
+series_id deve esistere nella tabella series.
+
+rarity_id deve esistere nella tabella rarities.
+
+name non può essere vuoto.
+
+status deve contenere un valore valido.
+
+All'interno della stessa Serie non possono esistere due Item con lo stesso nome.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (series_id)
+
+INDEX (rarity_id)
+
+INDEX (catalog_number)
+
+INDEX (status)
+
+UNIQUE (series_id, name)
+
+---
+
+## Regole Business
+
+Ogni Item appartiene ad una sola Serie.
+
+Ogni Item appartiene ad una sola Rarità.
+
+Ogni Item deve possedere almeno una Versione.
+
+---
+
+## Rarità
+
+La rarità appartiene sempre all'Item.
+
+Non appartiene a:
+
+```text
+ItemVersion
+
+ItemVariant
+```
+
+---
+
+## Esempio Pokémon
+
+```text
+Serie:
+Set Base
+
+↓
+
+Item:
+Charizard
+
+↓
+
+Rarità:
+Ultra Rare
+```
+
+---
+
+## Esempio Magic
+
+```text
+Serie:
+Alpha
+
+↓
+
+Item:
+Black Lotus
+
+↓
+
+Rarità:
+Rare
+```
+
+---
+
+## Compatibilità Collezioni Personali
+
+Il completamento principale viene calcolato a livello Item.
+
+---
+
+## Compatibilità Wishlist
+
+Le Wishlist si basano principalmente sugli Item.
+
+Possono essere successivamente specializzate tramite:
+
+```text
+Versione
+
+Variante
+```
+
+---
+
+## Compatibilità Scanner
+
+Lo Scanner segue la gerarchia:
+
+```text
+Item
+↓
+Versione
+↓
+Variante
+```
+
+---
+
+## Compatibilità Marketplace
+
+Ogni annuncio deve essere riconducibile almeno ad un Item.
+
+---
+
+## Compatibilità Matching
+
+Il Matching utilizza l'Item come riferimento principale.
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Gli utenti possono proporre:
+
+```text
+Nuovi Item
+```
+
+all'interno di una Serie esistente.
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Correggere
+
+Nascondere
+
+Archiviare
+
+Unificare Duplicati
+```
+
+---
+
+## Unificazione Duplicati
+
+Gli Item duplicati devono poter essere unificati.
+
+Esempio:
+
+```text
+Charizard
+
+Charizard Base Set
+```
+
+↓
+
+```text
+Charizard
+```
+
+---
+
+Tutte le relazioni devono essere migrate automaticamente verso il record sopravvissuto.
+
+---
+
+## Motivazione Architetturale
+
+L'Item rappresenta l'entità collezionabile principale del sistema.
+
+La sua separazione da Versioni e Varianti:
+
+- riduce duplicazioni
+- migliora Marketplace
+- migliora Matching
+- migliora Scanner
+- migliora Wishlist
+- mantiene il Catalogo stabile
+
+e consente la crescita futura del Catalogo Universale senza modifiche strutturali.
+
 ---
 
 # Tabella: item_versions
 
+## Scopo
+
+Rappresenta una Versione appartenente ad un Item.
+
+Le Versioni consentono di distinguere differenti edizioni, lingue, distribuzioni o pubblicazioni dello stesso Item.
+
+Le Versioni NON rappresentano nuovi Item.
+
+Le Versioni NON rappresentano Varianti.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+item_versions
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco versione |
+| item_id | UUID | SI | Item proprietario |
+| name | VARCHAR(200) | SI | Nome versione |
+| version_type | VARCHAR(50) | SI | Tipologia versione |
+| description | TEXT | NO | Descrizione |
+| is_default | BOOLEAN | SI | Versione predefinita |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+is_default = FALSE
+
+version_type = generic
+
+---
+
+## Valori Consentiti
+
+### version_type
+
+```text
+language
+edition
+distribution
+generic
+other
+```
+
+---
+
+## Foreign Keys
+
+item_id
+
+→ items.id
+
+---
+
+## Relazioni
+
+items (1)
+
+↓
+
+(N)
+
+item_versions
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+item_variants
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+catalog_images
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+user_items
+
+(Futuro)
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+wishlist_items
+
+(Futuro)
+
+---
+
+item_versions (1)
+
+↓
+
+(N)
+
+marketplace_listings
+
+(Futuro)
+
+---
+
+## Vincoli
+
+item_id deve esistere nella tabella items.
+
+name non può essere vuoto.
+
+version_type deve contenere un valore valido.
+
+All'interno dello stesso Item non possono esistere due Versioni con lo stesso nome.
+
+Può esistere una sola Versione con:
+
+```text
+is_default = TRUE
+```
+
+per ogni Item.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (item_id)
+
+INDEX (version_type)
+
+INDEX (is_default)
+
+UNIQUE (item_id, name)
+
+---
+
+## Vincolo Logico Aggiuntivo
+
+```text
+Per ogni Item:
+
+item_id + is_default = TRUE
+
+può esistere una sola volta.
+```
+
+---
+
+## Regole Business
+
+Ogni Versione appartiene ad un solo Item.
+
+Un Item può possedere molte Versioni.
+
+Ogni Item deve possedere almeno una Versione.
+
+---
+
+## Versione Generica
+
+Quando una Collezione non utilizza il concetto di Versione:
+
+```text
+Il sistema crea automaticamente
+
+Versione Generica
+```
+
+---
+
+## Esempio Linguistico
+
+```text
+Charizard
+
+↓
+
+Italiano
+
+Inglese
+
+Francese
+
+Tedesco
+
+Giapponese
+```
+
+---
+
+## Esempio Editoriale
+
+```text
+Black Lotus
+
+↓
+
+Alpha
+
+Beta
+
+Unlimited
+```
+
+---
+
+## Compatibilità Scanner
+
+Lo Scanner identifica:
+
+```text
+Item
+↓
+Versione
+↓
+Variante
+```
+
+---
+
+## Compatibilità Marketplace
+
+Gli annunci devono poter distinguere:
+
+```text
+Charizard Inglese
+```
+
+da:
+
+```text
+Charizard Giapponese
+```
+
+---
+
+## Compatibilità Matching
+
+Le Versioni influenzano direttamente il Matching.
+
+---
+
+## Compatibilità Wishlist
+
+Le Wishlist possono specificare:
+
+```text
+Item
+
+oppure
+
+Item + Versione
+```
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Gli utenti possono proporre nuove Versioni quando:
+
+```text
+Item esistente
++
+Versione assente
+```
+
+---
+
+## Compatibilità Immagini
+
+Le immagini possono appartenere a:
+
+```text
+ItemVersion
+```
+
+oppure:
+
+```text
+ItemVariant
+```
+
+---
+
+## Motivazione Architetturale
+
+La separazione delle Versioni dagli Item consente di rappresentare differenze reali senza duplicare l'intero Oggetto.
+
+Questo approccio:
+
+- migliora Scanner
+- migliora Matching
+- migliora Marketplace
+- migliora Wishlist
+- riduce duplicazioni
+
+e garantisce scalabilità futura.
 
 ---
 
 # Tabella: item_variants
 
+## Scopo
+
+Rappresenta una Variante appartenente ad una specifica Versione.
+
+Le Varianti rappresentano differenze fisiche o produttive della stessa Versione.
+
+Le Varianti NON rappresentano nuovi Item.
+
+Le Varianti NON rappresentano nuove Versioni.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+item_variants
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco variante |
+| item_version_id | UUID | SI | Versione proprietaria |
+| name | VARCHAR(200) | SI | Nome variante |
+| description | TEXT | NO | Descrizione |
+| is_default | BOOLEAN | SI | Variante predefinita |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+is_default = FALSE
+
+---
+
+## Foreign Keys
+
+item_version_id
+
+→ item_versions.id
+
+---
+
+## Relazioni
+
+item_versions (1)
+
+↓
+
+(N)
+
+item_variants
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+catalog_images
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+user_items
+
+(Futuro)
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+wishlist_items
+
+(Futuro)
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+marketplace_listings
+
+(Futuro)
+
+---
+
+## Vincoli
+
+item_version_id deve esistere nella tabella item_versions.
+
+name non può essere vuoto.
+
+All'interno della stessa Versione non possono esistere due Varianti con lo stesso nome.
+
+Può esistere una sola Variante con:
+
+```text
+is_default = TRUE
+```
+
+per ogni Versione.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (item_version_id)
+
+INDEX (is_default)
+
+UNIQUE (item_version_id, name)
+
+---
+
+## Vincolo Logico Aggiuntivo
+
+```text
+Per ogni Versione:
+
+item_version_id + is_default = TRUE
+
+può esistere una sola volta.
+```
+
+---
+
+## Regole Business
+
+Una Variante appartiene ad una sola Versione.
+
+Una Versione può possedere molte Varianti.
+
+Le Varianti sono opzionali.
+
+Una Versione può non possedere alcuna Variante.
+
+---
+
+## Esempio Pokémon
+
+```text
+Charizard
+↓
+Versione Inglese
+↓
+Holo
+
+Reverse Holo
+
+Gold
+
+Promo Stamp
+
+Error Print
+```
+
+---
+
+## Esempio Funko
+
+```text
+Batman
+↓
+Versione Generica
+↓
+Glow In The Dark
+
+Metallic
+
+Chase
+```
+
+---
+
+## Compatibilità Scanner
+
+Lo Scanner identifica:
+
+```text
+Item
+↓
+Versione
+↓
+Variante
+```
+
+La Variante rappresenta il massimo livello di precisione.
+
+---
+
+## Compatibilità Marketplace
+
+Gli annunci devono poter distinguere:
+
+```text
+Charizard Inglese Holo
+```
+
+da:
+
+```text
+Charizard Inglese Reverse Holo
+```
+
+---
+
+## Compatibilità Matching
+
+Le Varianti partecipano direttamente al Matching.
+
+---
+
+## Compatibilità Wishlist
+
+Le Wishlist possono specificare:
+
+```text
+Item
+
+Item + Versione
+
+Item + Versione + Variante
+```
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Gli utenti possono proporre nuove Varianti.
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Correggere
+
+Archiviare
+
+Unificare
+```
+
+Varianti duplicate.
+
+---
+
+## Motivazione Architetturale
+
+Le Varianti consentono di rappresentare differenze reali all'interno della stessa Versione.
+
+Questo approccio:
+
+- migliora la precisione dello Scanner
+- migliora il Marketplace
+- migliora il Matching
+- evita duplicazioni
+
+e mantiene il Catalogo coerente.
+
 ---
 
 # Tabella: catalog_images
+
+## Scopo
+
+Rappresenta le immagini del Catalogo Universale.
+
+Le immagini vengono utilizzate da:
+
+- Catalogo Universale
+- Scanner
+- Marketplace
+- Wishlist
+- Collezioni Personali
+- Catalogo Collaborativo
+- Dashboard Admin
+
+---
+
+# Regola Fondamentale
+
+Le immagini NON appartengono direttamente agli Item.
+
+Le immagini possono appartenere esclusivamente a:
+
+```text
+ItemVersion
+```
+
+oppure:
+
+```text
+ItemVariant
+```
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+catalog_images
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco immagine |
+| item_version_id | UUID | NO | Versione associata |
+| item_variant_id | UUID | NO | Variante associata |
+| image_url | TEXT | SI | URL immagine |
+| image_type | VARCHAR(50) | SI | Tipologia immagine |
+| is_official | BOOLEAN | SI | Immagine ufficiale |
+| is_active | BOOLEAN | SI | Immagine utilizzabile |
+| width | INTEGER | NO | Larghezza immagine |
+| height | INTEGER | NO | Altezza immagine |
+| file_size_bytes | BIGINT | NO | Dimensione file |
+| image_hash | VARCHAR(255) | NO | Hash immagine |
+| ai_score | NUMERIC(5,2) | NO | Valutazione AI |
+| community_score | NUMERIC(5,2) | NO | Valutazione Community |
+| usage_score | NUMERIC(5,2) | NO | Frequenza utilizzo |
+| total_score | NUMERIC(5,2) | NO | Punteggio totale |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+is_official = FALSE
+
+is_active = TRUE
+
+community_score = 0
+
+usage_score = 0
+
+total_score = 0
+
+---
+
+## Valori Consentiti
+
+### image_type
+
+```text
+front
+back
+package
+detail
+version
+variant
+other
+```
+
+---
+
+## Foreign Keys
+
+item_version_id
+
+→ item_versions.id
+
+---
+
+item_variant_id
+
+→ item_variants.id
+
+---
+
+## Relazioni
+
+item_versions (1)
+
+↓
+
+(N)
+
+catalog_images
+
+---
+
+item_variants (1)
+
+↓
+
+(N)
+
+catalog_images
+
+---
+
+## Vincolo Fondamentale
+
+Deve essere valorizzato uno ed uno soltanto tra:
+
+```text
+item_version_id
+```
+
+oppure:
+
+```text
+item_variant_id
+```
+
+Non è consentito valorizzare entrambi contemporaneamente.
+
+---
+
+## Regola XOR
+
+```text
+item_version_id IS NOT NULL
+
+XOR
+
+item_variant_id IS NOT NULL
+```
+
+---
+
+## Vincoli
+
+image_url non può essere vuoto.
+
+is_official deve avere un valore.
+
+is_active deve avere un valore.
+
+width deve essere maggiore di zero se valorizzato.
+
+height deve essere maggiore di zero se valorizzato.
+
+file_size_bytes deve essere maggiore di zero se valorizzato.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (item_version_id)
+
+INDEX (item_variant_id)
+
+INDEX (is_official)
+
+INDEX (is_active)
+
+INDEX (total_score)
+
+UNIQUE (image_hash)
+
+---
+
+## Regole Business
+
+Una Versione può possedere molte immagini.
+
+Una Variante può possedere molte immagini.
+
+Una immagine appartiene ad una sola Versione oppure ad una sola Variante.
+
+---
+
+## Immagine Ufficiale
+
+Per ogni Versione o Variante può esistere una sola immagine ufficiale.
+
+```text
+is_official = TRUE
+```
+
+---
+
+## Priorità Visualizzazione
+
+```text
+Immagine Variante
+↓
+Immagine Versione
+↓
+Placeholder
+```
+
+---
+
+## Compatibilità Scanner
+
+Lo Scanner utilizza prioritariamente:
+
+```text
+Immagine Ufficiale Variante
+```
+
+oppure:
+
+```text
+Immagine Ufficiale Versione
+```
+
+per:
+
+- Hash Matching
+- OCR Support
+- AI Recognition
+
+---
+
+## Compatibilità Marketplace
+
+Gli annunci mostrano:
+
+```text
+Immagine Variante
+```
+
+quando disponibile.
+
+Altrimenti:
+
+```text
+Immagine Versione
+```
+
+---
+
+## Compatibilità Wishlist
+
+La Wishlist segue la stessa priorità:
+
+```text
+Variante
+↓
+Versione
+↓
+Placeholder
+```
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Gli utenti possono proporre nuove immagini.
+
+Workflow:
+
+```text
+Nuova Immagine
+↓
+Revisione
+↓
+Valutazione
+↓
+Approvazione
+```
+
+---
+
+## Compatibilità Moderazione
+
+Le immagini devono poter essere:
+
+```text
+Segnalate
+
+Revisionate
+
+Disattivate
+```
+
+---
+
+## Motivazione Architetturale
+
+La separazione delle immagini dagli Item:
+
+- supporta Versioni
+- supporta Varianti
+- migliora Scanner
+- migliora Marketplace
+- riduce duplicazioni
+- migliora la qualità del Catalogo
+
+ed implementa integralmente il Blueprint CollectorVerse.
 
 ---
 
