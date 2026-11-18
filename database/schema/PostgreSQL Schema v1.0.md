@@ -21237,3 +21237,3378 @@ La tabella costituisce il nucleo operativo dell'intero sistema di Messaggistica 
 
 ---
 
+# Parte 11 - Reputazione e Recensioni
+
+# Tabella: user_reviews
+
+## Scopo
+
+Rappresenta una recensione lasciata da un utente nei confronti di un altro utente.
+
+Le recensioni consentono alla community di valutare l'affidabilità dei membri della piattaforma.
+
+Questa tabella viene utilizzata per:
+
+- reputazione utenti
+- reputazione commercianti
+- fiducia marketplace
+- fiducia matching
+- statistiche community
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_reviews
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco recensione |
+| reviewer_user_id | UUID | SI | Utente autore recensione |
+| reviewed_user_id | UUID | SI | Utente recensito |
+| rating | INTEGER | SI | Valutazione |
+| review_text | TEXT | NO | Commento recensione |
+| review_type | VARCHAR(30) | SI | Origine recensione |
+| is_visible | BOOLEAN | SI | Recensione visibile |
+| created_at | TIMESTAMPTZ | SI | Data recensione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+is_visible = TRUE
+
+review_type = marketplace
+
+---
+
+## Valori Consentiti
+
+### rating
+
+```text
+1
+
+2
+
+3
+
+4
+
+5
+```
+
+---
+
+### review_type
+
+```text
+marketplace
+
+trade
+
+matching
+
+community
+```
+
+---
+
+## Significato Valutazioni
+
+### 1
+
+Esperienza molto negativa.
+
+---
+
+### 2
+
+Esperienza negativa.
+
+---
+
+### 3
+
+Esperienza neutra.
+
+---
+
+### 4
+
+Esperienza positiva.
+
+---
+
+### 5
+
+Esperienza eccellente.
+
+---
+
+## Foreign Keys
+
+reviewer_user_id
+
+→ users.id
+
+---
+
+reviewed_user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+user_reviews
+
+(recensore)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+user_reviews
+
+(recensito)
+
+---
+
+## Vincoli
+
+reviewer_user_id deve esistere.
+
+reviewed_user_id deve esistere.
+
+rating deve essere compreso tra:
+
+```text
+1
+
+e
+
+5
+```
+
+---
+
+## Vincolo Anti-Autorecensione
+
+Non è consentito:
+
+```text
+reviewer_user_id
+
+=
+
+reviewed_user_id
+```
+
+---
+
+## Vincolo Anti-Duplicato
+
+Si consiglia:
+
+```text
+Una recensione per utente
+```
+
+per ogni singola interazione.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (reviewer_user_id)
+
+INDEX (reviewed_user_id)
+
+INDEX (rating)
+
+INDEX (review_type)
+
+INDEX (is_visible)
+
+INDEX (created_at)
+
+---
+
+## Regole Business
+
+Le recensioni devono essere pubbliche.
+
+Le recensioni archiviate restano nello storico.
+
+Le recensioni contribuiscono alla reputazione dell'utente.
+
+---
+
+## Compatibilità Marketplace
+
+Le recensioni possono derivare da:
+
+```text
+Vendite
+
+Acquisti
+
+Scambi
+```
+
+---
+
+## Compatibilità Matching
+
+Gli utenti possono recensire l'esperienza di collaborazione.
+
+---
+
+## Compatibilità User Scores
+
+Le recensioni influenzano:
+
+```text
+reputation_score
+```
+
+presente nella tabella:
+
+```text
+user_scores
+```
+
+---
+
+## Compatibilità Profilo Utente
+
+Il profilo può mostrare:
+
+```text
+Media Valutazione
+
+Numero Recensioni
+
+Ultime Recensioni
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Revisionare
+
+Nascondere
+
+Moderare
+```
+
+recensioni abusive.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Media Recensioni
+
+Numero Recensioni
+
+Distribuzione Voti
+
+Top Utenti
+```
+
+---
+
+## Esempio Logico
+
+Utente A
+
+↓
+
+Recensione
+
+↓
+
+Utente B
+
+↓
+
+5 Stelle
+
+↓
+
+"Eccellente comunicazione"
+
+---
+
+Utente C
+
+↓
+
+Recensione
+
+↓
+
+Utente D
+
+↓
+
+4 Stelle
+
+↓
+
+"Scambio perfetto"
+
+---
+
+## Motivazione Architetturale
+
+La tabella user_reviews costituisce il sistema di fiducia della piattaforma.
+
+Permette di costruire reputazione nel tempo senza dipendere da sistemi esterni e migliora la qualità delle interazioni tra utenti.
+
+---
+
+# Tabella: merchant_verifications
+
+## Scopo
+
+Rappresenta la richiesta di verifica di un Commerciante all'interno della piattaforma CollectorVerse.
+
+La verifica consente di identificare utenti che operano come:
+
+- negozi
+- attività professionali
+- rivenditori
+- commercianti specializzati
+- aziende del settore collezionistico
+
+L'obiettivo è aumentare la fiducia della community e distinguere i profili verificati dagli utenti privati.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+merchant_verifications
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo verifica |
+| user_id | UUID | SI | Utente richiedente |
+| business_name | VARCHAR(255) | SI | Nome attività |
+| business_type | VARCHAR(50) | SI | Tipologia attività |
+| website_url | TEXT | NO | Sito web attività |
+| tax_identifier | VARCHAR(100) | NO | Identificativo fiscale |
+| country_code | VARCHAR(10) | SI | Paese attività |
+| verification_status | VARCHAR(30) | SI | Stato verifica |
+| application_notes | TEXT | NO | Note del richiedente |
+| reviewer_user_id | UUID | NO | Revisore amministratore |
+| review_notes | TEXT | NO | Note revisione |
+| submitted_at | TIMESTAMPTZ | SI | Data invio richiesta |
+| reviewed_at | TIMESTAMPTZ | NO | Data revisione |
+| approved_at | TIMESTAMPTZ | NO | Data approvazione |
+| rejected_at | TIMESTAMPTZ | NO | Data rifiuto |
+| expires_at | TIMESTAMPTZ | NO | Data scadenza verifica |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+verification_status = pending
+
+submitted_at = data corrente
+
+---
+
+## Valori Consentiti
+
+### business_type
+
+```text
+store
+
+dealer
+
+collector_shop
+
+company
+
+auction_house
+
+other
+```
+
+---
+
+### verification_status
+
+```text
+pending
+
+under_review
+
+approved
+
+rejected
+
+expired
+
+revoked
+```
+
+---
+
+## Significato Business Type
+
+### store
+
+Negozio fisico o online.
+
+---
+
+### dealer
+
+Rivenditore professionale.
+
+---
+
+### collector_shop
+
+Attività specializzata nel collezionismo.
+
+---
+
+### company
+
+Società registrata.
+
+---
+
+### auction_house
+
+Casa d'aste.
+
+---
+
+### other
+
+Altra attività professionale.
+
+---
+
+## Significato Verification Status
+
+### pending
+
+Richiesta ricevuta.
+
+In attesa di revisione.
+
+---
+
+### under_review
+
+Richiesta in fase di verifica.
+
+---
+
+### approved
+
+Verifica approvata.
+
+---
+
+### rejected
+
+Verifica rifiutata.
+
+---
+
+### expired
+
+Verifica scaduta.
+
+---
+
+### revoked
+
+Verifica revocata dall'amministrazione.
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+reviewer_user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(0..1)
+
+merchant_verifications
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+merchant_verifications
+
+(revisore)
+
+---
+
+## Vincoli
+
+user_id deve esistere.
+
+business_name non può essere vuoto.
+
+country_code non può essere vuoto.
+
+verification_status deve contenere un valore valido.
+
+business_type deve contenere un valore valido.
+
+---
+
+## Vincolo Anti-Duplicato
+
+Un utente può avere una sola verifica attiva.
+
+---
+
+### Regola
+
+```text
+UNIQUE (user_id)
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+INDEX (verification_status)
+
+INDEX (business_type)
+
+INDEX (country_code)
+
+INDEX (reviewer_user_id)
+
+INDEX (submitted_at)
+
+INDEX (reviewed_at)
+
+---
+
+## Regole Business
+
+Solo gli utenti che desiderano essere riconosciuti come commercianti devono utilizzare questa procedura.
+
+Gli utenti privati non sono obbligati a richiedere la verifica.
+
+---
+
+## Procedura Standard
+
+```text
+Utente
+
+↓
+
+Richiesta Verifica
+
+↓
+
+Pending
+
+↓
+
+Under Review
+
+↓
+
+Approved
+```
+
+---
+
+## Procedura Rifiuto
+
+```text
+Utente
+
+↓
+
+Richiesta Verifica
+
+↓
+
+Pending
+
+↓
+
+Under Review
+
+↓
+
+Rejected
+```
+
+---
+
+## Badge Merchant Verificato
+
+Quando:
+
+```text
+verification_status = approved
+```
+
+il sistema può assegnare automaticamente:
+
+```text
+Verified Merchant
+```
+
+nella tabella:
+
+```text
+user_badges
+```
+
+---
+
+## Compatibilità Marketplace
+
+I profili verificati possono mostrare:
+
+```text
+Merchant Verificato
+```
+
+all'interno degli annunci.
+
+---
+
+## Compatibilità Matching
+
+Gli utenti possono filtrare opportunità provenienti da:
+
+```text
+Merchant Verificati
+```
+
+---
+
+## Compatibilità Profilo Utente
+
+Il profilo può mostrare:
+
+```text
+Stato Verifica
+
+Tipo Attività
+
+Badge Merchant
+```
+
+---
+
+## Compatibilità Notifiche
+
+La verifica può generare notifiche:
+
+```text
+Richiesta Ricevuta
+
+Richiesta Approvata
+
+Richiesta Respinta
+
+Verifica Scaduta
+
+Verifica Revocata
+```
+
+---
+
+## Compatibilità User Scores
+
+L'approvazione può influenzare:
+
+```text
+reputation_score
+```
+
+secondo le regole di business future.
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Visualizzare
+
+Revisionare
+
+Approvare
+
+Respingere
+
+Revocare
+
+Rinnovare
+```
+
+le verifiche.
+
+---
+
+## Compatibilità Statistiche
+
+Statistiche disponibili:
+
+```text
+Merchant Verificati
+
+Richieste Approvate
+
+Richieste Respinte
+
+Tempo Medio Revisione
+
+Distribuzione per Paese
+```
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+merchant_verifications
+
+↓
+
+Business Name
+
+PokéStore Milano
+
+↓
+
+Store
+
+↓
+
+Pending
+
+↓
+
+Approved
+
+↓
+
+Badge Verified Merchant
+
+---
+
+Utente
+
+↓
+
+merchant_verifications
+
+↓
+
+Collector House
+
+↓
+
+Dealer
+
+↓
+
+Under Review
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+users
+```
+
+e
+
+```text
+merchant_verifications
+```
+
+consente di gestire l'identificazione professionale senza alterare il modello utente principale.
+
+Questo approccio permette:
+
+- verifiche amministrative
+- badge professionali
+- maggiore fiducia nel Marketplace
+- distinzione tra privati e commercianti
+- futuro supporto a programmi premium per professionisti
+
+senza introdurre complessità nel sistema di autenticazione.
+
+La tabella costituisce il nucleo del sistema di verifica commercianti di CollectorVerse.
+
+---
+
+# Parte 12 - Moderazione e Sicurezza
+
+# Tabella: user_blocks
+
+## Scopo
+
+Rappresenta il blocco di un utente da parte di un altro utente.
+
+Il blocco consente di interrompere qualsiasi interazione tra due utenti.
+
+Questa funzionalità protegge gli utenti da:
+
+- spam
+- molestie
+- comportamenti indesiderati
+- contatti non graditi
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_blocks
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo blocco |
+| blocker_user_id | UUID | SI | Utente che blocca |
+| blocked_user_id | UUID | SI | Utente bloccato |
+| reason | TEXT | NO | Motivazione opzionale |
+| created_at | TIMESTAMPTZ | SI | Data blocco |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Data sblocco |
+
+---
+
+## Foreign Keys
+
+blocker_user_id
+
+→ users.id
+
+---
+
+blocked_user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+user_blocks
+
+(bloccante)
+
+---
+
+users (1)
+
+↓
+
+(N)
+
+user_blocks
+
+(bloccato)
+
+---
+
+## Vincoli
+
+blocker_user_id deve esistere.
+
+blocked_user_id deve esistere.
+
+---
+
+## Vincolo Anti-Autoblocco
+
+Non è consentito:
+
+```text
+blocker_user_id
+
+=
+
+blocked_user_id
+```
+
+---
+
+## Vincolo Anti-Duplicato
+
+```text
+UNIQUE
+(
+blocker_user_id,
+blocked_user_id
+)
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (blocker_user_id)
+
+INDEX (blocked_user_id)
+
+UNIQUE (blocker_user_id, blocked_user_id)
+
+---
+
+## Regole Business
+
+Quando un utente viene bloccato:
+
+```text
+Nessun nuovo messaggio
+
+Nessun nuovo contatto
+
+Nessuna nuova conversazione
+
+Nessuna opportunità Matching diretta
+```
+
+---
+
+## Compatibilità Messaggistica
+
+Le conversazioni esistenti restano archiviate.
+
+Non possono essere inviati nuovi messaggi.
+
+---
+
+## Compatibilità Marketplace
+
+Gli utenti bloccati non possono contattarsi tramite annunci.
+
+---
+
+## Compatibilità Matching
+
+Gli utenti bloccati vengono esclusi dal Matching.
+
+---
+
+## Motivazione Architetturale
+
+Questa tabella costituisce il primo livello di protezione personale tra utenti.
+
+---
+
+# Tabella: moderation_cases
+
+## Scopo
+
+Rappresenta un caso di moderazione aperto sulla piattaforma.
+
+Un caso può essere originato da:
+
+- segnalazioni Marketplace
+- segnalazioni utenti
+- verifiche amministrative
+- controlli automatici
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+moderation_cases
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo caso |
+| case_number | VARCHAR(50) | SI | Codice caso |
+| status | VARCHAR(30) | SI | Stato caso |
+| priority_level | VARCHAR(20) | SI | Priorità |
+| created_by_user_id | UUID | NO | Utente segnalante |
+| assigned_to_user_id | UUID | NO | Moderatore assegnato |
+| summary | VARCHAR(255) | SI | Titolo caso |
+| description | TEXT | NO | Dettagli caso |
+| resolution_notes | TEXT | NO | Esito revisione |
+| opened_at | TIMESTAMPTZ | SI | Apertura |
+| resolved_at | TIMESTAMPTZ | NO | Chiusura |
+| created_at | TIMESTAMPTZ | SI | Creazione |
+| updated_at | TIMESTAMPTZ | SI | Aggiornamento |
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+open
+
+under_review
+
+pending_info
+
+resolved
+
+dismissed
+```
+
+---
+
+### priority_level
+
+```text
+low
+
+normal
+
+high
+
+critical
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (case_number)
+
+INDEX (status)
+
+INDEX (priority_level)
+
+INDEX (assigned_to_user_id)
+
+---
+
+## Regole Business
+
+Ogni caso può coinvolgere:
+
+```text
+Utenti
+
+Annunci
+
+Messaggi
+
+Contributi
+
+Recensioni
+```
+
+---
+
+## Motivazione Architetturale
+
+Centralizza tutta la moderazione in un'unica struttura.
+
+---
+
+# Tabella: moderation_case_entities
+
+## Scopo
+
+Collega un Caso di Moderazione alle entità coinvolte.
+
+Permette ad un singolo caso di riferirsi a più elementi.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+moderation_case_entities
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo collegamento |
+| moderation_case_id | UUID | SI | Caso associato |
+| entity_type | VARCHAR(50) | SI | Tipo entità |
+| entity_id | UUID | SI | Entità coinvolta |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+
+---
+
+## Valori Consentiti
+
+### entity_type
+
+```text
+user
+
+marketplace_listing
+
+message
+
+catalog_contribution
+
+review
+
+merchant_verification
+```
+
+---
+
+## Foreign Keys
+
+moderation_case_id
+
+→ moderation_cases.id
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (moderation_case_id)
+
+INDEX (entity_type)
+
+INDEX (entity_id)
+
+---
+
+## Motivazione Architetturale
+
+Permette di collegare qualsiasi oggetto della piattaforma ad un caso senza modificare il database in futuro.
+
+---
+
+# Tabella: audit_logs
+
+## Scopo
+
+Rappresenta il registro storico delle azioni importanti effettuate nella piattaforma.
+
+La tabella viene utilizzata per:
+
+- sicurezza
+- audit
+- investigazioni
+- conformità
+- debugging amministrativo
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+audit_logs
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo log |
+| user_id | UUID | NO | Utente coinvolto |
+| action_type | VARCHAR(100) | SI | Azione eseguita |
+| entity_type | VARCHAR(50) | SI | Tipo entità coinvolta |
+| entity_id | UUID | NO | Record coinvolto |
+| metadata_json | JSONB | NO | Dati aggiuntivi |
+| ip_address | VARCHAR(100) | NO | IP registrato |
+| created_at | TIMESTAMPTZ | SI | Data evento |
+
+---
+
+## Esempi Action Type
+
+```text
+login
+
+logout
+
+create_listing
+
+delete_listing
+
+send_message
+
+approve_contribution
+
+reject_contribution
+
+merchant_approved
+
+merchant_revoked
+
+user_blocked
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (user_id)
+
+INDEX (action_type)
+
+INDEX (entity_type)
+
+INDEX (entity_id)
+
+INDEX (created_at)
+
+---
+
+## Regole Business
+
+I log non devono essere modificati.
+
+I log non devono essere eliminati.
+
+I log rappresentano la fonte ufficiale delle attività storiche.
+
+---
+
+## Motivazione Architetturale
+
+Questa tabella costituisce la memoria operativa della piattaforma e permette di ricostruire qualsiasi evento rilevante.
+
+---
+
+# Parte 13 - Amministrazione e Configurazione
+
+# Tabella: system_settings
+
+## Scopo
+
+Rappresenta le impostazioni globali della piattaforma.
+
+Questa tabella consente agli amministratori di configurare il comportamento generale di CollectorVerse senza effettuare modifiche al codice.
+
+Le impostazioni possono riguardare:
+
+- Marketplace
+- Matching
+- Scanner
+- Gamification
+- Registrazione utenti
+- Catalogo Collaborativo
+- Sicurezza
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+system_settings
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo impostazione |
+| setting_key | VARCHAR(150) | SI | Chiave impostazione |
+| setting_value | TEXT | SI | Valore impostazione |
+| value_type | VARCHAR(20) | SI | Tipo valore |
+| category | VARCHAR(50) | SI | Categoria impostazione |
+| description | TEXT | NO | Descrizione |
+| is_public | BOOLEAN | SI | Visibile lato client |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data aggiornamento |
+
+---
+
+## Valori Predefiniti
+
+is_public = FALSE
+
+---
+
+## Valori Consentiti
+
+### value_type
+
+```text
+string
+
+integer
+
+decimal
+
+boolean
+
+json
+```
+
+---
+
+### category
+
+```text
+marketplace
+
+matching
+
+scanner
+
+security
+
+catalog
+
+gamification
+
+notifications
+
+general
+```
+
+---
+
+## Vincoli
+
+setting_key deve essere univoco.
+
+setting_key non può essere vuoto.
+
+setting_value non può essere vuoto.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (setting_key)
+
+INDEX (category)
+
+INDEX (is_public)
+
+---
+
+## Esempi
+
+### Marketplace
+
+```text
+max_active_listings_per_user
+
+100
+```
+
+---
+
+### Matching
+
+```text
+default_matching_score
+
+50
+```
+
+---
+
+### Scanner
+
+```text
+minimum_scan_confidence
+
+75
+```
+
+---
+
+### Catalogo
+
+```text
+community_votes_required
+
+10
+```
+
+---
+
+## Motivazione Architetturale
+
+Permette la configurazione centralizzata del sistema senza deploy applicativi.
+
+---
+
+# Tabella: feature_flags
+
+## Scopo
+
+Permette di attivare o disattivare funzionalità della piattaforma.
+
+Le Feature Flag consentono rilasci graduali e gestione controllata delle nuove funzionalità.
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+feature_flags
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo flag |
+| feature_key | VARCHAR(150) | SI | Codice funzionalità |
+| name | VARCHAR(150) | SI | Nome funzionalità |
+| description | TEXT | NO | Descrizione |
+| is_enabled | BOOLEAN | SI | Stato attivazione |
+| rollout_percentage | INTEGER | SI | Percentuale rilascio |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data aggiornamento |
+
+---
+
+## Valori Predefiniti
+
+is_enabled = FALSE
+
+rollout_percentage = 100
+
+---
+
+## Vincoli
+
+feature_key deve essere univoco.
+
+rollout_percentage deve essere compreso tra:
+
+```text
+0
+e
+100
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (feature_key)
+
+INDEX (is_enabled)
+
+---
+
+## Esempi
+
+```text
+advanced_scanner
+```
+
+---
+
+```text
+ai_matching_v2
+```
+
+---
+
+```text
+merchant_program
+```
+
+---
+
+```text
+seasonal_leaderboards
+```
+
+---
+
+## Regole Business
+
+Se:
+
+```text
+is_enabled = FALSE
+```
+
+la funzionalità non deve essere disponibile.
+
+---
+
+## Motivazione Architetturale
+
+Permette il rilascio progressivo di nuove funzionalità senza modifiche strutturali.
+
+---
+
+# Tabella: maintenance_windows
+
+## Scopo
+
+Rappresenta le finestre di manutenzione pianificate della piattaforma.
+
+Utilizzata per:
+
+- aggiornamenti
+- manutenzioni
+- migrazioni database
+- deploy importanti
+- comunicazioni agli utenti
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+maintenance_windows
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo manutenzione |
+| title | VARCHAR(255) | SI | Titolo manutenzione |
+| description | TEXT | NO | Descrizione dettagliata |
+| starts_at | TIMESTAMPTZ | SI | Inizio manutenzione |
+| ends_at | TIMESTAMPTZ | SI | Fine manutenzione |
+| status | VARCHAR(30) | SI | Stato manutenzione |
+| affects_marketplace | BOOLEAN | SI | Impatta Marketplace |
+| affects_scanner | BOOLEAN | SI | Impatta Scanner |
+| affects_matching | BOOLEAN | SI | Impatta Matching |
+| affects_messaging | BOOLEAN | SI | Impatta Messaggistica |
+| created_by_user_id | UUID | SI | Amministratore creatore |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data aggiornamento |
+
+---
+
+## Valori Predefiniti
+
+status = scheduled
+
+affects_marketplace = FALSE
+
+affects_scanner = FALSE
+
+affects_matching = FALSE
+
+affects_messaging = FALSE
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+scheduled
+
+active
+
+completed
+
+cancelled
+```
+
+---
+
+## Foreign Keys
+
+created_by_user_id
+
+→ users.id
+
+---
+
+## Vincoli
+
+starts_at deve essere precedente a ends_at.
+
+status deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (status)
+
+INDEX (starts_at)
+
+INDEX (ends_at)
+
+---
+
+## Regole Business
+
+Le manutenzioni future devono essere comunicate agli utenti tramite notifiche.
+
+---
+
+## Compatibilità Notifiche
+
+Può generare:
+
+```text
+Manutenzione Pianificata
+
+Manutenzione In Corso
+
+Manutenzione Terminata
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Annullare
+
+Pubblicare
+```
+
+le manutenzioni.
+
+---
+
+## Motivazione Architetturale
+
+Centralizza la gestione delle manutenzioni e delle comunicazioni operative verso gli utenti.
+
+---
+
+# Parte 14 - Gestione Media e Storage
+
+# Tabella: media_files
+
+## Scopo
+
+Rappresenta qualsiasi file caricato sulla piattaforma.
+
+La tabella centralizza la gestione di:
+
+- immagini catalogo
+- avatar
+- copertine profilo
+- allegati contributi
+- documenti verifica commercianti
+- immagini scanner
+- icone badge
+- icone achievement
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+media_files
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo file |
+| uploaded_by_user_id | UUID | NO | Utente caricatore |
+| storage_path | TEXT | SI | Percorso file storage |
+| original_filename | VARCHAR(255) | SI | Nome file originale |
+| mime_type | VARCHAR(100) | SI | Mime Type |
+| file_size_bytes | BIGINT | SI | Dimensione file |
+| width | INTEGER | NO | Larghezza |
+| height | INTEGER | NO | Altezza |
+| file_hash | VARCHAR(255) | NO | Hash file |
+| status | VARCHAR(30) | SI | Stato file |
+| created_at | TIMESTAMPTZ | SI | Data caricamento |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+| deleted_at | TIMESTAMPTZ | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = active
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+active
+
+pending_review
+
+blocked
+
+deleted
+```
+
+---
+
+## Foreign Keys
+
+uploaded_by_user_id
+
+→ users.id
+
+---
+
+## Vincoli
+
+storage_path non può essere vuoto.
+
+mime_type non può essere vuoto.
+
+file_size_bytes deve essere maggiore di zero.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (uploaded_by_user_id)
+
+INDEX (status)
+
+INDEX (mime_type)
+
+INDEX (file_hash)
+
+---
+
+## Regole Business
+
+Ogni file viene salvato una sola volta.
+
+Lo stesso file può essere utilizzato da molte entità.
+
+---
+
+## Compatibilità Moderazione
+
+I file possono essere:
+
+```text
+Revisionati
+
+Bloccati
+
+Archiviati
+```
+
+---
+
+## Motivazione Architetturale
+
+Centralizza tutto lo storage della piattaforma.
+
+---
+
+# Tabella: media_usages
+
+## Scopo
+
+Collega un file ad una entità della piattaforma.
+
+Permette di sapere dove viene utilizzato ogni file.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+media_usages
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo collegamento |
+| media_file_id | UUID | SI | File collegato |
+| entity_type | VARCHAR(50) | SI | Tipo entità |
+| entity_id | UUID | SI | Entità utilizzatrice |
+| usage_type | VARCHAR(50) | SI | Utilizzo specifico |
+| created_at | TIMESTAMPTZ | SI | Data collegamento |
+
+---
+
+## Valori Consentiti
+
+### entity_type
+
+```text
+user_profile
+
+catalog_image
+
+catalog_contribution
+
+merchant_verification
+
+achievement
+
+badge
+
+scan_session
+```
+
+---
+
+### usage_type
+
+```text
+avatar
+
+cover
+
+front_image
+
+back_image
+
+attachment
+
+proof
+
+icon
+
+scan_source
+```
+
+---
+
+## Foreign Keys
+
+media_file_id
+
+→ media_files.id
+
+---
+
+## Relazioni
+
+media_files (1)
+
+↓
+
+(N)
+
+media_usages
+
+---
+
+## Vincoli
+
+media_file_id deve esistere.
+
+entity_id deve essere valorizzato.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (media_file_id)
+
+INDEX (entity_type)
+
+INDEX (entity_id)
+
+INDEX (usage_type)
+
+---
+
+## Regole Business
+
+Un file può essere riutilizzato più volte.
+
+Una entità può avere più file collegati.
+
+---
+
+## Esempio
+
+media_file
+
+↓
+
+charizard_front.jpg
+
+↓
+
+catalog_image
+
+↓
+
+front_image
+
+---
+
+media_file
+
+↓
+
+avatar_user.jpg
+
+↓
+
+user_profile
+
+↓
+
+avatar
+
+---
+
+## Motivazione Architetturale
+
+Permette di sapere sempre:
+
+- dove è usato un file
+- se un file è orfano
+- se un file può essere eliminato
+
+senza dipendere da URL sparsi nel database.
+
+---
+
+# Parte 15 - Analytics e Telemetria
+
+# Tabella: analytics_events
+
+## Scopo
+
+Rappresenta un evento generato all'interno della piattaforma.
+
+Questa tabella costituisce la base per:
+
+- statistiche
+- dashboard amministrative
+- business intelligence
+- monitoraggio utilizzo
+- metriche prodotto
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+analytics_events
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo evento |
+| user_id | UUID | NO | Utente associato |
+| event_type | VARCHAR(100) | SI | Tipologia evento |
+| entity_type | VARCHAR(50) | NO | Tipo entità coinvolta |
+| entity_id | UUID | NO | Entità coinvolta |
+| metadata_json | JSONB | NO | Dati aggiuntivi |
+| occurred_at | TIMESTAMPTZ | SI | Momento evento |
+| created_at | TIMESTAMPTZ | SI | Data registrazione |
+
+---
+
+## Valori Consentiti
+
+### event_type
+
+```text
+login
+
+user_registration
+
+scan_completed
+
+scan_confirmed
+
+item_added
+
+wishlist_added
+
+listing_created
+
+listing_viewed
+
+offer_created
+
+message_sent
+
+match_generated
+
+match_opened
+
+achievement_unlocked
+
+badge_earned
+
+contribution_created
+
+contribution_approved
+```
+
+---
+
+## Foreign Keys
+
+user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+analytics_events
+
+---
+
+## Vincoli
+
+event_type non può essere vuoto.
+
+occurred_at non può essere nullo.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (user_id)
+
+INDEX (event_type)
+
+INDEX (entity_type)
+
+INDEX (entity_id)
+
+INDEX (occurred_at)
+
+---
+
+## Regole Business
+
+Gli eventi sono immutabili.
+
+Gli eventi non devono essere modificati.
+
+Gli eventi non devono essere cancellati.
+
+---
+
+## Esempio
+
+Utente
+
+↓
+
+Scansione Oggetto
+
+↓
+
+analytics_event
+
+↓
+
+scan_completed
+
+---
+
+Utente
+
+↓
+
+Nuovo Annuncio
+
+↓
+
+analytics_event
+
+↓
+
+listing_created
+
+---
+
+## Motivazione Architetturale
+
+Costituisce la sorgente primaria di tutte le statistiche della piattaforma.
+
+---
+
+# Tabella: analytics_daily_metrics
+
+## Scopo
+
+Rappresenta metriche aggregate giornaliere generate a partire dagli Analytics Events.
+
+Questa tabella consente di alimentare dashboard e report senza effettuare elaborazioni pesanti in tempo reale.
+
+---
+
+## Tipo Tabella
+
+Aggregazione
+
+---
+
+## Nome Tabella
+
+analytics_daily_metrics
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo metrica |
+| metric_date | DATE | SI | Giorno riferimento |
+| metric_key | VARCHAR(100) | SI | Nome metrica |
+| metric_value | BIGINT | SI | Valore aggregato |
+| category | VARCHAR(50) | SI | Categoria |
+| created_at | TIMESTAMPTZ | SI | Data calcolo |
+| updated_at | TIMESTAMPTZ | SI | Data aggiornamento |
+
+---
+
+## Valori Consentiti
+
+### category
+
+```text
+users
+
+marketplace
+
+matching
+
+scanner
+
+catalog
+
+community
+
+gamification
+
+messaging
+```
+
+---
+
+## Vincoli
+
+metric_date non può essere vuota.
+
+metric_key non può essere vuota.
+
+metric_value deve essere maggiore o uguale a zero.
+
+---
+
+## Vincolo Anti-Duplicato
+
+```text
+UNIQUE
+(
+metric_date,
+metric_key
+)
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (metric_date, metric_key)
+
+INDEX (category)
+
+INDEX (metric_date)
+
+---
+
+## Esempi Metriche
+
+### Utenti
+
+```text
+daily_active_users
+
+1250
+```
+
+---
+
+### Marketplace
+
+```text
+listings_created
+
+340
+```
+
+---
+
+### Scanner
+
+```text
+scans_completed
+
+890
+```
+
+---
+
+### Matching
+
+```text
+matches_generated
+
+420
+```
+
+---
+
+### Catalogo
+
+```text
+contributions_created
+
+35
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Permette di mostrare:
+
+```text
+Andamento Utenti
+
+Crescita Marketplace
+
+Uso Scanner
+
+Uso Matching
+
+Attività Community
+```
+
+---
+
+## Compatibilità Report
+
+Permette la generazione di:
+
+```text
+Report Giornalieri
+
+Report Settimanali
+
+Report Mensili
+
+Report Annuali
+```
+
+---
+
+## Motivazione Architetturale
+
+Riduce drasticamente il carico sul database operativo e consente la creazione di dashboard ad alte prestazioni.
+
+---
+
+# Parte 16 - Internazionalizzazione e Localizzazione
+
+# Tabella: languages
+
+## Scopo
+
+Rappresenta le lingue supportate dalla piattaforma.
+
+Questa tabella viene utilizzata per:
+
+- traduzioni catalogo
+- traduzioni interfaccia
+- contenuti multilingua
+- supporto internazionale
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+languages
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo lingua |
+| code | VARCHAR(10) | SI | Codice lingua ISO |
+| name | VARCHAR(100) | SI | Nome lingua |
+| native_name | VARCHAR(100) | SI | Nome lingua nativo |
+| is_active | BOOLEAN | SI | Lingua attiva |
+| is_default | BOOLEAN | SI | Lingua predefinita |
+| sort_order | INTEGER | SI | Ordinamento |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+
+---
+
+## Valori Predefiniti
+
+is_active = TRUE
+
+is_default = FALSE
+
+sort_order = 0
+
+---
+
+## Esempi Codici
+
+```text
+it
+
+en
+
+fr
+
+de
+
+es
+
+ja
+```
+
+---
+
+## Vincoli
+
+code deve essere univoco.
+
+name deve essere univoco.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (code)
+
+UNIQUE (name)
+
+INDEX (is_active)
+
+INDEX (is_default)
+
+---
+
+## Regole Business
+
+Può esistere una sola lingua predefinita.
+
+---
+
+## Esempio
+
+Italiano
+
+```text
+it
+```
+
+---
+
+Inglese
+
+```text
+en
+```
+
+---
+
+Giapponese
+
+```text
+ja
+```
+
+---
+
+## Motivazione Architetturale
+
+Centralizza la gestione delle lingue dell'intera piattaforma.
+
+---
+
+# Tabella: translations
+
+## Scopo
+
+Rappresenta una traduzione associata ad una specifica entità.
+
+Questa tabella consente di tradurre qualsiasi elemento della piattaforma senza modificare le tabelle originali.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+translations
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo traduzione |
+| language_id | UUID | SI | Lingua |
+| entity_type | VARCHAR(50) | SI | Tipo entità |
+| entity_id | UUID | SI | Record tradotto |
+| field_name | VARCHAR(100) | SI | Campo tradotto |
+| translated_value | TEXT | SI | Valore tradotto |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
+
+---
+
+## Foreign Keys
+
+language_id
+
+→ languages.id
+
+---
+
+## Relazioni
+
+languages (1)
+
+↓
+
+(N)
+
+translations
+
+---
+
+## Valori Consentiti
+
+### entity_type
+
+```text
+category
+
+collection
+
+rarity
+
+series
+
+item
+
+item_version
+
+item_variant
+
+achievement
+
+badge
+
+system_setting
+```
+
+---
+
+### field_name
+
+Esempi:
+
+```text
+name
+
+description
+
+title
+
+label
+```
+
+---
+
+## Vincoli
+
+language_id deve esistere.
+
+entity_type deve essere valorizzato.
+
+entity_id deve essere valorizzato.
+
+field_name deve essere valorizzato.
+
+translated_value non può essere vuoto.
+
+---
+
+## Vincolo Anti-Duplicato
+
+```text
+UNIQUE
+(
+language_id,
+entity_type,
+entity_id,
+field_name
+)
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (language_id)
+
+INDEX (entity_type)
+
+INDEX (entity_id)
+
+INDEX (field_name)
+
+UNIQUE (
+language_id,
+entity_type,
+entity_id,
+field_name
+)
+
+---
+
+## Regole Business
+
+Una traduzione può riferirsi a qualsiasi entità della piattaforma.
+
+Le traduzioni non modificano il dato originale.
+
+---
+
+## Esempio
+
+Item
+
+↓
+
+Charizard
+
+↓
+
+Lingua
+
+Italiano
+
+↓
+
+"Charizard"
+
+---
+
+Item
+
+↓
+
+Charizard
+
+↓
+
+Lingua
+
+Francese
+
+↓
+
+"Dracaufeu"
+
+---
+
+Achievement
+
+↓
+
+First Scan
+
+↓
+
+Italiano
+
+↓
+
+"Prima Scansione"
+
+---
+
+## Compatibilità Catalogo Universale
+
+Permette di tradurre:
+
+```text
+Categorie
+
+Collezioni
+
+Serie
+
+Item
+
+Versioni
+
+Varianti
+```
+
+---
+
+## Compatibilità Gamification
+
+Permette di tradurre:
+
+```text
+Achievement
+
+Badge
+
+Messaggi
+```
+
+---
+
+## Compatibilità Internazionale
+
+Permette a CollectorVerse di operare su scala globale senza duplicare i dati del catalogo.
+
+---
+
+## Motivazione Architetturale
+
+La separazione delle traduzioni dalle entità originali consente:
+
+- supporto multilingua completo
+- aggiunta nuove lingue senza migrazioni
+- catalogo unico globale
+- scalabilità internazionale
+
+senza modificare la struttura delle tabelle esistenti.
+
+---
+
+# Parte 17 - Storico e Versionamento
+
+# Tabella: entity_versions
+
+## Scopo
+
+Rappresenta lo storico delle modifiche effettuate alle entità principali della piattaforma.
+
+La tabella consente di conservare una copia delle versioni precedenti dei dati.
+
+Viene utilizzata per:
+
+- storico modifiche
+- ripristino dati
+- audit avanzato
+- confronto versioni
+- recupero errori
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+entity_versions
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo versione |
+| entity_type | VARCHAR(50) | SI | Tipo entità |
+| entity_id | UUID | SI | Record versionato |
+| version_number | INTEGER | SI | Numero versione |
+| changed_by_user_id | UUID | NO | Utente autore modifica |
+| change_type | VARCHAR(30) | SI | Tipo modifica |
+| snapshot_json | JSONB | SI | Stato completo entità |
+| change_summary | TEXT | NO | Descrizione modifica |
+| created_at | TIMESTAMPTZ | SI | Data modifica |
+
+---
+
+## Valori Consentiti
+
+### entity_type
+
+```text
+collection
+
+series
+
+item
+
+item_version
+
+item_variant
+
+catalog_contribution
+
+user_profile
+
+system_setting
+```
+
+---
+
+### change_type
+
+```text
+create
+
+update
+
+restore
+
+merge
+
+delete
+```
+
+---
+
+## Foreign Keys
+
+changed_by_user_id
+
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+
+↓
+
+(N)
+
+entity_versions
+
+---
+
+## Vincoli
+
+entity_type deve contenere un valore valido.
+
+entity_id deve essere valorizzato.
+
+version_number deve essere maggiore di zero.
+
+snapshot_json non può essere vuoto.
+
+---
+
+## Vincolo Anti-Duplicato
+
+```text
+UNIQUE
+(
+entity_type,
+entity_id,
+version_number
+)
+```
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (entity_type)
+
+INDEX (entity_id)
+
+INDEX (version_number)
+
+INDEX (changed_by_user_id)
+
+INDEX (created_at)
+
+UNIQUE (
+entity_type,
+entity_id,
+version_number
+)
+
+---
+
+## Regole Business
+
+Ogni modifica genera una nuova versione.
+
+Le versioni precedenti non devono essere modificate.
+
+Le versioni precedenti non devono essere eliminate.
+
+---
+
+## Esempio
+
+Item
+
+↓
+
+Charizard
+
+↓
+
+Versione 1
+
+↓
+
+Versione 2
+
+↓
+
+Versione 3
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Permette di recuperare:
+
+```text
+Versioni precedenti
+
+Correzioni errate
+
+Modifiche vandaliche
+```
+
+---
+
+## Compatibilità Audit
+
+Consente di ricostruire completamente la cronologia.
+
+---
+
+## Motivazione Architetturale
+
+Introduce il versionamento senza modificare le tabelle operative.
+
+---
+
+# Tabella: data_restore_requests
+
+## Scopo
+
+Rappresenta una richiesta di ripristino dati.
+
+Utilizzata quando è necessario recuperare:
+
+- contributi eliminati
+- collezioni eliminate
+- dati modificati per errore
+- record archiviati
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+data_restore_requests
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo richiesta |
+| requester_user_id | UUID | SI | Richiedente |
+| entity_type | VARCHAR(50) | SI | Tipo entità |
+| entity_id | UUID | SI | Entità interessata |
+| reason | TEXT | SI | Motivazione |
+| status | VARCHAR(30) | SI | Stato richiesta |
+| reviewed_by_user_id | UUID | NO | Revisore |
+| review_notes | TEXT | NO | Esito revisione |
+| created_at | TIMESTAMPTZ | SI | Data richiesta |
+| reviewed_at | TIMESTAMPTZ | NO | Data revisione |
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+pending
+
+approved
+
+rejected
+
+restored
+```
+
+---
+
+## Foreign Keys
+
+requester_user_id
+
+→ users.id
+
+---
+
+reviewed_by_user_id
+
+→ users.id
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (requester_user_id)
+
+INDEX (status)
+
+INDEX (entity_type)
+
+---
+
+## Regole Business
+
+Ogni richiesta deve essere valutata da un amministratore.
+
+---
+
+## Motivazione Architetturale
+
+Permette il recupero controllato dei dati senza operazioni dirette sul database.
+
+---
+
+# Tabella: system_snapshots
+
+## Scopo
+
+Rappresenta i riferimenti ai backup logici della piattaforma.
+
+Non contiene i dati del backup.
+
+Contiene esclusivamente i metadati dei backup disponibili.
+
+---
+
+## Tipo Tabella
+
+Amministrazione
+
+---
+
+## Nome Tabella
+
+system_snapshots
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo snapshot |
+| snapshot_name | VARCHAR(255) | SI | Nome snapshot |
+| snapshot_type | VARCHAR(30) | SI | Tipo snapshot |
+| storage_reference | TEXT | SI | Riferimento storage |
+| file_size_bytes | BIGINT | NO | Dimensione |
+| created_by_user_id | UUID | NO | Creatore snapshot |
+| created_at | TIMESTAMPTZ | SI | Data creazione |
+| expires_at | TIMESTAMPTZ | NO | Data eliminazione prevista |
+
+---
+
+## Valori Consentiti
+
+### snapshot_type
+
+```text
+full
+
+catalog
+
+marketplace
+
+analytics
+```
+
+---
+
+## Foreign Keys
+
+created_by_user_id
+
+→ users.id
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (snapshot_type)
+
+INDEX (created_at)
+
+INDEX (expires_at)
+
+---
+
+## Regole Business
+
+Gli snapshot rappresentano backup logici disponibili per attività amministrative.
+
+---
+
+## Motivazione Architetturale
+
+Permette la tracciabilità dei backup senza memorizzare i dati direttamente nel database operativo.
+
+---
+
