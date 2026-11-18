@@ -1,0 +1,3938 @@
+# PostgreSQL Schema v1.0
+
+# Stato Documento
+
+Documento di progettazione dello schema PostgreSQL di CollectorVerse.
+
+Questo documento traduce il CollectorVerse ERD v1.0 in una struttura dati implementabile mediante PostgreSQL e Supabase.
+
+---
+
+# Obiettivo
+
+Definire:
+
+- Tabelle
+- Colonne
+- Primary Key
+- Foreign Key
+- Vincoli
+- Indici
+- Relazioni
+
+necessari per l'implementazione della piattaforma.
+
+---
+
+# Convenzioni
+
+## Naming
+
+Tutte le tabelle utilizzano:
+
+- minuscolo
+- snake_case
+- nomi plurali
+
+Esempi:
+
+users
+user_profiles
+marketplace_listings
+wishlist_items
+
+---
+
+## Chiavi Primarie
+
+Tutte le tabelle utilizzano:
+
+uuid
+
+come Primary Key.
+
+Formato:
+
+id UUID PRIMARY KEY
+
+---
+
+## Timestamp Standard
+
+Quando applicabile, tutte le tabelle utilizzano:
+
+created_at
+updated_at
+
+---
+
+## Soft Delete
+
+Quando applicabile, le eliminazioni utilizzano:
+
+deleted_at
+
+invece della cancellazione fisica.
+
+---
+
+# Struttura dello Schema
+
+1. Core Identity
+2. Catalogo Universale
+3. Catalogazione Personale
+4. Marketplace
+5. Matching
+6. Catalogo Collaborativo
+7. Scansioni
+8. Gamification
+9. Notifiche
+10. Amministrazione
+11. Importazione ed Esportazione
+
+---
+
+# Parte 1 - Core Identity
+
+Questa sezione definisce le tabelle fondamentali della piattaforma.
+
+Le tabelle di questa area rappresentano:
+
+- utenti
+- ruoli
+- abbonamenti
+- profili
+- comunicazioni
+- recensioni
+- commercianti
+
+---
+
+# Tabella: user_roles
+
+## Scopo
+
+Definisce i ruoli disponibili all'interno della piattaforma.
+
+La tabella permette l'estensione futura dei ruoli senza modifiche strutturali al database.
+
+---
+
+## Nome Tabella
+
+user_roles
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco |
+| code | VARCHAR(50) | SI | Codice interno ruolo |
+| name | VARCHAR(100) | SI | Nome visualizzato |
+| description | TEXT | NO | Descrizione del ruolo |
+| is_active | BOOLEAN | SI | Ruolo attivo |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_active = TRUE
+
+---
+
+## Valori Iniziali
+
+| Code | Name |
+|--------|--------|
+| user | Utente |
+| moderator | Moderatore |
+| admin | Amministratore |
+
+---
+
+## Relazioni
+
+user_roles (1)
+↓
+(N)
+users
+
+---
+
+## Vincoli
+
+code deve essere univoco.
+
+name deve essere univoco.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (code)
+
+UNIQUE (name)
+
+INDEX (is_active) 
+
+---
+
+# Tabella: users
+
+---
+
+# Tabella: user_profiles
+
+--- 
+
+# Tabella: subscription_plans
+
+## Scopo
+
+Definisce i piani di abbonamento disponibili nella piattaforma CollectorVerse.
+
+La tabella consente di gestire funzionalità, limiti e privilegi associati ai diversi livelli di abbonamento.
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+subscription_plans
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco del piano |
+| code | VARCHAR(50) | SI | Codice interno piano |
+| name | VARCHAR(100) | SI | Nome visualizzato |
+| description | TEXT | NO | Descrizione del piano |
+| is_active | BOOLEAN | SI | Piano disponibile |
+| sort_order | INTEGER | SI | Ordine di visualizzazione |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_active = TRUE
+
+sort_order = 0
+
+---
+
+## Valori Iniziali
+
+| Code | Name |
+|--------|--------|
+| free | Free |
+| premium | Premium |
+| premium_plus | Premium Plus |
+| merchant | Commerciante |
+
+---
+
+## Relazioni
+
+subscription_plans (1)
+↓
+(N)
+user_subscriptions
+
+---
+
+## Vincoli
+
+code deve essere univoco.
+
+name deve essere univoco.
+
+sort_order deve essere maggiore o uguale a zero.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (code)
+
+UNIQUE (name)
+
+INDEX (is_active)
+
+INDEX (sort_order)
+
+---
+
+## Note Architetturali
+
+La tabella contiene esclusivamente la definizione dei piani.
+
+Non contiene:
+
+- utenti iscritti
+- pagamenti
+- date di rinnovo
+- scadenze
+
+Tali informazioni appartengono alla tabella user_subscriptions.
+
+---
+
+## Esempio Logico
+
+subscription_plans
+
+↓
+
+Free
+Premium
+Premium Plus
+Commerciante
+
+↓
+
+user_subscriptions
+
+↓
+
+users
+
+---
+
+# Tabella: user_subscriptions
+
+## Scopo
+
+Rappresenta l'abbonamento associato ad un utente.
+
+La tabella collega gli account ai piani disponibili e consente di gestire attivazioni, rinnovi, cambi piano e scadenze.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_subscriptions
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco della sottoscrizione |
+| user_id | UUID | SI | Utente proprietario |
+| subscription_plan_id | UUID | SI | Piano associato |
+| status | VARCHAR(30) | SI | Stato della sottoscrizione |
+| starts_at | TIMESTAMP | SI | Data inizio validità |
+| expires_at | TIMESTAMP | NO | Data fine validità |
+| auto_renew | BOOLEAN | SI | Rinnovo automatico |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+| deleted_at | TIMESTAMP | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+auto_renew = FALSE
+
+status = active
+
+---
+
+## Valori Consentiti
+
+### status
+
+- active
+- expired
+- cancelled
+- suspended
+- pending
+
+---
+
+## Foreign Keys
+
+user_id
+→ users.id
+
+subscription_plan_id
+→ subscription_plans.id
+
+---
+
+## Relazioni
+
+users (1)
+↓
+(1)
+user_subscriptions
+
+---
+
+subscription_plans (1)
+↓
+(N)
+user_subscriptions
+
+---
+
+## Vincoli
+
+Ogni utente può possedere una sola sottoscrizione corrente.
+
+subscription_plan_id deve esistere nella tabella subscription_plans.
+
+user_id deve esistere nella tabella users.
+
+status deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+INDEX (subscription_plan_id)
+
+INDEX (status)
+
+INDEX (expires_at)
+
+---
+
+## Note Architetturali
+
+La tabella rappresenta lo stato corrente dell'abbonamento.
+
+Eventuali funzionalità future di storico abbonamenti potranno essere implementate tramite una tabella dedicata:
+
+subscription_history
+
+senza modificare la struttura principale.
+
+---
+
+# Tabella: privacy_settings
+
+## Scopo
+
+Definisce le impostazioni di privacy associate ad un utente.
+
+La tabella controlla la visibilità di profilo, collezioni, wishlist e attività pubbliche all'interno della piattaforma.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+privacy_settings
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco delle impostazioni |
+| user_id | UUID | SI | Proprietario delle impostazioni |
+| profile_visibility | VARCHAR(20) | SI | Visibilità del profilo |
+| collections_visibility | VARCHAR(20) | SI | Visibilità delle collezioni |
+| wishlist_visibility | VARCHAR(20) | SI | Visibilità delle wishlist |
+| inventory_visibility | VARCHAR(20) | SI | Visibilità degli oggetti posseduti |
+| marketplace_visibility | VARCHAR(20) | SI | Visibilità attività marketplace |
+| allow_contact_requests | BOOLEAN | SI | Consente richieste di contatto |
+| allow_followers | BOOLEAN | SI | Consente follow utenti |
+| show_location | BOOLEAN | SI | Mostra localizzazione pubblica |
+| show_statistics | BOOLEAN | SI | Mostra statistiche pubbliche |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+profile_visibility = public
+
+collections_visibility = public
+
+wishlist_visibility = private
+
+inventory_visibility = public
+
+marketplace_visibility = public
+
+allow_contact_requests = TRUE
+
+allow_followers = TRUE
+
+show_location = FALSE
+
+show_statistics = TRUE
+
+---
+
+## Valori Consentiti
+
+### profile_visibility
+
+- public
+- collectors_only
+- private
+
+---
+
+### collections_visibility
+
+- public
+- collectors_only
+- private
+
+---
+
+### wishlist_visibility
+
+- public
+- collectors_only
+- private
+
+---
+
+### inventory_visibility
+
+- public
+- collectors_only
+- private
+
+---
+
+### marketplace_visibility
+
+- public
+- collectors_only
+- private
+
+---
+
+## Foreign Keys
+
+user_id
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+↓
+(1)
+privacy_settings
+
+---
+
+privacy_settings
+↓
+Influenza
+
+↓
+
+user_profiles
+
+user_collections
+
+wishlists
+
+user_items
+
+marketplace_listings
+
+---
+
+## Vincoli
+
+Ogni utente può possedere una sola configurazione privacy.
+
+user_id deve essere univoco.
+
+Tutti i campi di visibilità devono contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+INDEX (profile_visibility)
+
+INDEX (collections_visibility)
+
+INDEX (wishlist_visibility)
+
+---
+
+## Note Architetturali
+
+La tabella privacy_settings sarà utilizzata direttamente dalle Row Level Security (RLS) Policy di Supabase.
+
+Le impostazioni registrate in questa tabella influenzeranno:
+
+- accesso ai profili
+- accesso alle collezioni
+- accesso alle wishlist
+- accesso agli oggetti posseduti
+- accesso alle informazioni di marketplace
+
+La progettazione è stata pensata per essere compatibile con Supabase RLS senza necessità di duplicare logiche nel frontend.
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+privacy_settings
+
+↓
+
+Profilo = Pubblico
+
+Collezioni = Pubbliche
+
+Wishlist = Private
+
+↓
+
+Controllo automatico accessi
+
+---
+
+# Tabella: notification_preferences
+
+## Scopo
+
+Definisce le preferenze di notifica associate ad un utente.
+
+La tabella controlla quali notifiche possono essere ricevute e attraverso quali canali.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+notification_preferences
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco delle preferenze |
+| user_id | UUID | SI | Proprietario delle preferenze |
+| marketplace_enabled | BOOLEAN | SI | Notifiche Marketplace |
+| matching_enabled | BOOLEAN | SI | Notifiche Matching |
+| chat_enabled | BOOLEAN | SI | Notifiche Chat |
+| reviews_enabled | BOOLEAN | SI | Notifiche Recensioni |
+| gamification_enabled | BOOLEAN | SI | Notifiche Gamification |
+| catalog_enabled | BOOLEAN | SI | Notifiche Catalogo |
+| security_enabled | BOOLEAN | SI | Notifiche Sicurezza |
+| push_enabled | BOOLEAN | SI | Canale Push attivo |
+| email_enabled | BOOLEAN | SI | Canale Email attivo |
+| in_app_enabled | BOOLEAN | SI | Canale In-App attivo |
+| digest_enabled | BOOLEAN | SI | Ricezione Digest |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+marketplace_enabled = TRUE
+
+matching_enabled = TRUE
+
+chat_enabled = TRUE
+
+reviews_enabled = TRUE
+
+gamification_enabled = TRUE
+
+catalog_enabled = TRUE
+
+security_enabled = TRUE
+
+push_enabled = TRUE
+
+email_enabled = TRUE
+
+in_app_enabled = TRUE
+
+digest_enabled = FALSE
+
+---
+
+## Foreign Keys
+
+user_id
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+↓
+(1)
+notification_preferences
+
+---
+
+notification_preferences
+↓
+Influenza
+
+↓
+
+notifications
+
+notification_deliveries
+
+notification_digests
+
+---
+
+## Vincoli
+
+Ogni utente può possedere una sola configurazione notifiche.
+
+user_id deve essere univoco.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+INDEX (marketplace_enabled)
+
+INDEX (matching_enabled)
+
+INDEX (security_enabled)
+
+---
+
+## Note Architetturali
+
+Le preferenze sono separate dal sistema di consegna notifiche.
+
+La tabella definisce esclusivamente ciò che l'utente desidera ricevere.
+
+Le notifiche effettivamente generate verranno memorizzate nelle tabelle:
+
+- notifications
+- notification_deliveries
+- notification_digests
+
+---
+
+## Compatibilità Supabase
+
+Questa tabella verrà utilizzata dalle funzioni applicative per:
+
+- filtrare notifiche
+- generare digest
+- decidere il canale di consegna
+- applicare preferenze utente
+
+senza duplicare logica nel frontend.
+
+---
+
+## Esempio Logico
+
+Utente
+
+↓
+
+notification_preferences
+
+↓
+
+Marketplace = Attivo
+
+Matching = Attivo
+
+Email = Disattivata
+
+Push = Attiva
+
+↓
+
+Sistema Notifiche
+
+---
+
+# Tabella: merchant_profiles
+
+## Scopo
+
+Rappresenta il profilo commerciale di un utente.
+
+La tabella contiene le informazioni pubbliche relative ad attività professionali, negozi fisici e negozi online associati agli utenti della piattaforma.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+merchant_profiles
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco del profilo commerciante |
+| user_id | UUID | SI | Proprietario del profilo |
+| business_name | VARCHAR(150) | SI | Nome attività |
+| business_description | TEXT | NO | Descrizione attività |
+| website_url | TEXT | NO | Sito web |
+| email_public | VARCHAR(320) | NO | Email pubblica |
+| phone_public | VARCHAR(50) | NO | Telefono pubblico |
+| country_code | VARCHAR(10) | NO | Paese |
+| region | VARCHAR(100) | NO | Regione |
+| city | VARCHAR(100) | NO | Città |
+| address_public | TEXT | NO | Indirizzo pubblico |
+| is_active | BOOLEAN | SI | Profilo commerciante attivo |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_active = TRUE
+
+---
+
+## Foreign Keys
+
+user_id
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+↓
+(0..1)
+merchant_profiles
+
+---
+
+merchant_profiles (1)
+↓
+(0..1)
+merchant_verifications
+
+---
+
+merchant_profiles (1)
+↓
+(0..1)
+google_business_profiles
+
+---
+
+merchant_profiles (1)
+↓
+(N)
+marketplace_listings
+
+---
+
+merchant_profiles (1)
+↓
+(N)
+follow_merchants
+
+---
+
+## Vincoli
+
+Ogni utente può possedere al massimo un profilo commerciante.
+
+user_id deve essere univoco.
+
+business_name non può essere vuoto.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+INDEX (business_name)
+
+INDEX (is_active)
+
+INDEX (country_code)
+
+INDEX (region)
+
+INDEX (city)
+
+---
+
+## Note Architetturali
+
+Lo stato di verifica NON viene salvato in questa tabella.
+
+La verifica ufficiale viene determinata esclusivamente tramite:
+
+merchant_verifications
+
+Questo evita duplicazioni e problemi di sincronizzazione.
+
+---
+
+# Tabella: merchant_verifications
+
+## Scopo
+
+Rappresenta la verifica ufficiale di un commerciante da parte di CollectorVerse.
+
+La tabella memorizza lo stato di verifica e le informazioni amministrative associate al processo di validazione.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+merchant_verifications
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco verifica |
+| merchant_profile_id | UUID | SI | Profilo commerciante verificato |
+| verification_status | VARCHAR(30) | SI | Stato verifica |
+| verified_at | TIMESTAMP | NO | Data verifica |
+| verified_by_user_id | UUID | NO | Utente che ha eseguito la verifica |
+| verification_notes | TEXT | NO | Note amministrative |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Consentiti
+
+### verification_status
+
+- pending
+- approved
+- rejected
+- suspended
+
+---
+
+## Valori Predefiniti
+
+verification_status = pending
+
+---
+
+## Foreign Keys
+
+merchant_profile_id
+→ merchant_profiles.id
+
+verified_by_user_id
+→ users.id
+
+---
+
+## Relazioni
+
+merchant_profiles (1)
+↓
+(0..1)
+merchant_verifications
+
+---
+
+users (1)
+↓
+(N)
+merchant_verifications
+
+(utente che ha eseguito la verifica)
+
+---
+
+## Vincoli
+
+Ogni merchant_profile può avere una sola registrazione di verifica.
+
+merchant_profile_id deve essere univoco.
+
+verification_status deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (merchant_profile_id)
+
+INDEX (verification_status)
+
+INDEX (verified_at)
+
+INDEX (verified_by_user_id)
+
+---
+
+## Note Architetturali
+
+La presenza di una registrazione approvata in questa tabella determina il badge:
+
+Commerciante Verificato
+
+visibile pubblicamente nella piattaforma.
+
+La tabella consente future estensioni come:
+
+- verifica documentale
+- verifica partita IVA
+- verifica identità
+
+Eventuali modifiche dello stato di verifica verranno effettuate dagli amministratori tramite aggiornamento della registrazione esistente.
+
+Non è previsto un sistema di rinnovo periodico della verifica.
+
+Le autorizzazioni relative alla possibilità di eseguire verifiche verranno gestite tramite:
+
+- ruoli applicativi
+- policy RLS
+- servizi backend
+
+e non tramite vincoli del database relazionale.
+
+---
+
+## Compatibilità Marketplace
+
+La verifica può influenzare:
+
+- visibilità annunci
+- ranking risultati
+- Matching
+- affidabilità percepita
+- badge commerciante verificato
+
+---
+
+## Esempio Logico
+
+users
+
+↓
+
+merchant_profiles
+
+↓
+
+merchant_verifications
+
+↓
+
+approved
+
+↓
+
+Commerciante Verificato
+
+---
+
+# Tabella: google_business_profiles
+
+## Scopo
+
+Rappresenta il profilo Google Business Profile associato ad un commerciante.
+
+La tabella consente l'integrazione tra CollectorVerse e Google Business Profile per mostrare informazioni pubbliche e recensioni provenienti da Google.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+google_business_profiles
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco |
+| merchant_profile_id | UUID | SI | Profilo commerciante associato |
+| google_place_id | VARCHAR(255) | SI | Identificativo Google Place |
+| business_name | VARCHAR(150) | SI | Nome attività su Google |
+| business_url | TEXT | NO | URL Google Business |
+| average_rating | NUMERIC(3,2) | NO | Valutazione media |
+| review_count | INTEGER | NO | Numero recensioni |
+| last_sync_at | TIMESTAMP | NO | Ultima sincronizzazione |
+| is_active | BOOLEAN | SI | Collegamento attivo |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_active = TRUE
+
+review_count = 0
+
+---
+
+## Foreign Keys
+
+merchant_profile_id
+→ merchant_profiles.id
+
+---
+
+## Relazioni
+
+merchant_profiles (1)
+↓
+(0..1)
+google_business_profiles
+
+---
+
+google_business_profiles (1)
+↓
+(N)
+google_business_reviews
+
+---
+
+## Vincoli
+
+Ogni merchant_profile può essere associato ad un solo Google Business Profile.
+
+merchant_profile_id deve essere univoco.
+
+google_place_id deve essere univoco.
+
+business_name non può essere vuoto.
+
+average_rating deve essere compreso tra 0 e 5.
+
+review_count deve essere maggiore o uguale a zero.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (merchant_profile_id)
+
+UNIQUE (google_place_id)
+
+INDEX (average_rating)
+
+INDEX (review_count)
+
+INDEX (is_active)
+
+---
+
+## Note Architetturali
+
+La tabella memorizza solamente i dati principali del profilo Google Business.
+
+Le recensioni vengono gestite separatamente nella tabella:
+
+google_business_reviews
+
+Questo approccio evita duplicazioni e consente sincronizzazioni indipendenti.
+
+---
+
+## Compatibilità Marketplace
+
+Le informazioni raccolte possono essere utilizzate per:
+
+- mostrare reputazione commerciale
+- aumentare la fiducia degli utenti
+- migliorare il ranking dei commercianti verificati
+- supportare il sistema Matching
+
+---
+
+## Esempio Logico
+
+users
+
+↓
+
+merchant_profiles
+
+↓
+
+google_business_profiles
+
+↓
+
+Valutazione Media
+
+Numero Recensioni
+
+Link Google Business
+
+---
+
+# Tabella: google_business_reviews
+
+## Scopo
+
+Rappresenta una recensione proveniente da Google Business Profile.
+
+La tabella consente di memorizzare e visualizzare informazioni pubbliche relative alle recensioni associate ad un commerciante.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+google_business_reviews
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco recensione |
+| google_business_profile_id | UUID | SI | Profilo Google Business associato |
+| google_review_id | VARCHAR(255) | SI | Identificativo recensione Google |
+| author_name | VARCHAR(255) | NO | Nome autore recensione |
+| rating | INTEGER | SI | Valutazione numerica |
+| review_text | TEXT | NO | Contenuto recensione |
+| review_date | TIMESTAMP | NO | Data recensione originale |
+| is_visible | BOOLEAN | SI | Visibilità su CollectorVerse |
+| last_sync_at | TIMESTAMP | NO | Ultima sincronizzazione |
+| created_at | TIMESTAMP | SI | Data creazione record |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_visible = TRUE
+
+---
+
+## Valori Consentiti
+
+### rating
+
+- 1
+- 2
+- 3
+- 4
+- 5
+
+---
+
+## Foreign Keys
+
+google_business_profile_id
+→ google_business_profiles.id
+
+---
+
+## Relazioni
+
+google_business_profiles (1)
+↓
+(N)
+google_business_reviews
+
+---
+
+## Vincoli
+
+google_review_id deve essere univoco.
+
+rating deve essere compreso tra 1 e 5.
+
+google_business_profile_id deve esistere nella tabella google_business_profiles.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (google_review_id)
+
+INDEX (google_business_profile_id)
+
+INDEX (rating)
+
+INDEX (review_date)
+
+INDEX (is_visible)
+
+---
+
+## Note Architetturali
+
+La tabella contiene esclusivamente dati provenienti da Google Business Profile.
+
+CollectorVerse non modifica il contenuto delle recensioni.
+
+Le recensioni possono essere:
+
+- sincronizzate
+- aggiornate
+- nascoste localmente
+
+senza modificare il dato originale presente su Google.
+
+---
+
+## Compatibilità Marketplace
+
+Le recensioni possono contribuire a:
+
+- reputazione commerciante
+- ranking marketplace
+- risultati matching
+- fiducia degli utenti
+
+---
+
+## Esempio Logico
+
+merchant_profiles
+
+↓
+
+google_business_profiles
+
+↓
+
+google_business_reviews
+
+↓
+
+★★★★★
+
+"Servizio eccellente"
+
+↓
+
+Profilo Pubblico Negozio
+
+---
+
+# Tabella: contact_requests
+
+## Scopo
+
+Rappresenta una richiesta di contatto tra due utenti.
+
+La tabella viene utilizzata come passaggio preliminare all'apertura di una conversazione privata.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+contact_requests
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco richiesta |
+| sender_user_id | UUID | SI | Utente mittente |
+| receiver_user_id | UUID | SI | Utente destinatario |
+| status | VARCHAR(30) | SI | Stato richiesta |
+| message | TEXT | NO | Messaggio iniziale |
+| responded_at | TIMESTAMP | NO | Data risposta |
+| created_at | TIMESTAMP | SI | Data invio |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Consentiti
+
+### status
+
+- pending
+- accepted
+- rejected
+- cancelled
+
+---
+
+## Valori Predefiniti
+
+status = pending
+
+---
+
+## Foreign Keys
+
+sender_user_id
+→ users.id
+
+receiver_user_id
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+↓
+(N)
+contact_requests
+
+(mittente)
+
+---
+
+users (1)
+↓
+(N)
+contact_requests
+
+(destinatario)
+
+---
+
+contact_requests (1)
+↓
+(0..1)
+conversations
+
+---
+
+## Vincoli
+
+sender_user_id deve essere diverso da receiver_user_id.
+
+Lo stato deve contenere un valore valido.
+
+Entrambi gli utenti devono esistere nella tabella users.
+
+Non possono esistere più richieste di contatto pendenti tra la stessa coppia di utenti.
+
+Può esistere una sola conversazione attiva tra la stessa coppia di utenti.
+
+Le modalità di riapertura o creazione di una nuova conversazione verranno definite nella logica applicativa.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (sender_user_id)
+
+INDEX (receiver_user_id)
+
+INDEX (status)
+
+INDEX (created_at)
+
+---
+
+## Note Architetturali
+
+La richiesta di contatto rappresenta il punto di ingresso delle comunicazioni private.
+
+Una conversazione può essere aperta solo dopo l'accettazione della richiesta.
+
+Le richieste rifiutate o annullate non generano conversazioni.
+
+---
+
+## Compatibilità Privacy
+
+La creazione di una richiesta deve rispettare:
+
+- privacy_settings
+- user_blocks
+- eventuali limitazioni amministrative
+
+Le policy verranno implementate tramite Supabase RLS e logica applicativa.
+
+---
+
+## Esempio Logico
+
+Utente A
+
+↓
+
+contact_requests
+
+↓
+
+pending
+
+↓
+
+accepted
+
+↓
+
+conversation
+
+↓
+
+messages
+
+---
+
+# Tabella: conversations
+
+## Scopo
+
+Rappresenta una conversazione privata tra utenti della piattaforma.
+
+La tabella funge da contenitore per i messaggi scambiati tra utenti.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+conversations
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco conversazione |
+| contact_request_id | UUID | SI | Richiesta contatto che ha generato la conversazione |
+| created_at | TIMESTAMP | SI | Data creazione conversazione |
+| updated_at | TIMESTAMP | SI | Data ultimo aggiornamento |
+| closed_at | TIMESTAMP | NO | Data chiusura conversazione |
+
+---
+
+## Foreign Keys
+
+contact_request_id
+→ contact_requests.id
+
+---
+
+## Relazioni
+
+contact_requests (1)
+↓
+(0..1)
+conversations
+
+---
+
+conversations (1)
+↓
+(N)
+messages
+
+---
+
+## Vincoli
+
+contact_request_id deve esistere nella tabella contact_requests.
+
+Ogni richiesta accettata può generare una sola conversazione.
+
+contact_request_id deve essere univoco.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (contact_request_id)
+
+INDEX (created_at)
+
+INDEX (updated_at)
+
+INDEX (closed_at)
+
+---
+
+## Note Architetturali
+
+La conversazione non memorizza direttamente i partecipanti.
+
+I partecipanti vengono determinati attraverso:
+
+contact_requests
+
+↓
+
+sender_user_id
+
+receiver_user_id
+
+Questo approccio evita la duplicazione dei dati.
+
+---
+
+## Compatibilità Marketplace
+
+La stessa conversazione può essere utilizzata per:
+
+- compravendita
+- scambio
+- contatti tra collezionisti
+- contatti con commercianti
+
+senza richiedere strutture diverse.
+
+---
+
+## Esempio Logico
+
+Utente A
+
+↓
+
+contact_request
+
+↓
+
+accepted
+
+↓
+
+conversation
+
+↓
+
+messages
+
+---
+
+# Tabella: messages
+
+## Scopo
+
+Rappresenta un singolo messaggio inviato all'interno di una conversazione.
+
+La tabella costituisce l'unità minima del sistema di comunicazione tra utenti.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+messages
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco messaggio |
+| conversation_id | UUID | SI | Conversazione associata |
+| sender_user_id | UUID | SI | Utente mittente |
+| message_type | VARCHAR(20) | SI | Tipo messaggio |
+| content | TEXT | SI | Contenuto messaggio |
+| is_read | BOOLEAN | SI | Stato lettura |
+| read_at | TIMESTAMP | NO | Data lettura |
+| created_at | TIMESTAMP | SI | Data invio |
+| updated_at | TIMESTAMP | SI | Data modifica |
+| deleted_at | TIMESTAMP | NO | Soft Delete |
+
+---
+
+## Valori Consentiti
+
+### message_type
+
+- text
+- system
+- marketplace
+- trade
+
+---
+
+## Valori Predefiniti
+
+message_type = text
+
+is_read = FALSE
+
+---
+
+## Foreign Keys
+
+conversation_id
+→ conversations.id
+
+sender_user_id
+→ users.id
+
+---
+
+## Relazioni
+
+conversations (1)
+↓
+(N)
+messages
+
+---
+
+users (1)
+↓
+(N)
+messages
+
+---
+
+## Vincoli
+
+conversation_id deve esistere nella tabella conversations.
+
+sender_user_id deve esistere nella tabella users.
+
+content non può essere vuoto.
+
+message_type deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (conversation_id)
+
+INDEX (sender_user_id)
+
+INDEX (created_at)
+
+INDEX (is_read)
+
+---
+
+## Note Architetturali
+
+La tabella memorizza esclusivamente i messaggi.
+
+Le informazioni sui partecipanti alla conversazione vengono recuperate tramite:
+
+conversations
+
+↓
+
+contact_requests
+
+↓
+
+users
+
+Lo stato di lettura è riferito al destinatario del messaggio identificato attraverso i partecipanti della conversazione.
+
+Essendo supportata una sola conversazione privata tra due utenti, non è necessario gestire uno stato di lettura per più destinatari.
+
+I messaggi rimangono disponibili anche dopo la lettura.
+
+La cancellazione utilizza il meccanismo di Soft Delete tramite:
+
+deleted_at
+
+per preservare la cronologia delle conversazioni.
+
+---
+
+## Estensioni Future
+
+Versioni successive potranno introdurre:
+
+- allegati
+- immagini
+- documenti
+- messaggi di sistema avanzati
+- notifiche contestuali
+
+senza modificare la struttura principale delle conversazioni.
+
+---
+
+## Compatibilità Marketplace
+
+I messaggi possono essere utilizzati per:
+
+- compravendita
+- scambio
+- richieste informazioni
+- contatti tra collezionisti
+- contatti con commercianti
+
+---
+
+## Esempio Logico
+
+contact_request
+
+↓
+
+accepted
+
+↓
+
+conversation
+
+↓
+
+message
+
+↓
+
+message
+
+↓
+
+message
+
+---
+
+# Tabella: user_blocks
+
+## Scopo
+
+Rappresenta il blocco di un utente da parte di un altro utente.
+
+La tabella consente di limitare o impedire interazioni tra utenti secondo le regole di privacy e sicurezza della piattaforma.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_blocks
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco blocco |
+| blocker_user_id | UUID | SI | Utente che esegue il blocco |
+| blocked_user_id | UUID | SI | Utente bloccato |
+| reason | VARCHAR(100) | NO | Motivazione facoltativa |
+| created_at | TIMESTAMP | SI | Data blocco |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Foreign Keys
+
+blocker_user_id
+→ users.id
+
+blocked_user_id
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+↓
+(N)
+user_blocks
+
+(utente che blocca)
+
+---
+
+users (1)
+↓
+(N)
+user_blocks
+
+(utente bloccato)
+
+---
+
+## Vincoli
+
+blocker_user_id deve essere diverso da blocked_user_id.
+
+Entrambi gli utenti devono esistere nella tabella users.
+
+Una coppia utente-bloccato può esistere una sola volta.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (blocker_user_id, blocked_user_id)
+
+INDEX (blocker_user_id)
+
+INDEX (blocked_user_id)
+
+INDEX (created_at)
+
+---
+
+## Note Architetturali
+
+Il blocco è unidirezionale.
+
+Esempio:
+
+Utente A blocca Utente B
+
+↓
+
+Utente B non può interagire con Utente A.
+
+Il blocco non implica automaticamente che anche Utente B abbia bloccato Utente A.
+
+---
+
+## Impatti Funzionali
+
+La presenza di un record nella tabella user_blocks può impedire:
+
+- invio richieste di contatto
+- apertura conversazioni
+- invio messaggi
+- follow utenti
+- visualizzazione profili
+- matching automatico
+- notifiche tra utenti coinvolti
+
+Le regole definitive verranno implementate tramite:
+
+- logica applicativa
+- Supabase RLS
+- servizi backend
+
+---
+
+## Esempio Logico
+
+Utente A
+
+↓
+
+user_blocks
+
+↓
+
+Utente B
+
+↓
+
+Interazioni Bloccate
+
+---
+
+# Tabella: user_reviews
+
+## Scopo
+
+Rappresenta una recensione lasciata da un utente nei confronti di un altro utente.
+
+La tabella viene utilizzata per costruire il sistema reputazionale della piattaforma.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_reviews
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco recensione |
+| reviewer_user_id | UUID | SI | Utente autore recensione |
+| reviewed_user_id | UUID | SI | Utente recensito |
+| rating | INTEGER | SI | Valutazione numerica |
+| title | VARCHAR(150) | NO | Titolo recensione |
+| review_text | TEXT | NO | Testo recensione |
+| is_visible | BOOLEAN | SI | Visibilità recensione |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+| deleted_at | TIMESTAMP | NO | Soft Delete |
+
+---
+
+## Valori Consentiti
+
+### rating
+
+- 1
+- 2
+- 3
+- 4
+- 5
+
+---
+
+## Valori Predefiniti
+
+is_visible = TRUE
+
+---
+
+## Foreign Keys
+
+reviewer_user_id
+→ users.id
+
+reviewed_user_id
+→ users.id
+
+---
+
+## Relazioni
+
+users (1)
+↓
+(N)
+user_reviews
+
+(recensore)
+
+---
+
+users (1)
+↓
+(N)
+user_reviews
+
+(recensito)
+
+---
+
+## Vincoli
+
+reviewer_user_id deve essere diverso da reviewed_user_id.
+
+rating deve essere compreso tra 1 e 5.
+
+reviewer_user_id deve esistere nella tabella users.
+
+reviewed_user_id deve esistere nella tabella users.
+
+Può esistere una sola recensione tra la stessa coppia recensore-recensito.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (reviewer_user_id, reviewed_user_id)
+
+INDEX (rating)
+
+INDEX (created_at)
+
+INDEX (is_visible)
+
+---
+
+## Note Architetturali
+
+Ogni utente può lasciare una sola recensione per un altro utente.
+
+Quando una recensione viene modificata:
+
+- viene aggiornata la riga esistente
+- viene aggiornato updated_at
+
+Non viene creata una nuova recensione.
+
+La recensione rappresenta una valutazione puntuale.
+
+I valori aggregati come:
+
+- media recensioni
+- numero recensioni
+- indice affidabilità
+
+non vengono salvati in questa tabella.
+
+Tali valori verranno calcolati da:
+
+- query aggregate
+- viste PostgreSQL
+- statistiche dedicate
+
+---
+
+## Compatibilità Marketplace
+
+Le recensioni possono essere lasciate dopo:
+
+- compravendita completata
+- scambio completato
+- interazione verificata tra utenti
+
+Le regole definitive verranno implementate tramite logica applicativa.
+
+---
+
+## Compatibilità Matching
+
+I risultati del Matching potranno utilizzare:
+
+- media recensioni
+- numero recensioni
+- reputazione utente
+
+per migliorare il ranking delle opportunità.
+
+---
+
+# Tabella: currencies
+
+## Scopo
+
+Definisce le valute supportate dalla piattaforma CollectorVerse.
+
+La tabella viene utilizzata per:
+
+- Marketplace
+- Annunci
+- Profili Utente
+- Preferenze Utente
+- Esportazioni
+- Future funzionalità commerciali
+
+CollectorVerse non effettua conversioni automatiche tra valute.
+
+La valuta viene utilizzata esclusivamente come riferimento di visualizzazione e registrazione dei prezzi.
+
+---
+
+## Tipo Tabella
+
+Configurazione
+
+---
+
+## Nome Tabella
+
+currencies
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco |
+| code | VARCHAR(10) | SI | Codice ISO valuta |
+| symbol | VARCHAR(10) | SI | Simbolo valuta |
+| name | VARCHAR(100) | SI | Nome valuta |
+| is_active | BOOLEAN | SI | Valuta disponibile |
+| sort_order | INTEGER | SI | Ordine visualizzazione |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Valori Predefiniti
+
+is_active = TRUE
+
+sort_order = 0
+
+---
+
+## Valori Iniziali
+
+| Code | Symbol | Name |
+|--------|--------|--------|
+| EUR | € | Euro |
+| USD | $ | US Dollar |
+| GBP | £ | British Pound |
+| JPY | ¥ | Japanese Yen |
+| CHF | CHF | Swiss Franc |
+
+---
+
+## Relazioni
+
+currencies (1)
+↓
+(N)
+user_preferences
+
+---
+
+currencies (1)
+↓
+(N)
+marketplace_listings
+
+---
+
+## Vincoli
+
+code deve essere univoco.
+
+symbol non può essere vuoto.
+
+name deve essere univoco.
+
+sort_order deve essere maggiore o uguale a zero.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (code)
+
+UNIQUE (name)
+
+INDEX (is_active)
+
+INDEX (sort_order)
+
+---
+
+## Note Architetturali
+
+La tabella currencies rappresenta il catalogo ufficiale delle valute supportate.
+
+La disattivazione di una valuta:
+
+- impedisce nuove selezioni
+- non modifica dati storici
+- non altera gli annunci già pubblicati
+
+---
+
+## Compatibilità Marketplace
+
+I prezzi devono sempre essere registrati:
+
+Prezzo Originale
+
++
+
+Valuta Originale
+
+Esempi:
+
+120 EUR
+
+45 USD
+
+10.000 JPY
+
+---
+
+## Esempio Logico
+
+currencies
+
+↓
+
+EUR
+USD
+GBP
+JPY
+CHF
+
+↓
+
+Marketplace
+
+↓
+
+Annunci
+
+# Tabella: user_preferences
+
+## Scopo
+
+Memorizza le preferenze personali dell'utente.
+
+Attualmente viene utilizzata principalmente per la gestione della valuta preferita.
+
+La struttura è progettata per supportare future estensioni senza modifiche invasive.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+user_preferences
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco |
+| user_id | UUID | SI | Proprietario preferenze |
+| preferred_currency_id | UUID | SI | Valuta preferita |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+
+---
+
+## Foreign Keys
+
+user_id
+→ users.id
+
+preferred_currency_id
+→ currencies.id
+
+---
+
+## Relazioni
+
+users (1)
+↓
+(1)
+user_preferences
+
+---
+
+currencies (1)
+↓
+(N)
+user_preferences
+
+---
+
+## Vincoli
+
+Ogni utente può avere una sola configurazione preferenze.
+
+user_id deve essere univoco.
+
+preferred_currency_id deve esistere nella tabella currencies.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (user_id)
+
+INDEX (preferred_currency_id)
+
+---
+
+## Note Architetturali
+
+La valuta preferita viene utilizzata come valore predefinito durante:
+
+- creazione annunci
+- pubblicazione vendite
+- pubblicazione scambi con prezzo
+- funzionalità marketplace
+
+La modifica della valuta preferita:
+
+- non altera gli annunci esistenti
+- non modifica prezzi storici
+- non converte importi esistenti
+
+---
+
+## Compatibilità Blueprint
+
+Coerente con:
+
+- Parte 2 (Valuta Preferita)
+- Parte 3 (Marketplace)
+- Parte 9 (Profilo Utente)
+
+---
+
+## Esempio Logico
+
+users
+
+↓
+
+user_preferences
+
+↓
+
+EUR
+
+↓
+
+Nuovo Annuncio
+
+↓
+
+Valuta Preselezionata = EUR
+
+# Parte 2 - Catalogo Universale
+
+# Tabella: categories
+
+## Scopo
+
+Rappresenta il livello più alto della classificazione del Catalogo Universale.
+
+Ogni Collezione appartiene obbligatoriamente ad una Categoria.
+
+La Categoria costituisce il punto di ingresso del sistema di navigazione del catalogo.
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+categories
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco categoria |
+| name | VARCHAR(150) | SI | Nome categoria |
+| slug | VARCHAR(200) | SI | URL friendly identifier |
+| description | TEXT | NO | Descrizione categoria |
+| logo_url | TEXT | NO | URL logo categoria |
+| banner_url | TEXT | NO | URL banner categoria |
+| status | VARCHAR(30) | SI | Stato categoria |
+| sort_order | INTEGER | SI | Ordine visualizzazione |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data ultima modifica |
+| deleted_at | TIMESTAMP | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+sort_order = 0
+
+status = development
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+development
+active
+hidden
+archived
+```
+
+---
+
+## Significato Stati
+
+### development
+
+Categoria in preparazione.
+
+Visibile esclusivamente agli amministratori.
+
+---
+
+### active
+
+Categoria disponibile pubblicamente.
+
+Utilizzabile in:
+
+- Catalogo
+- Scanner
+- Marketplace
+- Matching
+- Wishlist
+- Collezioni Personali
+- Importazione
+
+---
+
+### hidden
+
+Categoria temporaneamente nascosta.
+
+Non disponibile agli utenti.
+
+I dati restano conservati.
+
+---
+
+### archived
+
+Categoria archiviata.
+
+Non più utilizzabile.
+
+Conservata esclusivamente per finalità storiche.
+
+---
+
+## Relazioni
+
+categories (1)
+
+↓
+
+(N)
+
+collections
+
+---
+
+## Vincoli
+
+name deve essere univoco.
+
+slug deve essere univoco.
+
+sort_order deve essere maggiore o uguale a zero.
+
+status deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (name)
+
+UNIQUE (slug)
+
+INDEX (status)
+
+INDEX (sort_order)
+
+---
+
+## Valori Iniziali Previsti
+
+| Nome |
+|--------|
+| Carte Collezionabili |
+| Numismatica |
+| Filatelia |
+| Fumetti e Libri |
+| LEGO e Costruzioni |
+| Action Figure e Toys |
+| Videogiochi |
+| Musica e Media |
+| Orologi e Gioielli |
+| Militaria e Storico |
+| Modellismo |
+| Antiquariato e Arte |
+| Enologia e Spirits |
+
+---
+
+## Regole Business
+
+Una Collezione deve appartenere ad una sola Categoria.
+
+Una Categoria può possedere molte Collezioni.
+
+L'eliminazione fisica di una Categoria non è consentita.
+
+La gestione deve avvenire tramite:
+
+```text
+hidden
+
+oppure
+
+archived
+```
+
+---
+
+## Compatibilità Scanner
+
+Lo Scanner deve mostrare esclusivamente le categorie:
+
+```text
+active
+```
+
+---
+
+## Compatibilità Marketplace
+
+Gli annunci appartenenti ad una categoria:
+
+```text
+hidden
+```
+
+oppure
+
+```text
+archived
+```
+
+devono essere esclusi dai risultati pubblici.
+
+---
+
+## Compatibilità Matching
+
+Il Matching deve ignorare categorie:
+
+```text
+hidden
+
+archived
+```
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli Amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Attivare
+
+Nascondere
+
+Archiviare
+
+Riordinare
+```
+
+una Categoria senza modificare il codice applicativo.
+
+---
+
+## Esempio Logico
+
+Categorie
+
+↓
+
+Carte Collezionabili
+
+↓
+
+Pokémon
+
+↓
+
+Set Base
+
+↓
+
+Charizard
+
+---
+
+Categorie
+
+↓
+
+Numismatica
+
+↓
+
+Euro Italia
+
+↓
+
+2 Euro Commemorativi
+
+↓
+
+Moneta Specifica
+
+---
+
+## Motivazione Architetturale
+
+Le Categorie sono state separate dalle Collezioni per consentire:
+
+- navigazione semplificata
+- crescita progressiva del catalogo
+- attivazione graduale delle categorie
+- statistiche separate
+- gestione indipendente tramite Dashboard Admin
+
+senza modifiche strutturali future del database.
+
+---
+
+# Tabella: collections
+
+## Scopo
+
+Rappresenta una Collezione appartenente ad una specifica Categoria.
+
+Una Collezione raggruppa Serie appartenenti allo stesso ecosistema collezionistico.
+
+Esempi:
+
+- Pokémon
+- Magic The Gathering
+- Yu-Gi-Oh!
+- Disney Lorcana
+- One Piece Card Game
+
+oppure
+
+- Euro Italia
+- Dollari USA
+
+oppure
+
+- LEGO Star Wars
+- LEGO Technic
+
+---
+
+## Tipo Tabella
+
+Principale
+
+---
+
+## Nome Tabella
+
+collections
+
+---
+
+## Primary Key
+
+id UUID PRIMARY KEY
+
+---
+
+## Colonne
+
+| Colonna | Tipo | Obbligatorio | Descrizione |
+|----------|----------|----------|----------|
+| id | UUID | SI | Identificativo univoco collezione |
+| category_id | UUID | SI | Categoria proprietaria |
+| name | VARCHAR(150) | SI | Nome collezione |
+| slug | VARCHAR(200) | SI | Identificativo URL friendly |
+| description | TEXT | NO | Descrizione collezione |
+| logo_url | TEXT | NO | Logo collezione |
+| banner_url | TEXT | NO | Banner collezione |
+| status | VARCHAR(30) | SI | Stato collezione |
+| sort_order | INTEGER | SI | Ordine visualizzazione |
+| created_at | TIMESTAMP | SI | Data creazione |
+| updated_at | TIMESTAMP | SI | Data modifica |
+| deleted_at | TIMESTAMP | NO | Soft Delete |
+
+---
+
+## Valori Predefiniti
+
+status = active
+
+sort_order = 0
+
+---
+
+## Valori Consentiti
+
+### status
+
+```text
+active
+hidden
+archived
+```
+
+---
+
+## Significato Stati
+
+### active
+
+Collezione utilizzabile.
+
+Disponibile in:
+
+- Catalogo
+- Scanner
+- Marketplace
+- Matching
+- Wishlist
+- Collezioni Personali
+
+---
+
+### hidden
+
+Collezione temporaneamente nascosta.
+
+Non visibile agli utenti.
+
+I dati restano conservati.
+
+---
+
+### archived
+
+Collezione archiviata.
+
+Non più utilizzabile.
+
+Conservata esclusivamente per finalità storiche.
+
+---
+
+## Foreign Keys
+
+category_id
+
+→ categories.id
+
+---
+
+## Relazioni
+
+categories (1)
+
+↓
+
+(N)
+
+collections
+
+---
+
+collections (1)
+
+↓
+
+(N)
+
+rarities
+
+---
+
+collections (1)
+
+↓
+
+(N)
+
+series
+
+---
+
+collections (1)
+
+↓
+
+(N)
+
+collection_followers
+
+(Futuro)
+
+---
+
+collections (1)
+
+↓
+
+(N)
+
+collection_favorites
+
+(Futuro)
+
+---
+
+## Vincoli
+
+category_id deve esistere nella tabella categories.
+
+name non può essere vuoto.
+
+slug deve essere univoco.
+
+sort_order deve essere maggiore o uguale a zero.
+
+status deve contenere un valore valido.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+UNIQUE (slug)
+
+INDEX (category_id)
+
+INDEX (name)
+
+INDEX (status)
+
+INDEX (sort_order)
+
+---
+
+## Regole Business
+
+Una Collezione appartiene ad una sola Categoria.
+
+Una Categoria può possedere molte Collezioni.
+
+Una Collezione può possedere molte Serie.
+
+Una Collezione possiede il proprio insieme di Rarità.
+
+---
+
+## Compatibilità Rarità
+
+Le Rarità non sono globali.
+
+Le Rarità appartengono esclusivamente alla Collezione.
+
+Esempio:
+
+```text
+Pokémon
+↓
+Common
+Uncommon
+Rare
+Ultra Rare
+```
+
+---
+
+```text
+Magic
+↓
+Common
+Uncommon
+Rare
+Mythic Rare
+```
+
+---
+
+Le stesse rarità possono avere significati differenti in collezioni differenti.
+
+---
+
+## Compatibilità Scanner
+
+Durante la scansione:
+
+```text
+Categoria
+↓
+Collezione
+↓
+Versione
+↓
+Scansione
+```
+
+Lo Scanner utilizza la Collezione selezionata per limitare il campo di ricerca.
+
+---
+
+## Compatibilità Marketplace
+
+Ogni annuncio Marketplace deve poter essere ricondotto a:
+
+```text
+Categoria
+↓
+Collezione
+↓
+Serie
+↓
+Oggetto
+```
+
+---
+
+## Compatibilità Matching
+
+Il Matching utilizza la Collezione come filtro principale.
+
+Esempio:
+
+```text
+Utente interessato a Pokémon
+```
+
+↓
+
+```text
+Mostrare opportunità Pokémon
+```
+
+↓
+
+```text
+Ignorare Magic
+```
+
+---
+
+## Compatibilità Notifiche
+
+Gli utenti possono seguire una Collezione.
+
+Eventi notificabili:
+
+```text
+Nuove Serie
+
+Nuovi Oggetti
+
+Nuove Versioni
+
+Nuove Varianti
+
+Nuovi Commercianti
+```
+
+---
+
+## Compatibilità Catalogo Collaborativo
+
+Le proposte possono riguardare:
+
+```text
+Nuove Serie
+
+Nuovi Oggetti
+
+Nuove Versioni
+
+Nuove Varianti
+
+Nuove Rarità
+```
+
+sempre all'interno di una Collezione specifica.
+
+---
+
+## Compatibilità Dashboard Admin
+
+Gli amministratori devono poter:
+
+```text
+Creare
+
+Modificare
+
+Attivare
+
+Nascondere
+
+Archiviare
+
+Riordinare
+```
+
+una Collezione senza modificare il codice applicativo.
+
+---
+
+## Esempio Logico
+
+Carte Collezionabili
+
+↓
+
+Pokémon
+
+↓
+
+Serie
+
+↓
+
+Set Base
+
+↓
+
+Oggetti
+
+↓
+
+Charizard
+
+↓
+
+Versioni
+
+↓
+
+Varianti
+
+---
+
+Numismatica
+
+↓
+
+Euro Italia
+
+↓
+
+Serie
+
+↓
+
+2 Euro Commemorativi
+
+↓
+
+Monete
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra Categoria e Collezione consente:
+
+- crescita progressiva del catalogo
+- gestione indipendente delle rarità
+- notifiche dedicate
+- statistiche separate
+- attivazione graduale delle aree della piattaforma
+- supporto a qualsiasi categoria futura
+
+senza richiedere modifiche strutturali al database.
+
+---
+
+# Tabella: rarities
+
+---
+
+# Tabella: series
+
+---
+
+# Tabella: items
+
+---
+
+# Tabella: item_versions
+
+
+---
+
+# Tabella: item_variants
+
+---
+
+# Tabella: catalog_images
+
+---
+
+# REVISIONE ARCHITETTURALE v1.0
+
+## Stato Revisione
+
+Le seguenti modifiche sostituiscono e integrano lo schema PostgreSQL v1.0 di CollectorVerse.
+
+Queste correzioni sono considerate obbligatorie per garantire:
+
+- coerenza con il Blueprint
+- compatibilità PostgreSQL
+- compatibilità Supabase
+- compatibilità RLS
+- integrità dei dati
+- prevenzione dei duplicati
+
+---
+
+# Correzione 1 - Tabella users
+
+## Problema
+
+La colonna:
+
+```text
+is_active
+```
+
+non consente di distinguere:
+
+```text
+active
+suspended
+blocked
+deleted
+```
+
+come previsto dal Blueprint.
+
+---
+
+## Sostituzione
+
+### Rimuovere
+
+```markdown
+| is_active | BOOLEAN | SI | Stato attivo dell'account |
+```
+
+---
+
+### Inserire
+
+```markdown
+| account_status | VARCHAR(30) | SI | Stato account |
+```
+
+---
+
+## Valore Predefinito
+
+### Rimuovere
+
+```text
+is_active = TRUE
+```
+
+---
+
+### Inserire
+
+```text
+account_status = active
+```
+
+---
+
+## Valori Consentiti
+
+```markdown
+## Valori Consentiti
+
+### account_status
+
+- active
+- suspended
+- blocked
+- deleted
+```
+
+---
+
+## Indici
+
+### Rimuovere
+
+```text
+INDEX (is_active)
+```
+
+---
+
+### Inserire
+
+```text
+INDEX (account_status)
+```
+
+---
+
+# Correzione 2 - Tabella user_profiles
+
+## Problema
+
+La visibilità del profilo è definita due volte:
+
+```text
+user_profiles.profile_visibility
+```
+
+e
+
+```text
+privacy_settings.profile_visibility
+```
+
+Questo genera ambiguità.
+
+---
+
+## Rimozione
+
+Eliminare completamente:
+
+```markdown
+| profile_visibility | VARCHAR(20) | SI | Livello di visibilità |
+```
+
+---
+
+Eliminare completamente:
+
+```markdown
+## Valori Predefiniti
+
+profile_visibility = public
+```
+
+---
+
+Eliminare completamente:
+
+```markdown
+## Valori Consentiti
+
+### profile_visibility
+
+- public
+- collectors_only
+- private
+```
+
+---
+
+Eliminare dai vincoli:
+
+```text
+profile_visibility deve contenere un valore valido.
+```
+
+---
+
+Eliminare dagli indici:
+
+```text
+INDEX (profile_visibility)
+```
+
+---
+
+## Regola Ufficiale
+
+La visibilità del profilo viene gestita esclusivamente dalla tabella:
+
+```text
+privacy_settings
+```
+
+---
+
+# Correzione 3 - Tabella rarities
+
+## Problema
+
+Possono essere create rarità duplicate nella stessa Collezione.
+
+---
+
+## Vincolo da aggiungere
+
+```markdown
+All'interno della stessa Collezione non possono esistere due Rarità con lo stesso nome.
+```
+
+---
+
+## Indice da aggiungere
+
+```text
+UNIQUE (collection_id, name)
+```
+
+---
+
+# Correzione 4 - Tabella series
+
+## Problema
+
+Possono esistere Serie duplicate nella stessa Collezione.
+
+---
+
+## Vincolo da aggiungere
+
+```markdown
+All'interno della stessa Collezione non possono esistere due Serie con lo stesso nome.
+```
+
+---
+
+## Indice da aggiungere
+
+```text
+UNIQUE (collection_id, name)
+```
+
+---
+
+# Correzione 5 - Tabella items
+
+## Problema
+
+Possono esistere Item duplicati nella stessa Serie.
+
+---
+
+## Vincolo da aggiungere
+
+```markdown
+All'interno della stessa Serie non possono esistere due Item con lo stesso nome.
+```
+
+---
+
+## Indice da aggiungere
+
+```text
+UNIQUE (series_id, name)
+```
+
+---
+
+# Correzione 6 - Tabella item_versions
+
+## Problema
+
+Possono esistere:
+
+```text
+Italiano
+Italiano
+Italiano
+```
+
+per lo stesso Item.
+
+---
+
+## Vincolo da aggiungere
+
+```markdown
+All'interno dello stesso Item non possono esistere due Versioni con lo stesso nome.
+```
+
+---
+
+## Indice da aggiungere
+
+```text
+UNIQUE (item_id, name)
+```
+
+---
+
+## Vincolo Versione Default
+
+```markdown
+Può esistere una sola Versione con:
+
+is_default = TRUE
+
+per ogni Item.
+```
+
+---
+
+## Regola Tecnica
+
+```text
+item_id + is_default = TRUE
+
+può esistere una sola volta.
+```
+
+---
+
+# Correzione 7 - Tabella item_variants
+
+## Problema
+
+Possono esistere:
+
+```text
+Holo
+Holo
+Holo
+```
+
+per la stessa Versione.
+
+---
+
+## Vincolo da aggiungere
+
+```markdown
+All'interno della stessa Versione non possono esistere due Varianti con lo stesso nome.
+```
+
+---
+
+## Indice da aggiungere
+
+```text
+UNIQUE (item_version_id, name)
+```
+
+---
+
+## Vincolo Variante Default
+
+```markdown
+Può esistere una sola Variante con:
+
+is_default = TRUE
+
+per ogni Versione.
+```
+
+---
+
+## Regola Tecnica
+
+```text
+item_version_id + is_default = TRUE
+
+può esistere una sola volta.
+```
+
+---
+
+# Correzione 8 - Tabella catalog_images
+
+## Problema
+
+La regola attuale consente:
+
+```text
+item_version_id valorizzato
+
+e
+
+item_variant_id valorizzato
+```
+
+contemporaneamente.
+
+Questo viola il Blueprint.
+
+---
+
+## Sostituzione Completa
+
+### Rimuovere
+
+```markdown
+Deve essere valorizzato almeno uno tra:
+
+item_version_id
+
+oppure
+
+item_variant_id
+```
+
+---
+
+### Inserire
+
+```markdown
+## Vincolo Fondamentale
+
+Deve essere valorizzato uno ed uno soltanto tra:
+
+item_version_id
+
+oppure
+
+item_variant_id
+
+Non è consentito valorizzare entrambi contemporaneamente.
+```
+
+---
+
+## Regola XOR
+
+```text
+item_version_id IS NOT NULL
+
+XOR
+
+item_variant_id IS NOT NULL
+```
+
+---
+
+# Correzione 9 - Tabella catalog_images
+
+## Prevenzione Duplicati
+
+Aggiungere:
+
+```text
+UNIQUE (image_hash)
+```
+
+---
+
+## Obiettivo
+
+Impedire il caricamento multiplo della stessa immagine.
+
+---
+
+# Correzione 10 - Uso di TIMESTAMPTZ
+
+## Problema
+
+Lo schema utilizza:
+
+```text
+TIMESTAMP
+```
+
+---
+
+## Standard PostgreSQL + Supabase
+
+Utilizzare sempre:
+
+```text
+TIMESTAMPTZ
+```
+
+---
+
+## Sostituzione Globale
+
+Sostituire ovunque nel documento:
+
+```text
+TIMESTAMP
+```
+
+con:
+
+```text
+TIMESTAMPTZ
+```
+
+---
+
+## Motivazione
+
+Permette la corretta gestione di:
+
+- timezone
+- notifiche
+- marketplace internazionale
+- date scansioni
+- scadenze
+- attività utenti
+- sincronizzazioni cloud
+
+---
+
+# Stato Finale
+
+Dopo l'applicazione di queste correzioni:
+
+```text
+✅ Core Identity Completa
+✅ Catalogo Universale Completo
+✅ Compatibile PostgreSQL
+✅ Compatibile Supabase
+✅ Compatibile RLS
+✅ Gestione Duplicati Corretta
+✅ Marketplace Ready
+✅ Matching Ready
+✅ Scanner Ready
+✅ Catalogo Collaborativo Ready
+✅ Scalabile a milioni di record
+```
+
+Lo schema aggiornato può essere considerato:
+
+```text
+CollectorVerse PostgreSQL Schema v1.0
+
+STATO: CONGELATO
+
+PRONTO PER:
+
+- Parte 3 Catalogazione Personale
+- Marketplace
+- Matching
+- Scanner
+- Gamification
+```
+
+---
