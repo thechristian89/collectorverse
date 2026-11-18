@@ -5699,7 +5699,7 @@ e mantiene il Catalogo coerente.
 
 ## Scopo
 
-Rappresenta le immagini del Catalogo Universale.
+Rappresenta le immagini ufficiali e comunitarie associate al Catalogo Universale.
 
 Le immagini vengono utilizzate da:
 
@@ -5709,11 +5709,19 @@ Le immagini vengono utilizzate da:
 - Wishlist
 - Collezioni Personali
 - Catalogo Collaborativo
-- Dashboard Admin
+- Matching
+
+Questa tabella definisce il ruolo catalografico dell'immagine.
+
+Il file fisico viene gestito dalla tabella:
+
+```text
+media_files
+```
 
 ---
 
-# Regola Fondamentale
+## Regola Fondamentale
 
 Le immagini NON appartengono direttamente agli Item.
 
@@ -5753,10 +5761,11 @@ id UUID PRIMARY KEY
 
 | Colonna | Tipo | Obbligatorio | Descrizione |
 |----------|----------|----------|----------|
-| id | UUID | SI | Identificativo univoco immagine |
+| id | UUID | SI | Identificativo immagine catalogo |
+| media_file_id | UUID | SI | File immagine associato |
 | item_version_id | UUID | NO | Versione associata |
 | item_variant_id | UUID | NO | Variante associata |
-| image_url | TEXT | SI | URL immagine |
+| image_url | TEXT | NO | URL compatibilità legacy |
 | image_type | VARCHAR(50) | SI | Tipologia immagine |
 | is_official | BOOLEAN | SI | Immagine ufficiale |
 | is_active | BOOLEAN | SI | Immagine utilizzabile |
@@ -5765,11 +5774,11 @@ id UUID PRIMARY KEY
 | file_size_bytes | BIGINT | NO | Dimensione file |
 | image_hash | VARCHAR(255) | NO | Hash immagine |
 | ai_score | NUMERIC(5,2) | NO | Valutazione AI |
-| community_score | NUMERIC(5,2) | NO | Valutazione Community |
+| community_score | NUMERIC(5,2) | NO | Valutazione community |
 | usage_score | NUMERIC(5,2) | NO | Frequenza utilizzo |
 | total_score | NUMERIC(5,2) | NO | Punteggio totale |
 | created_at | TIMESTAMPTZ | SI | Data creazione |
-| updated_at | TIMESTAMPTZ | SI | Data ultima modifica |
+| updated_at | TIMESTAMPTZ | SI | Data modifica |
 | deleted_at | TIMESTAMPTZ | NO | Soft Delete |
 
 ---
@@ -5794,17 +5803,29 @@ total_score = 0
 
 ```text
 front
+
 back
+
 package
+
 detail
+
 version
+
 variant
+
 other
 ```
 
 ---
 
 ## Foreign Keys
+
+media_file_id
+
+→ media_files.id
+
+---
 
 item_version_id
 
@@ -5819,6 +5840,16 @@ item_variant_id
 ---
 
 ## Relazioni
+
+media_files (1)
+
+↓
+
+(N)
+
+catalog_images
+
+---
 
 item_versions (1)
 
@@ -5854,8 +5885,6 @@ oppure:
 item_variant_id
 ```
 
-Non è consentito valorizzare entrambi contemporaneamente.
-
 ---
 
 ## Regola XOR
@@ -5872,7 +5901,9 @@ item_variant_id IS NOT NULL
 
 ## Vincoli
 
-image_url non può essere vuoto.
+media_file_id deve esistere.
+
+image_type deve contenere un valore valido.
 
 is_official deve avere un valore.
 
@@ -5890,6 +5921,8 @@ file_size_bytes deve essere maggiore di zero se valorizzato.
 
 PRIMARY KEY (id)
 
+INDEX (media_file_id)
+
 INDEX (item_version_id)
 
 INDEX (item_variant_id)
@@ -5900,7 +5933,7 @@ INDEX (is_active)
 
 INDEX (total_score)
 
-UNIQUE (image_hash)
+INDEX (image_hash)
 
 ---
 
@@ -5928,9 +5961,13 @@ is_official = TRUE
 
 ```text
 Immagine Variante
+
 ↓
+
 Immagine Versione
+
 ↓
+
 Placeholder
 ```
 
@@ -5952,9 +5989,13 @@ Immagine Ufficiale Versione
 
 per:
 
-- Hash Matching
-- OCR Support
-- AI Recognition
+```text
+Hash Matching
+
+OCR Support
+
+AI Recognition
+```
 
 ---
 
@@ -5982,9 +6023,13 @@ La Wishlist segue la stessa priorità:
 
 ```text
 Variante
+
 ↓
+
 Versione
+
 ↓
+
 Placeholder
 ```
 
@@ -5998,11 +6043,17 @@ Workflow:
 
 ```text
 Nuova Immagine
+
 ↓
+
 Revisione
+
 ↓
+
 Valutazione
+
 ↓
+
 Approvazione
 ```
 
@@ -6010,47 +6061,110 @@ Approvazione
 
 ## Compatibilità Moderazione
 
-Le immagini devono poter essere:
+Le immagini possono essere:
 
 ```text
-Segnalate
-
 Revisionate
 
+Segnalate
+
 Disattivate
+
+Archiviate
 ```
+
+attraverso:
+
+```text
+media_files
+```
+
+e i sistemi di moderazione.
+
+---
+
+## Evoluzione Architetturale
+
+Il campo:
+
+```text
+image_url
+```
+
+rimane disponibile per compatibilità applicativa.
+
+La sorgente ufficiale del file è:
+
+```text
+media_file_id
+```
+
+tramite:
+
+```text
+media_files
+```
+
+---
+
+## Esempio Logico
+
+Item Variant
+
+↓
+
+Charizard Gold
+
+↓
+
+Catalog Image
+
+↓
+
+media_file
+
+↓
+
+charizard_gold_front.jpg
+
+↓
+
+front
+
+↓
+
+official
 
 ---
 
 ## Motivazione Architetturale
 
-La separazione delle immagini dagli Item:
+La separazione tra:
 
-- supporta Versioni
-- supporta Varianti
-- migliora Scanner
-- migliora Marketplace
-- riduce duplicazioni
-- migliora la qualità del Catalogo
+```text
+catalog_images
+```
 
-ed implementa integralmente il Blueprint CollectorVerse.
+e
 
----
+```text
+media_files
+```
 
-# REVISIONE ARCHITETTURALE v1.0
+consente di mantenere distinto:
 
-## Stato Revisione
+- il file fisico
+- l'utilizzo catalografico
 
-Le seguenti modifiche sostituiscono e integrano lo schema PostgreSQL v1.0 di CollectorVerse.
+Questo approccio:
 
-Queste correzioni sono considerate obbligatorie per garantire:
+- elimina duplicazioni
+- migliora la moderazione
+- migliora lo storage
+- migliora lo Scanner
+- migliora il Catalogo
 
-- coerenza con il Blueprint
-- compatibilità PostgreSQL
-- compatibilità Supabase
-- compatibilità RLS
-- integrità dei dati
-- prevenzione dei duplicati
+e supporta la crescita futura della piattaforma.
 
 ---
 
@@ -9089,7 +9203,9 @@ status = pending
 
 ```text
 purchase
+
 trade
+
 purchase_trade
 ```
 
@@ -9117,7 +9233,7 @@ countered
 
 ### purchase
 
-Proposta economica.
+Offerta economica.
 
 ---
 
@@ -9129,14 +9245,14 @@ Proposta di scambio.
 
 ### purchase_trade
 
-Proposta mista:
+Proposta composta da:
 
 ```text
 Scambio
 
 +
 
-Importo aggiuntivo
+Importo Economico
 ```
 
 ---
@@ -9145,7 +9261,7 @@ Importo aggiuntivo
 
 ### pending
 
-Offerta in attesa.
+Offerta in attesa di risposta.
 
 ---
 
@@ -9163,7 +9279,7 @@ Offerta rifiutata.
 
 ### cancelled
 
-Offerta annullata dall'offerente.
+Offerta annullata.
 
 ---
 
@@ -9175,7 +9291,7 @@ Offerta scaduta.
 
 ### countered
 
-Controproposta generata.
+Controproposta effettuata.
 
 ---
 
@@ -9239,20 +9355,6 @@ marketplace_offers (1)
 
 marketplace_offer_trade_items
 
-(Futuro)
-
----
-
-marketplace_offers (1)
-
-↓
-
-(N)
-
-marketplace_offer_history
-
-(Futuro)
-
 ---
 
 ## Vincoli
@@ -9275,7 +9377,7 @@ L'offerente non può essere il proprietario dell'annuncio.
 
 ---
 
-### Non consentito
+### Non Consentito
 
 ```text
 seller_user_id
@@ -9284,6 +9386,48 @@ seller_user_id
 
 buyer_user_id
 ```
+
+---
+
+## Vincolo Offerta Accettata
+
+Per ogni Annuncio Marketplace:
+
+```text
+Può esistere una sola Offerta con:
+
+status = accepted
+```
+
+---
+
+## Vincolo Logico PostgreSQL
+
+Per ogni:
+
+```text
+marketplace_listing_id
+```
+
+può esistere una sola Offerta Accettata.
+
+---
+
+## Indici
+
+PRIMARY KEY (id)
+
+INDEX (marketplace_listing_id)
+
+INDEX (buyer_user_id)
+
+INDEX (status)
+
+INDEX (offer_type)
+
+INDEX (expires_at)
+
+INDEX (created_at)
 
 ---
 
@@ -9321,9 +9465,7 @@ Per:
 trade
 ```
 
-l'importo può essere assente.
-
-Gli oggetti proposti verranno gestiti tramite:
+gli oggetti proposti vengono gestiti tramite:
 
 ```text
 marketplace_offer_trade_items
@@ -9346,98 +9488,38 @@ Importo
 
 +
 
-Oggetti in Scambio
+Oggetti Proposti
 ```
 
 ---
 
-## Indici
+## Accettazione Offerta
 
-PRIMARY KEY (id)
+Quando una Offerta viene impostata come:
 
-INDEX (marketplace_listing_id)
+```text
+accepted
+```
 
-INDEX (buyer_user_id)
+tutte le altre offerte attive dello stesso annuncio devono essere automaticamente aggiornate a:
 
-INDEX (status)
+```text
+rejected
+```
 
-INDEX (offer_type)
+oppure:
 
-INDEX (expires_at)
+```text
+cancelled
+```
 
-INDEX (created_at)
+secondo le regole applicative.
 
 ---
 
 ## Compatibilità Marketplace
 
-Le offerte costituiscono il sistema principale di trattativa.
-
----
-
-### Esempio Vendita
-
-Annuncio:
-
-```text
-Charizard Gold
-```
-
-↓
-
-Prezzo:
-
-```text
-250 EUR
-```
-
-↓
-
-Offerta:
-
-```text
-220 EUR
-```
-
----
-
-### Esempio Scambio
-
-Annuncio:
-
-```text
-Umbreon Gold Star
-```
-
-↓
-
-Offerta:
-
-```text
-Lugia First Edition
-```
-
----
-
-### Esempio Misto
-
-Annuncio:
-
-```text
-Charizard Gold
-```
-
-↓
-
-Offerta:
-
-```text
-Blastoise First Edition
-
-+
-
-100 EUR
-```
+Le offerte costituiscono il nucleo delle trattative.
 
 ---
 
@@ -9446,18 +9528,18 @@ Blastoise First Edition
 Le offerte vengono utilizzate per identificare:
 
 ```text
-Interessi reali
+Interessi Reali
 
-Trattative attive
+Possibili Scambi
 
-Tasso conversione
+Conversioni Marketplace
 ```
 
 ---
 
 ## Compatibilità Notifiche
 
-Le offerte possono generare notifiche per:
+Possono essere generate notifiche per:
 
 ```text
 Nuova Offerta
@@ -9475,23 +9557,7 @@ Scadenza Offerta
 
 ## Compatibilità Messaggistica
 
-Un'offerta può essere collegata ad una conversazione privata.
-
----
-
-### Esempio
-
-```text
-Marketplace Offer
-
-↓
-
-Conversation
-
-↓
-
-Messages
-```
+La creazione di un'offerta può essere collegata ad una Conversazione.
 
 ---
 
@@ -9502,13 +9568,13 @@ Statistiche disponibili:
 ```text
 Numero Offerte
 
-Offerte Accettate
+Tasso Accettazione
 
-Offerte Rifiutate
-
-Tasso Conversione
+Tasso Rifiuto
 
 Tempo Medio Risposta
+
+Valore Medio Offerte
 ```
 
 ---
@@ -9555,21 +9621,25 @@ Pending
 
 Accepted
 
+↓
+
+Tutte le altre offerte
+
+↓
+
+Rejected
+
 ---
 
 Marketplace Listing
 
 ↓
 
-Lugia First Edition
+Umbreon Gold Star
 
 ↓
 
 Marketplace Offer
-
-↓
-
-Umbreon Gold Star
 
 ↓
 
@@ -9595,19 +9665,16 @@ e
 marketplace_offers
 ```
 
-consente:
+consente di gestire trattative multiple mantenendo una sola conclusione valida per ogni annuncio.
 
-- più offerte sullo stesso annuncio
-- gestione trattative
-- controproposte
-- storico negoziazioni
-- supporto vendita
-- supporto scambio
-- supporto formule miste
+Questo approccio:
 
-senza modificare l'annuncio originale.
+- evita conflitti
+- evita vendite multiple dello stesso oggetto
+- migliora la coerenza dei dati
+- semplifica la gestione Marketplace
 
-Questa struttura costituisce il motore delle trattative del Marketplace CollectorVerse.
+e costituisce il motore delle negoziazioni di CollectorVerse.
 
 ---
 
