@@ -25307,3 +25307,999 @@ Permette la tracciabilità dei backup senza memorizzare i dati direttamente nel 
 
 ---
 
+# Mappatura Completa Database CollectorVerse
+
+## Obiettivo
+
+Questa sezione descrive tutte le relazioni tra le tabelle del database CollectorVerse.
+
+Serve per:
+
+- verificare la coerenza architetturale
+- identificare le dipendenze
+- preparare la generazione DDL PostgreSQL
+- preparare Supabase
+- preparare Prisma/ORM futuri
+
+---
+
+## Legenda
+
+```text
+(1)
+=
+Un Record
+
+(N)
+=
+Molti Record
+```
+
+Esempio:
+
+```text
+users (1)
+↓
+(N)
+user_items
+```
+
+significa:
+
+Un Utente possiede molti Oggetti.
+
+---
+
+# Vista Generale
+
+```text
+users
+│
+├── profiles
+├── privacy_settings
+├── user_collections
+│   └── user_items
+│
+├── wishlists
+│   └── wishlist_items
+│
+├── marketplace_listings
+│   └── marketplace_offers
+│       └── marketplace_offer_trade_items
+│
+├── matching_preferences
+├── matching_opportunities
+├── notifications
+│
+├── conversation_threads
+│   └── messages
+│       └── message_attachments
+│
+├── user_reviews
+│
+├── user_scores
+│   ├── user_achievements
+│   └── user_badges
+│
+├── merchant_verifications
+│
+├── scan_sessions
+│   └── scan_results
+│
+└── catalog_contributions
+    ├── catalog_contribution_votes
+    └── catalog_contribution_attachments
+```
+
+---
+
+# Catalogo Universale
+
+```text
+categories
+│
+└── collections
+    │
+    └── series
+        │
+        └── items
+            │
+            ├── item_versions
+            │   │
+            │   └── item_variants
+            │
+            └── catalog_images
+```
+
+---
+
+# Mappa Completa delle Foreign Key
+
+## Obiettivo
+
+Questa sezione descrive tutte le dipendenze tra le tabelle.
+
+Serve per:
+
+- generare correttamente PostgreSQL
+- creare le tabelle nell'ordine corretto
+- evitare errori di Foreign Key
+- preparare Supabase
+- preparare le migrazioni future
+
+---
+
+## Legenda
+
+```text
+A → B
+
+significa:
+
+A contiene una Foreign Key verso B
+```
+
+Esempio:
+
+```text
+user_items
+→ items
+```
+
+significa:
+
+user_items contiene una colonna che punta ad items.
+
+---
+
+# Livello 1 - Tabelle Fondamentali
+
+Queste tabelle devono essere create per prime.
+
+```text
+users
+
+currencies
+
+languages
+
+categories
+
+rarities
+
+feature_flags
+
+system_settings
+
+achievements
+
+badges
+
+leaderboards
+```
+
+---
+
+## Motivazione
+
+Non richiedono altre tabelle operative per essere create.
+
+Costituiscono il livello base dell'intero database.
+
+---
+
+# Livello 2 - Dipendenze Dirette
+
+```text
+collections
+→ categories
+
+series
+→ collections
+
+privacy_settings
+→ users
+
+matching_preferences
+→ users
+
+user_scores
+→ users
+
+merchant_verifications
+→ users
+
+saved_searches
+→ users
+
+notifications
+→ users
+```
+
+---
+
+## Motivazione
+
+Queste tabelle dipendono direttamente dalle entità fondamentali.
+
+---
+
+# Livello 3 - Catalogo Universale
+
+```text
+items
+→ series
+
+item_versions
+→ items
+
+item_variants
+→ item_versions
+
+catalog_images
+→ item_versions
+→ item_variants
+→ media_files
+```
+
+---
+
+## Motivazione
+
+Queste tabelle definiscono la struttura completa del Catalogo Universale.
+
+---
+
+# Livello 4 - Profili Utente e Collezioni
+
+```text
+user_collections
+→ users
+
+user_items
+→ user_collections
+→ items
+→ item_versions
+→ item_variants
+→ currencies
+
+wishlists
+→ users
+
+wishlist_items
+→ wishlists
+→ items
+→ item_versions
+→ item_variants
+```
+
+---
+
+## Motivazione
+
+Queste tabelle rappresentano la Catalogazione Personale.
+
+---
+
+# Livello 5 - Marketplace
+
+```text
+marketplace_listings
+→ users
+→ user_items
+→ currencies
+
+marketplace_offers
+→ marketplace_listings
+→ users
+→ currencies
+
+marketplace_offer_trade_items
+→ marketplace_offers
+→ user_items
+
+marketplace_favorites
+→ users
+→ marketplace_listings
+
+marketplace_reports
+→ marketplace_listings
+→ users
+
+marketplace_listing_status_history
+→ marketplace_listings
+→ users
+```
+
+---
+
+## Motivazione
+
+Queste tabelle costituiscono il sistema Marketplace.
+
+Ordine logico:
+
+```text
+marketplace_listings
+↓
+marketplace_offers
+↓
+marketplace_offer_trade_items
+```
+
+Le altre tabelle sono funzioni di supporto:
+
+```text
+favorites
+reports
+history
+```
+
+e dipendono dagli annunci marketplace.
+
+---
+
+# Livello 6 - Matching
+
+```text
+matching_opportunities
+→ users
+→ marketplace_listings
+→ wishlist_items
+→ user_items
+
+matching_preferences
+→ users
+
+matching_interactions
+→ matching_opportunities
+→ users
+```
+
+---
+
+## Motivazione
+
+Il Matching utilizza:
+
+```text
+Wishlist
+
+Marketplace
+
+Possedimenti Utente
+```
+
+per generare opportunità.
+
+Le interazioni vengono registrate separatamente.
+
+---
+
+## Flusso Logico
+
+```text
+matching_preferences
+
+↓
+
+matching_opportunities
+
+↓
+
+matching_interactions
+```
+
+---
+
+# Livello 7 - Catalogo Collaborativo
+
+```text
+catalog_contributions
+→ users
+
+catalog_contribution_attachments
+→ catalog_contributions
+
+catalog_contribution_votes
+→ catalog_contributions
+→ users
+```
+
+---
+
+## Motivazione
+
+Il modulo collaborativo ruota attorno al contributo.
+
+Tutto il resto dipende da:
+
+```text
+catalog_contributions
+```
+
+---
+
+## Flusso Logico
+
+```text
+catalog_contributions
+
+↓
+
+catalog_contribution_attachments
+
+↓
+
+catalog_contribution_votes
+```
+
+---
+
+# Livello 8 - Scanner
+
+```text
+scan_sessions
+→ users
+
+scan_results
+→ scan_sessions
+→ items
+→ item_versions
+→ item_variants
+```
+
+---
+
+## Motivazione
+
+Una scansione appartiene sempre ad un utente.
+
+I risultati dipendono dalla Sessione di Scansione.
+
+---
+
+## Flusso Logico
+
+```text
+scan_session
+
+↓
+
+scan_results
+
+↓
+
+item
+
+↓
+
+version
+
+↓
+
+variant
+```
+
+---
+
+# Livello 9 - Gamification
+
+```text
+user_scores
+→ users
+
+user_achievements
+→ users
+→ achievements
+
+user_badges
+→ users
+→ badges
+
+leaderboard_entries
+→ leaderboards
+→ users
+```
+
+---
+
+## Motivazione
+
+La Gamification dipende principalmente dagli utenti.
+
+Le tabelle:
+
+```text
+achievements
+
+badges
+
+leaderboards
+```
+
+sono cataloghi di configurazione creati nei Livelli iniziali.
+
+Le tabelle operative sono:
+
+```text
+user_achievements
+
+user_badges
+
+leaderboard_entries
+```
+
+---
+
+## Flusso Logico
+
+```text
+users
+
+↓
+
+user_scores
+
+↓
+
+user_achievements
+
+↓
+
+user_badges
+
+↓
+
+leaderboard_entries
+```
+
+---
+
+# Livello 10 - Notifiche
+
+```text
+notifications
+→ users
+```
+
+---
+
+## Motivazione
+
+Le notifiche sono intenzionalmente indipendenti.
+
+Utilizzano:
+
+```text
+reference_type
+
+reference_id
+```
+
+per collegarsi logicamente ad altre entità.
+
+---
+
+## Nota
+
+Le notifiche NON utilizzano Foreign Key dirette verso:
+
+```text
+Marketplace
+
+Matching
+
+Messaggi
+
+Achievement
+```
+
+ma usano un riferimento polimorfico.
+
+---
+
+## Vantaggio
+
+Permette al sistema notifiche di scalare senza modifiche strutturali.
+
+---
+
+# Livello 11 - Messaggistica
+
+```text
+conversation_threads
+→ users
+→ marketplace_listings
+→ matching_opportunities
+
+conversation_participants
+→ conversation_threads
+→ users
+→ messages
+
+messages
+→ conversation_threads
+→ users
+→ messages
+
+message_attachments
+→ messages
+→ media_files
+```
+
+---
+
+## Motivazione
+
+La Messaggistica si basa su:
+
+```text
+Conversation Thread
+```
+
+come contenitore.
+
+---
+
+## Flusso Logico
+
+```text
+conversation_threads
+
+↓
+
+conversation_participants
+
+↓
+
+messages
+
+↓
+
+message_attachments
+```
+
+---
+
+## Nota
+
+message_attachments utilizza:
+
+```text
+media_files
+```
+
+come archivio centralizzato dei file.
+
+---
+
+# Livello 12 - Reputazione e Recensioni
+
+```text
+user_reviews
+→ users
+→ conversation_threads
+
+merchant_verifications
+→ users
+```
+
+---
+
+## Motivazione
+
+Le recensioni richiedono una prova di interazione.
+
+Tale prova è rappresentata da:
+
+```text
+conversation_threads
+```
+
+---
+
+## Regola Fondamentale
+
+Non è possibile recensire utenti senza una conversazione condivisa.
+
+---
+
+## Flusso Logico
+
+```text
+conversation_threads
+
+↓
+
+user_reviews
+```
+
+---
+
+```text
+users
+
+↓
+
+merchant_verifications
+```
+
+---
+
+# Livello 13 - Moderazione e Sicurezza
+
+```text
+user_blocks
+→ users
+
+moderation_cases
+→ users
+
+moderation_case_entities
+→ moderation_cases
+
+audit_logs
+→ users
+```
+
+---
+
+## Motivazione
+
+La Moderazione è volutamente separata dal resto del sistema.
+
+---
+
+## Nota
+
+moderation_case_entities utilizza:
+
+```text
+entity_type
+
+entity_id
+```
+
+per collegare qualsiasi oggetto della piattaforma.
+
+---
+
+## Flusso Logico
+
+```text
+moderation_cases
+
+↓
+
+moderation_case_entities
+```
+
+---
+
+```text
+users
+
+↓
+
+user_blocks
+
+↓
+
+audit_logs
+```
+
+---
+
+# Livello 14 - Media e Storage
+
+```text
+media_files
+→ users
+
+media_usages
+→ media_files
+```
+
+---
+
+## Motivazione
+
+Tutti i file della piattaforma vengono centralizzati.
+
+---
+
+## File gestiti
+
+```text
+Avatar
+
+Catalog Images
+
+Scanner
+
+Merchant Documents
+
+Contribution Attachments
+
+Message Attachments
+
+Badge Icons
+
+Achievement Icons
+```
+
+---
+
+## Flusso Logico
+
+```text
+media_files
+
+↓
+
+media_usages
+```
+
+---
+
+## Nota
+
+media_usages utilizza:
+
+```text
+entity_type
+
+entity_id
+```
+
+per collegare il file all'entità corretta.
+
+---
+
+# Livello 15 - Analytics e Telemetria
+
+```text
+analytics_events
+→ users
+
+analytics_daily_metrics
+```
+
+---
+
+## Motivazione
+
+analytics_daily_metrics è una tabella aggregata.
+
+Non necessita di Foreign Key operative.
+
+---
+
+## Flusso Logico
+
+```text
+analytics_events
+
+↓
+
+analytics_daily_metrics
+```
+
+---
+
+## Nota
+
+analytics_events utilizza:
+
+```text
+entity_type
+
+entity_id
+```
+
+come riferimento facoltativo.
+
+---
+
+# Livello 16 - Internazionalizzazione
+
+```text
+translations
+→ languages
+```
+
+---
+
+## Motivazione
+
+Le traduzioni dipendono dalla lingua.
+
+---
+
+## Nota
+
+translations utilizza:
+
+```text
+entity_type
+
+entity_id
+```
+
+per identificare il record tradotto.
+
+---
+
+## Flusso Logico
+
+```text
+languages
+
+↓
+
+translations
+```
+
+---
+
+# Livello 17 - Storico e Versionamento
+
+```text
+entity_versions
+→ users
+
+data_restore_requests
+→ users
+
+system_snapshots
+→ users
+```
+
+---
+
+## Motivazione
+
+Queste tabelle sono pensate per:
+
+- storico
+- audit
+- recupero dati
+- backup
+
+---
+
+## Flusso Logico
+
+```text
+users
+
+↓
+
+entity_versions
+
+↓
+
+data_restore_requests
+
+↓
+
+system_snapshots
+```
+
+---
+
+## Nota
+
+entity_versions utilizza:
+
+```text
+entity_type
+
+entity_id
+```
+
+per identificare l'entità versionata.
+
+---
+
