@@ -25352,63 +25352,14 @@ Un Utente possiede molti Oggetti.
 
 # Vista Generale
 
-```text
-users
-│
-├── profiles
-├── privacy_settings
-├── user_collections
-│   └── user_items
-│
-├── wishlists
-│   └── wishlist_items
-│
-├── marketplace_listings
-│   └── marketplace_offers
-│       └── marketplace_offer_trade_items
-│
-├── matching_preferences
-├── matching_opportunities
-├── notifications
-│
-├── conversation_threads
-│   └── messages
-│       └── message_attachments
-│
-├── user_reviews
-│
-├── user_scores
-│   ├── user_achievements
-│   └── user_badges
-│
-├── merchant_verifications
-│
-├── scan_sessions
-│   └── scan_results
-│
-└── catalog_contributions
-    ├── catalog_contribution_votes
-    └── catalog_contribution_attachments
+
 ```
 
 ---
 
 # Catalogo Universale
 
-```text
-categories
-│
-└── collections
-    │
-    └── series
-        │
-        └── items
-            │
-            ├── item_versions
-            │   │
-            │   └── item_variants
-            │
-            └── catalog_images
+
 ```
 
 ---
@@ -25490,54 +25441,7 @@ Costituiscono il livello base dell'intero database.
 
 # Livello 2 - Infrastruttura Base e Dipendenze Dirette
 
-```text
-media_files
-→ users
 
-collections
-→ categories
-
-privacy_settings
-→ users
-
-saved_searches
-→ users
-→ categories
-→ collections
-→ series
-→ items
-→ item_versions
-→ item_variants
-→ currencies
-```
-
----
-
-## Motivazione
-
-Queste tabelle dipendono direttamente dalle entità fondamentali e costituiscono il primo livello operativo della piattaforma.
-
----
-
-## Nota
-
-La tabella:
-
-```text
-media_files
-```
-
-viene spostata nei livelli iniziali perché molte altre tabelle dipendono da essa.
-
-Esempi:
-
-```text
-catalog_images
-
-message_attachments
-
-media_usages
-```
 ---
 
 # Livello 3 - Catalogo Universale (Livello Collezioni)
@@ -26079,67 +25983,6 @@ merchant_verifications
 
 # Livello 14 - Media e Storage
 
-```text
-media_files
-→ users
-
-media_usages
-→ media_files
-```
-
----
-
-## Motivazione
-
-Tutti i file della piattaforma vengono centralizzati.
-
----
-
-## File gestiti
-
-```text
-Avatar
-
-Catalog Images
-
-Scanner
-
-Merchant Documents
-
-Contribution Attachments
-
-Message Attachments
-
-Badge Icons
-
-Achievement Icons
-```
-
----
-
-## Flusso Logico
-
-```text
-media_files
-
-↓
-
-media_usages
-```
-
----
-
-## Nota
-
-media_usages utilizza:
-
-```text
-entity_type
-
-entity_id
-```
-
-per collegare il file all'entità corretta.
 
 ---
 
