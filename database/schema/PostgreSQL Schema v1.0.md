@@ -25711,6 +25711,149 @@ item_versions
 
 # Livello 6 - Catalogo Universale (Varianti e Immagini)
 
+```text
+item_variants
+→ item_versions
+
+catalog_images
+→ media_files
+
+→ item_versions
+oppure
+→ item_variants
+```
+
+---
+
+## Motivazione
+
+Le Varianti dipendono dalle Versioni.
+
+Le immagini vengono archiviate tramite:
+
+```text
+media_files
+```
+
+e possono appartenere ad una:
+
+```text
+Item Version
+```
+
+oppure ad una:
+
+```text
+Item Variant
+```
+
+ma non ad entrambe contemporaneamente.
+
+---
+
+## Flusso Logico
+
+```text
+item_versions
+
+↓
+
+item_variants
+
+↓
+
+catalog_images
+```
+
+---
+
+## Nota Importante
+
+La tabella:
+
+```text
+catalog_images
+```
+
+utilizza una relazione esclusiva:
+
+```text
+item_version_id
+
+oppure
+
+item_variant_id
+```
+
+---
+
+## Regola Architetturale
+
+```text
+item_version_id IS NOT NULL
+
+XOR
+
+item_variant_id IS NOT NULL
+```
+
+---
+
+## Compatibilità Media Storage
+
+Le immagini non sono memorizzate direttamente nella tabella.
+
+La sorgente ufficiale del file è:
+
+```text
+media_files
+```
+
+tramite:
+
+```text
+media_file_id
+```
+
+---
+
+## Esempio
+
+```text
+catalog_images
+
+↓
+
+media_file_id = 123
+
+↓
+
+Item Version
+```
+
+---
+
+oppure
+
+```text
+catalog_images
+
+↓
+
+media_file_id = 456
+
+↓
+
+Item Variant
+```
+
+---
+
+## Motivazione Architetturale
+
+Questa struttura elimina duplicazioni e consente una gestione centralizzata delle immagini senza compromettere la flessibilità del Catalogo Universale.
+
+--- 
 
 # Livello 7 - Profili Utente e Collezioni
 
@@ -26116,7 +26259,144 @@ merchant_verifications
 
 # Livello 14 - Media e Storage
 
+```text
+media_usages
+→ media_files
+```
 
+---
+
+## Motivazione
+
+Tutti i file della piattaforma vengono centralizzati nella tabella:
+
+```text
+media_files
+```
+
+---
+
+## File Gestiti
+
+```text
+Avatar
+
+Catalog Images
+
+Scanner Images
+
+Merchant Documents
+
+Contribution Attachments
+
+Message Attachments
+
+Badge Icons
+
+Achievement Icons
+```
+
+---
+
+## Flusso Logico
+
+```text
+media_files
+
+↓
+
+media_usages
+```
+
+---
+
+## Nota Importante
+
+La tabella:
+
+```text
+media_usages
+```
+
+utilizza relazioni polimorfiche.
+
+Pertanto:
+
+```text
+entity_type
+
+entity_id
+```
+
+non sono Foreign Key PostgreSQL.
+
+Il collegamento viene gestito a livello applicativo.
+
+---
+
+## Esempio
+
+```text
+media_file
+
+↓
+
+avatar.jpg
+
+↓
+
+entity_type = user
+
+↓
+
+entity_id = UUID utente
+```
+
+---
+
+```text
+media_file
+
+↓
+
+charizard_front.jpg
+
+↓
+
+entity_type = item_variant
+
+↓
+
+entity_id = UUID variante
+```
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+media_files
+```
+
+e
+
+```text
+media_usages
+```
+
+consente:
+
+- riutilizzo dei file
+- eliminazione dei file orfani
+- moderazione centralizzata
+- storage scalabile
+- supporto a qualsiasi futura entità della piattaforma
+
+senza duplicare dati.
+
+---
 
 # Livello 15 - Analytics e Telemetria
 
