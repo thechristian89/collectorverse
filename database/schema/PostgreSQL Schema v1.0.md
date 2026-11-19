@@ -28145,3 +28145,850 @@ Consentire salvataggio
 ```
 
 ---
+
+# Registro delle Foreign Key Differite
+
+## Obiettivo
+
+Questa sezione documenta tutte le Foreign Key che non possono essere create durante la creazione iniziale delle tabelle.
+
+Tali vincoli devono essere aggiunti successivamente tramite:
+
+```sql
+ALTER TABLE
+```
+
+---
+
+## Motivazione
+
+Le Foreign Key differite vengono utilizzate per evitare:
+
+- dipendenze circolari
+- errori di creazione tabelle
+- problemi di bootstrap del database
+
+---
+
+# Foreign Key Differita 1
+
+# conversation_participants.last_read_message_id
+
+## Tabella
+
+```text
+conversation_participants
+```
+
+---
+
+## Colonna
+
+```text
+last_read_message_id
+```
+
+---
+
+## Tabella Destinazione
+
+```text
+messages.id
+```
+
+---
+
+## Relazione
+
+```text
+conversation_participants
+
+↓
+
+last_read_message_id
+
+↓
+
+messages.id
+```
+
+---
+
+## Perché è Differita
+
+Durante la creazione iniziale:
+
+```text
+messages
+```
+
+dipende da:
+
+```text
+conversation_threads
+```
+
+---
+
+e:
+
+```text
+conversation_participants
+```
+
+dipende da:
+
+```text
+conversation_threads
+```
+
+---
+
+La presenza di:
+
+```text
+last_read_message_id
+```
+
+introduce una dipendenza aggiuntiva verso:
+
+```text
+messages
+```
+
+che è opportuno creare successivamente.
+
+---
+
+## Strategia
+
+1. Creare conversation_participants senza la Foreign Key.
+
+2. Creare messages.
+
+3. Aggiungere la Foreign Key tramite:
+
+```sql
+ALTER TABLE
+```
+
+---
+
+# verifica finale
+
+# Riepilogo Foreign Key Differite
+
+## Elenco
+
+```text
+conversation_participants.last_read_message_id
+→ messages.id
+```
+
+---
+
+## Numero Totale
+
+```text
+1 Foreign Key Differita
+```
+
+---
+
+## Valutazione
+
+L'architettura CollectorVerse presenta una sola Foreign Key differita.
+
+Questo è un ottimo indicatore di qualità architetturale perché:
+
+- riduce la complessità
+- semplifica la creazione del database
+- facilita le migrazioni
+- migliora la manutenzione futura
+
+---
+
+# Convenzioni Globali PostgreSQL CollectorVerse
+
+## Obiettivo
+
+Questa sezione definisce gli standard architetturali e tecnici utilizzati da tutte le tabelle del database CollectorVerse.
+
+Le convenzioni garantiscono:
+
+- coerenza
+- scalabilità
+- manutenibilità
+- compatibilità PostgreSQL
+- compatibilità Supabase
+- compatibilità ORM futuri
+
+---
+
+# Standard Identificativi
+
+## Primary Key
+
+Tutte le tabelle devono utilizzare:
+
+```sql
+UUID
+```
+
+come chiave primaria.
+
+---
+
+## Convenzione
+
+Nome colonna:
+
+```text
+id
+```
+
+Tipo:
+
+```sql
+UUID PRIMARY KEY
+```
+
+---
+
+## Motivazione
+
+UUID offre:
+
+- unicità globale
+- migliore integrazione con Supabase
+- sicurezza superiore agli ID incrementali
+- supporto distribuito
+
+---
+
+## Esempio
+
+```sql
+id UUID PRIMARY KEY
+```
+
+---
+
+# Standard Foreign Key
+
+## Convenzione
+
+Tutte le Foreign Key devono utilizzare il suffisso:
+
+```text
+_id
+```
+
+---
+
+## Esempi
+
+```text
+user_id
+
+item_id
+
+collection_id
+
+message_id
+
+marketplace_listing_id
+```
+
+---
+
+## Motivazione
+
+Permette di identificare immediatamente una relazione.
+
+---
+
+# Standard Date e Orari
+
+## Tipo Ufficiale
+
+Tutte le date devono utilizzare:
+
+```sql
+TIMESTAMPTZ
+```
+
+---
+
+## Motivazione
+
+TIMESTAMPTZ:
+
+- gestisce i fusi orari
+- evita problemi internazionali
+- è compatibile con Supabase
+- è raccomandato da PostgreSQL
+
+---
+
+## Campi Standard
+
+Ogni tabella principale dovrebbe possedere:
+
+```text
+created_at
+
+updated_at
+```
+
+---
+
+## Esempio
+
+```sql
+created_at TIMESTAMPTZ NOT NULL
+
+updated_at TIMESTAMPTZ NOT NULL
+```
+
+---
+
+# Standard Soft Delete
+
+## Principio
+
+I dati non devono essere eliminati fisicamente quando possibile.
+
+---
+
+## Campo Standard
+
+```sql
+deleted_at TIMESTAMPTZ NULL
+```
+
+---
+
+## Regola
+
+```text
+NULL
+=
+Record attivo
+
+Valorizzato
+=
+Record eliminato logicamente
+```
+
+---
+
+## Tabelle Consigliate
+
+```text
+users
+
+user_items
+
+marketplace_listings
+
+messages
+
+catalog_contributions
+
+user_reviews
+
+media_files
+```
+
+---
+
+## Tabelle Escluse
+
+```text
+achievements
+
+badges
+
+leaderboards
+
+languages
+
+feature_flags
+
+system_settings
+```
+
+---
+
+## Motivazione
+
+Permette:
+
+- recupero dati
+- audit
+- storico
+- ripristini
+
+# Standard Naming Convention
+
+## Tabelle
+
+Tutte le tabelle devono utilizzare:
+
+```text
+snake_case
+
+plurale
+```
+
+---
+
+## Esempi
+
+```text
+users
+
+wishlist_items
+
+marketplace_offers
+
+catalog_images
+```
+
+---
+
+## Colonne
+
+Tutte le colonne devono utilizzare:
+
+```text
+snake_case
+```
+
+---
+
+## Esempi
+
+```text
+created_at
+
+user_id
+
+marketplace_listing_id
+
+total_score
+```
+
+---
+
+## Motivazione
+
+Massima leggibilità e compatibilità PostgreSQL.
+
+---
+
+# Standard Indici
+
+## Primary Key
+
+Ogni tabella:
+
+```sql
+PRIMARY KEY
+```
+
+---
+
+## Foreign Key
+
+Ogni Foreign Key deve possedere un indice.
+
+---
+
+## Esempio
+
+```sql
+CREATE INDEX idx_user_items_user_id
+ON user_items(user_id);
+```
+
+---
+
+## Campi Ricercati Frequentemente
+
+Indicizzare:
+
+```text
+status
+
+created_at
+
+updated_at
+
+slug
+
+code
+
+email
+```
+
+quando presenti.
+
+---
+
+## Motivazione
+
+Riduzione dei tempi di risposta delle query.
+
+---
+
+# Standard Vincoli UNIQUE
+
+## Principio
+
+I dati duplicati devono essere impediti a livello database.
+
+---
+
+## Esempi
+
+```text
+users.email
+
+categories.slug
+
+achievements.code
+
+badges.code
+
+leaderboards.code
+```
+
+---
+
+## Relazioni Molti-a-Molti
+
+Utilizzare UNIQUE composto.
+
+---
+
+## Esempio
+
+```sql
+UNIQUE
+(
+user_id,
+achievement_id
+)
+```
+
+---
+
+## Motivazione
+
+Garantisce integrità dei dati.
+
+---
+
+# Standard CHECK Constraint
+
+## Principio
+
+I valori invalidi non devono poter essere salvati.
+
+---
+
+## Esempi
+
+### Rating
+
+```sql
+CHECK (rating BETWEEN 1 AND 5)
+```
+
+---
+
+### Percentuali
+
+```sql
+CHECK (
+completion_percentage >= 0
+AND
+completion_percentage <= 100
+)
+```
+
+---
+
+### Quantità
+
+```sql
+CHECK (
+quantity >= 0
+)
+```
+
+---
+
+## Motivazione
+
+Aumenta la qualità dei dati memorizzati.
+
+---
+
+# Standard JSONB
+
+## Utilizzo Consentito
+
+JSONB deve essere utilizzato esclusivamente per:
+
+```text
+analytics_events
+
+audit_logs
+
+entity_versions
+
+event metadata
+```
+
+---
+
+## Utilizzo Vietato
+
+JSONB non deve sostituire colonne strutturate.
+
+---
+
+## Esempio Errato
+
+```text
+nome
+
+email
+
+telefono
+```
+
+all'interno di un JSON.
+
+---
+
+## Motivazione
+
+Mantenere il database normalizzato.
+
+---
+
+# Standard Relazioni Polimorfiche
+
+## Campi Standard
+
+```text
+entity_type
+
+entity_id
+```
+
+oppure:
+
+```text
+reference_type
+
+reference_id
+```
+
+---
+
+## Tabelle Autorizzate
+
+```text
+notifications
+
+media_usages
+
+translations
+
+moderation_case_entities
+
+analytics_events
+
+entity_versions
+```
+
+---
+
+## Regola
+
+Le relazioni polimorfiche:
+
+```text
+NON
+```
+
+utilizzano Foreign Key PostgreSQL.
+
+---
+
+## Validazione
+
+La validazione deve avvenire:
+
+```text
+Applicazione
+
+API
+
+Backend
+```
+
+---
+
+## Motivazione
+
+Maggiore flessibilità architetturale.
+
+---
+
+# Standard Audit
+
+## Tabelle Interessate
+
+```text
+audit_logs
+
+entity_versions
+```
+
+---
+
+## Regola
+
+I record di Audit:
+
+```text
+non devono essere modificati
+
+non devono essere eliminati
+```
+
+---
+
+## Motivazione
+
+Garantire tracciabilità storica.
+
+---
+
+# Standard Row Level Security (RLS)
+
+## Principio
+
+Gli utenti devono poter accedere esclusivamente ai dati autorizzati.
+
+---
+
+## Tabelle Soggette a RLS
+
+```text
+user_collections
+
+user_items
+
+wishlists
+
+wishlist_items
+
+notifications
+
+conversation_threads
+
+conversation_participants
+
+messages
+
+message_attachments
+
+user_reviews
+
+merchant_verifications
+
+user_scores
+```
+
+---
+
+## Regola Generale
+
+Un utente può visualizzare soltanto:
+
+```text
+i propri dati
+```
+
+salvo diversa autorizzazione esplicita.
+
+---
+
+## Marketplace
+
+Le informazioni pubbliche restano accessibili.
+
+---
+
+## Amministratori
+
+Gli amministratori possono bypassare le policy RLS secondo le regole della piattaforma.
+
+---
+
+# Standard UUID PostgreSQL
+
+## Estensione Consigliata
+
+```sql
+pgcrypto
+```
+
+---
+
+## Generazione UUID
+
+```sql
+gen_random_uuid()
+```
+
+---
+
+## Esempio
+
+```sql
+id UUID PRIMARY KEY
+DEFAULT gen_random_uuid()
+```
+
+---
+
+## Motivazione
+
+Compatibilità completa con PostgreSQL e Supabase.
+
+---
+
+# Conclusione
+
+Queste convenzioni costituiscono lo standard ufficiale del database CollectorVerse.
+
+Ogni nuova tabella dovrà rispettare integralmente queste regole salvo motivazione documentata e approvata.
+
+Le convenzioni diventano il riferimento ufficiale per:
+
+- progettazione
+- sviluppo
+- migrazioni
+- manutenzione
+- auditing
+- integrazioni future
+
+---
