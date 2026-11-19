@@ -25488,61 +25488,592 @@ Costituiscono il livello base dell'intero database.
 
 ---
 
-# Livello 2 - Dipendenze Dirette
+# Livello 2 - Infrastruttura Base e Dipendenze Dirette
+
+```text
+media_files
+→ users
+
+collections
+→ categories
+
+privacy_settings
+→ users
+
+saved_searches
+→ users
+→ categories
+→ collections
+→ series
+→ items
+→ item_versions
+→ item_variants
+→ currencies
+```
 
 ---
 
-# Livello 3 - Catalogo Universale
+## Motivazione
+
+Queste tabelle dipendono direttamente dalle entità fondamentali e costituiscono il primo livello operativo della piattaforma.
 
 ---
 
-# Livello 4 - Profili Utente e Collezioni
+## Nota
+
+La tabella:
+
+```text
+media_files
+```
+
+viene spostata nei livelli iniziali perché molte altre tabelle dipendono da essa.
+
+Esempi:
+
+```text
+catalog_images
+
+message_attachments
+
+media_usages
+```
+---
+
+# Livello 3 - Catalogo Universale (Livello Collezioni)
+
+```text
+series
+→ collections
+```
 
 ---
 
-# Livello 5 - Marketplace
+## Motivazione
 
+Le Serie dipendono dalle Collezioni.
+
+---
+
+## Flusso Logico
+
+```text
+categories
+
+↓
+
+collections
+
+↓
+
+series
+```
+
+---
+
+# Livello 4 - Catalogo Universale (Livello Item)
+
+```text
+items
+→ series
+```
+
+---
+
+## Motivazione
+
+Gli Item appartengono sempre ad una Serie.
+
+---
+
+## Flusso Logico
+
+```text
+series
+
+↓
+
+items
+```
+
+---
+
+# Livello 5 - Catalogo Universale (Versioni)
+
+```text
+item_versions
+→ items
+```
+
+---
+
+## Motivazione
+
+Le Versioni appartengono ad un Item.
+
+---
+
+## Flusso Logico
+
+```text
+items
+
+↓
+
+item_versions
+```
+
+---
+
+# Livello 6 - Catalogo Universale (Varianti e Immagini)
+
+```text
+item_variants
+→ item_versions
+
+catalog_images
+→ media_files
+→ item_versions
+→ item_variants
+```
+
+---
+
+## Motivazione
+
+Le Varianti dipendono dalle Versioni.
+
+Le immagini dipendono sia dalle Versioni e Varianti sia dal sistema centralizzato dei file.
+
+---
+
+## Flusso Logico
+
+```text
+item_versions
+
+↓
+
+item_variants
+
+↓
+
+catalog_images
+```
+
+---
+
+## Nota
+
+catalog_images utilizza:
+
+```text
+media_files
+```
+
+come archivio ufficiale delle immagini.
+
+---
+
+# Livello 7 - Profili Utente e Collezioni
+
+```text
+user_collections
+→ users
+
+user_items
+→ user_collections
+→ items
+→ item_versions
+→ item_variants
+→ currencies
+
+wishlists
+→ users
+
+wishlist_items
+→ wishlists
+→ items
+→ item_versions
+→ item_variants
+```
+
+---
+
+## Motivazione
+
+Queste tabelle rappresentano la Catalogazione Personale.
+
+---
+
+## Flusso Logico
+
+```text
+users
+
+↓
+
+user_collections
+
+↓
+
+user_items
+```
+
+---
+
+```text
+users
+
+↓
+
+wishlists
+
+↓
+
+wishlist_items
+```
+
+---
+
+# Livello 8 - Marketplace
+
+```text
+marketplace_listings
+→ users
+→ user_items
+→ currencies
+
+marketplace_offers
+→ marketplace_listings
+→ users
+→ currencies
+
+marketplace_offer_trade_items
+→ marketplace_offers
+→ user_items
+
+marketplace_favorites
+→ users
+→ marketplace_listings
+
+marketplace_reports
+→ marketplace_listings
+→ users
+
+marketplace_listing_status_history
+→ marketplace_listings
+→ users
+```
+
+---
+
+## Motivazione
+
+Queste tabelle costituiscono il Marketplace della piattaforma.
+
+---
+
+## Flusso Logico
+
+```text
+marketplace_listings
+
+↓
+
+marketplace_offers
+
+↓
+
+marketplace_offer_trade_items
+```
+
+---
+
+## Tabelle di Supporto
+
+```text
+marketplace_favorites
+
+marketplace_reports
+
+marketplace_listing_status_history
+```
+
+dipendono dagli Annunci Marketplace.
+
+---
+
+# Livello 9 - Matching
+
+```text
+matching_preferences
+→ users
+
+matching_opportunities
+→ users
+→ marketplace_listings
+→ wishlist_items
+→ user_items
+
+matching_interactions
+→ matching_opportunities
+→ users
+```
+
+---
+
+## Motivazione
+
+Il Matching utilizza:
+
+```text
+Wishlist
+
+Marketplace
+
+Collezioni Personali
+```
+
+per generare opportunità.
+
+---
+
+## Flusso Logico
+
+```text
+matching_preferences
+
+↓
+
+matching_opportunities
+
+↓
+
+matching_interactions
+```
+
+---
+
+# Livello 10 - Gamification
+
+```text
+user_scores
+→ users
+
+user_achievements
+→ users
+→ achievements
+
+user_badges
+→ users
+→ badges
+
+leaderboard_entries
+→ leaderboards
+→ users
+```
+
+---
+
+## Motivazione
+
+Il sistema Gamification ruota attorno agli utenti e ai cataloghi centrali:
+
+```text
+achievements
+
+badges
+
+leaderboards
+```
+
+---
+
+## Flusso Logico
+
+```text
+users
+
+↓
+
+user_scores
+
+↓
+
+user_achievements
+
+↓
+
+user_badges
+
+↓
+
+leaderboard_entries
+```
+
+---
+
+# Livello 11 - Notifiche
+
+```text
+notifications
+→ users
+```
+
+---
+
+## Motivazione
+
+Le notifiche sono intenzionalmente indipendenti dalle altre tabelle operative.
+
+---
+
+## Nota
+
+Le notifiche utilizzano:
+
+```text
+reference_type
+
+reference_id
+```
+
+come collegamento logico alle altre entità della piattaforma.
+
+---
+
+## Vantaggio
+
+Permette al sistema notifiche di restare flessibile e facilmente estendibile.
 
 
 ---
 
-# Livello 6 - Matching
+# Livello 12 - Messaggistica
 
+```text
+conversation_threads
+→ users
+→ marketplace_listings
+→ matching_opportunities
 
----
+conversation_participants
+→ conversation_threads
+→ users
 
-# Livello 7 - Catalogo Collaborativo
+messages
+→ conversation_threads
+→ users
+→ messages
 
-
----
-
-# Livello 8 - Scanner
-
-
----
-
-# Livello 9 - Gamification
-
-
-
----
-
-# Livello 10 - Notifiche
-
+message_attachments
+→ messages
+→ media_files
+```
 
 ---
 
-# Livello 11 - Messaggistica
+## Motivazione
+
+La Messaggistica si basa su una Conversazione che contiene Partecipanti e Messaggi.
 
 ---
 
-# Livello 12 - Reputazione e Recensioni
+## Flusso Logico
 
+```text
+conversation_threads
+
+↓
+
+conversation_participants
+
+↓
+
+messages
+
+↓
+
+message_attachments
+```
 
 ---
 
-# Livello 13 - Moderazione e Sicurezza
+## Nota Importante
 
+La colonna:
+
+```text
+last_read_message_id
+```
+
+presente in:
+
+```text
+conversation_participants
+```
+
+deve essere trattata come Foreign Key aggiunta successivamente tramite:
+
+```sql
+ALTER TABLE
+```
+
+per evitare dipendenze circolari durante la creazione dello schema PostgreSQL.
+
+---
+
+# Livello 13 - Reputazione e Recensioni
+
+```text
+user_reviews
+→ users
+→ conversation_threads
+
+merchant_verifications
+→ users
+```
+
+---
+
+## Motivazione
+
+Le recensioni richiedono una effettiva interazione tra utenti.
+
+La prova dell'interazione è:
+
+```text
+conversation_threads
+```
+
+---
+
+## Regola Fondamentale
+
+Non è possibile recensire un utente senza una Conversazione condivisa.
+
+---
+
+## Flusso Logico
+
+```text
+conversation_threads
+
+↓
+
+user_reviews
+```
+
+---
+
+```text
+users
+
+↓
+
+merchant_verifications
+```
 
 ---
 
