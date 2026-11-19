@@ -28977,3 +28977,414 @@ Le convenzioni rappresentano il riferimento ufficiale per:
 
 ---
 
+# Inventario Finale delle Tabelle
+
+## Obiettivo
+
+Questa sezione rappresenta il censimento ufficiale di tutte le tabelle presenti nel database CollectorVerse.
+
+Serve per:
+
+- verificare che nessuna tabella sia stata dimenticata
+- verificare che non esistano duplicazioni
+- preparare il DDL PostgreSQL
+- preparare Supabase
+- preparare i modelli ORM
+
+---
+
+## Regola
+
+Ogni tabella deve apparire una sola volta all'interno di questo inventario.
+
+---
+
+# Core Identity
+
+```text
+users
+
+privacy_settings
+```
+
+---
+
+## Totale
+
+```text
+2 Tabelle
+```
+
+---
+
+# Catalogo Universale
+
+```text
+categories
+
+collections
+
+series
+
+items
+
+item_versions
+
+item_variants
+
+catalog_images
+
+rarities
+```
+
+---
+
+## Totale
+
+```text
+8 Tabelle
+```
+
+---
+
+# Catalogazione Personale
+
+```text
+user_collections
+
+user_items
+
+wishlists
+
+wishlist_items
+
+saved_searches
+```
+
+---
+
+## Totale
+
+```text
+5 Tabelle
+```
+
+---
+
+# Marketplace
+
+```text
+marketplace_listings
+
+marketplace_offers
+
+marketplace_offer_trade_items
+
+marketplace_favorites
+
+marketplace_reports
+
+marketplace_listing_status_history
+
+currencies
+```
+
+---
+
+## Totale
+
+```text
+7 Tabelle
+```
+
+---
+
+# Matching
+
+```text
+matching_preferences
+
+matching_opportunities
+
+matching_interactions
+```
+
+---
+
+## Totale
+
+```text
+3 Tabelle
+```
+
+---
+
+# Catalogo Collaborativo
+
+```text
+catalog_contributions
+
+catalog_contribution_attachments
+
+catalog_contribution_votes
+```
+
+---
+
+## Totale
+
+```text
+3 Tabelle
+```
+
+---
+
+# Scanner
+
+```text
+scan_sessions
+
+scan_results
+```
+
+---
+
+## Totale
+
+```text
+2 Tabelle
+```
+
+---
+
+# Gamification
+
+```text
+achievements
+
+badges
+
+leaderboards
+
+user_scores
+
+user_achievements
+
+user_badges
+
+leaderboard_entries
+```
+
+---
+
+## Totale
+
+```text
+7 Tabelle
+```
+
+---
+
+# Notifiche
+
+```text
+notifications
+```
+
+---
+
+## Totale
+
+```text
+1 Tabella
+```
+
+---
+
+# Messaggistica
+
+```text
+conversation_threads
+
+conversation_participants
+
+messages
+
+message_attachments
+```
+
+---
+
+## Totale
+
+```text
+4 Tabelle
+```
+
+---
+
+# Reputazione
+
+```text
+user_reviews
+
+merchant_verifications
+```
+
+---
+
+## Totale
+
+```text
+2 Tabelle
+```
+
+---
+
+# Moderazione e Sicurezza
+
+```text
+user_blocks
+
+moderation_cases
+
+moderation_case_entities
+
+audit_logs
+```
+
+---
+
+## Totale
+
+```text
+4 Tabelle
+```
+
+---
+
+# Media e Storage
+
+```text
+media_files
+
+media_usages
+```
+
+---
+
+## Totale
+
+```text
+2 Tabelle
+```
+
+---
+
+# Analytics e Telemetria
+
+```text
+analytics_events
+
+analytics_daily_metrics
+```
+
+---
+
+## Totale
+
+```text
+2 Tabelle
+```
+
+---
+
+# Internazionalizzazione
+
+```text
+languages
+
+translations
+```
+
+---
+
+## Totale
+
+```text
+2 Tabelle
+```
+
+---
+
+# Amministrazione e Configurazione
+
+```text
+feature_flags
+
+system_settings
+```
+
+---
+
+## Totale
+
+```text
+2 Tabelle
+```
+
+---
+
+# Storico e Versionamento
+
+```text
+entity_versions
+
+data_restore_requests
+
+system_snapshots
+```
+
+---
+
+## Totale
+
+```text
+3 Tabelle
+```
+
+---
+
+# Riepilogo Inventario
+
+## Numero Totale Tabelle
+
+```text
+59 Tabelle
+```
+
+---
+
+## Numero Moduli
+
+```text
+17 Moduli Funzionali
+```
+
+---
+
+## Stato
+
+```text
+✅ Inventario Completo
+
+✅ Nessuna Duplicazione Nota
+
+✅ Pronto per PostgreSQL
+
+✅ Pronto per Supabase
+
+✅ Pronto per DDL Definitivo
+```
+
+---
