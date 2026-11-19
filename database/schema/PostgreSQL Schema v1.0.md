@@ -26688,16 +26688,207 @@ Costituiscono le fondamenta del database.
 
 # Gruppo 2 - Infrastruttura Base
 
+```text
+11 media_files
+
+12 collections
+
+13 privacy_settings
+```
+
+---
+
+## Motivazione
+
+Queste tabelle dipendono solamente dalle fondamenta create nel Gruppo 1.
+
+---
+
+## Nota
+
+La tabella:
+
+```text
+media_files
+```
+
+viene creata nei livelli iniziali perché molte altre tabelle dipendono direttamente da essa.
+
+---
+
+## Esempi
+
+```text
+catalog_images
+
+message_attachments
+
+media_usages
+```
+
+---
 
 # Gruppo 3 - Catalogo Universale
 
+```text
+14 series
 
-# Gruppo 4 - Catalogazione Personale
+15 items
 
+16 item_versions
 
+17 item_variants
 
-# Gruppo 5 - Marketplace
+18 catalog_images
+```
 
+---
+
+## Motivazione
+
+Questo gruppo costruisce l'intera gerarchia del Catalogo Universale.
+
+---
+
+## Ordine
+
+```text
+categories
+
+↓
+
+collections
+
+↓
+
+series
+
+↓
+
+items
+
+↓
+
+item_versions
+
+↓
+
+item_variants
+
+↓
+
+catalog_images
+```
+
+---
+
+## Nota Architetturale
+
+La tabella:
+
+```text
+catalog_images
+```
+
+può appartenere ad una:
+
+```text
+Item Version
+```
+
+oppure ad una:
+
+```text
+Item Variant
+```
+
+ma mai ad entrambe contemporaneamente.
+
+Le immagini non vengono ereditate automaticamente.
+
+Una Variante può possedere immagini dedicate differenti rispetto alla propria Versione.
+
+---
+
+# Gruppo 4 - Ricerche Salvate
+
+```text
+19 saved_searches
+```
+
+---
+
+## Motivazione
+
+Le ricerche salvate dipendono dal Catalogo Universale completo.
+
+Per questo motivo vengono create dopo:
+
+```text
+series
+
+items
+
+item_versions
+
+item_variants
+```
+
+---
+
+## Dipendenze
+
+```text
+saved_searches
+→ users
+→ categories
+→ collections
+→ series
+→ items
+→ item_versions
+→ item_variants
+→ currencies
+```
+
+---
+
+## Nota
+
+Tutte le Foreign Key di filtro sono opzionali.
+
+Una ricerca salvata può utilizzare:
+
+```text
+nessun filtro
+
+alcuni filtri
+
+tutti i filtri
+```
+
+a seconda delle preferenze dell'utente.
+
+---
+
+# Gruppo 5 - Catalogazione Personale
+
+```text
+20 user_collections
+
+21 user_items
+
+22 wishlists
+
+23 wishlist_items
+```
+
+---
+
+## Motivazione
+
+Queste tabelle consentono agli utenti di gestire la propria collezione e le wishlist.
+
+---
 
 ## Motivazione
 
@@ -28220,4 +28411,570 @@ Questo è un ottimo indicatore di qualità architetturale perché:
 ---
 
 # Convenzioni Globali PostgreSQL CollectorVerse
+
+## Obiettivo
+
+Questa sezione definisce gli standard architetturali e tecnici utilizzati da tutte le tabelle del database CollectorVerse.
+
+Le convenzioni garantiscono:
+
+- coerenza
+- scalabilità
+- manutenibilità
+- compatibilità PostgreSQL
+- compatibilità Supabase
+- compatibilità ORM futuri
+
+---
+
+# Standard Identificativi
+
+## Primary Key
+
+Tutte le tabelle devono utilizzare:
+
+```sql
+UUID
+```
+
+come chiave primaria.
+
+---
+
+## Convenzione
+
+Nome colonna:
+
+```text
+id
+```
+
+Tipo:
+
+```sql
+UUID PRIMARY KEY
+```
+
+---
+
+## Motivazione
+
+UUID offre:
+
+- unicità globale
+- migliore integrazione con Supabase
+- sicurezza superiore agli ID incrementali
+- supporto distribuito
+
+---
+
+## Esempio
+
+```sql
+id UUID PRIMARY KEY
+```
+
+---
+
+# Standard Foreign Key
+
+## Convenzione
+
+Tutte le Foreign Key devono utilizzare il suffisso:
+
+```text
+_id
+```
+
+---
+
+## Esempi
+
+```text
+user_id
+
+item_id
+
+collection_id
+
+message_id
+
+marketplace_listing_id
+```
+
+---
+
+## Motivazione
+
+Permette di identificare immediatamente una relazione.
+
+---
+
+# Standard Date e Orari
+
+## Tipo Ufficiale
+
+Tutte le date devono utilizzare:
+
+```sql
+TIMESTAMPTZ
+```
+
+---
+
+## Motivazione
+
+TIMESTAMPTZ:
+
+- gestisce i fusi orari
+- evita problemi internazionali
+- è compatibile con Supabase
+- è raccomandato da PostgreSQL
+
+---
+
+## Campi Standard
+
+Ogni tabella principale deve possedere:
+
+```text
+created_at
+
+updated_at
+```
+
+---
+
+## Esempio
+
+```sql
+created_at TIMESTAMPTZ NOT NULL
+
+updated_at TIMESTAMPTZ NOT NULL
+```
+
+---
+
+# Standard Soft Delete
+
+## Principio
+
+I dati non devono essere eliminati fisicamente quando possibile.
+
+---
+
+## Campo Standard
+
+```sql
+deleted_at TIMESTAMPTZ NULL
+```
+
+---
+
+## Regola
+
+```text
+NULL
+=
+Record attivo
+
+Valorizzato
+=
+Record eliminato logicamente
+```
+
+---
+
+## Tabelle Consigliate
+
+```text
+users
+
+user_items
+
+marketplace_listings
+
+messages
+
+catalog_contributions
+
+user_reviews
+
+media_files
+```
+
+---
+
+## Tabelle Escluse
+
+```text
+achievements
+
+badges
+
+leaderboards
+
+languages
+
+feature_flags
+
+system_settings
+```
+
+---
+
+## Motivazione
+
+Permette:
+
+- recupero dati
+- audit
+- storico
+- ripristini
+
+---
+
+# Standard Naming Convention
+
+## Tabelle
+
+Tutte le tabelle devono utilizzare:
+
+```text
+snake_case
+
+plurale
+```
+
+---
+
+## Colonne
+
+Tutte le colonne devono utilizzare:
+
+```text
+snake_case
+```
+
+---
+
+## Motivazione
+
+Massima leggibilità e compatibilità PostgreSQL.
+
+---
+
+# Standard Indici
+
+## Primary Key
+
+Ogni tabella deve possedere:
+
+```sql
+PRIMARY KEY
+```
+
+---
+
+## Foreign Key
+
+Ogni Foreign Key deve possedere un indice dedicato.
+
+---
+
+## Campi Ricercati Frequentemente
+
+Indicizzare quando presenti:
+
+```text
+status
+
+created_at
+
+updated_at
+
+slug
+
+code
+
+email
+```
+
+---
+
+## Motivazione
+
+Riduzione dei tempi di esecuzione delle query.
+
+---
+
+# Standard UNIQUE
+
+## Principio
+
+I dati duplicati devono essere impediti a livello database.
+
+---
+
+## Esempi
+
+```text
+users.email
+
+categories.slug
+
+achievements.code
+
+badges.code
+
+leaderboards.code
+```
+
+---
+
+## Relazioni Molti-a-Molti
+
+Utilizzare UNIQUE composto.
+
+---
+
+## Esempio
+
+```sql
+UNIQUE (
+user_id,
+achievement_id
+)
+```
+
+---
+
+# Standard CHECK Constraint
+
+## Principio
+
+I valori invalidi non devono poter essere salvati.
+
+---
+
+## Esempi
+
+### Rating
+
+```sql
+CHECK (rating BETWEEN 1 AND 5)
+```
+
+### Percentuali
+
+```sql
+CHECK (
+completion_percentage >= 0
+AND
+completion_percentage <= 100
+)
+```
+
+### Quantità
+
+```sql
+CHECK (
+quantity >= 0
+)
+```
+
+---
+
+# Standard JSONB
+
+## Consentito
+
+```text
+analytics_events
+
+audit_logs
+
+entity_versions
+
+event metadata
+```
+
+---
+
+## Vietato
+
+Non utilizzare JSONB per dati relazionali che meritano colonne dedicate.
+
+---
+
+# Standard Relazioni Polimorfiche
+
+## Campi Standard
+
+```text
+entity_type
+
+entity_id
+```
+
+oppure:
+
+```text
+reference_type
+
+reference_id
+```
+
+---
+
+## Tabelle Autorizzate
+
+```text
+notifications
+
+media_usages
+
+translations
+
+moderation_case_entities
+
+analytics_events
+
+entity_versions
+```
+
+---
+
+## Regola
+
+Le relazioni polimorfiche non utilizzano Foreign Key PostgreSQL.
+
+La validazione viene effettuata a livello applicativo.
+
+---
+
+# Standard Audit
+
+## Tabelle Interessate
+
+```text
+audit_logs
+
+entity_versions
+```
+
+---
+
+## Regola
+
+I record di audit:
+
+```text
+non devono essere modificati
+
+non devono essere eliminati
+```
+
+---
+
+# Standard Row Level Security (RLS)
+
+## Tabelle Soggette
+
+```text
+user_collections
+
+user_items
+
+wishlists
+
+wishlist_items
+
+notifications
+
+conversation_threads
+
+conversation_participants
+
+messages
+
+message_attachments
+
+user_reviews
+
+merchant_verifications
+
+user_scores
+```
+
+---
+
+## Regola Generale
+
+Un utente può visualizzare esclusivamente i dati autorizzati secondo le policy applicative.
+
+---
+
+## Marketplace
+
+I dati pubblici restano consultabili.
+
+---
+
+## Amministratori
+
+Gli amministratori possono bypassare le policy RLS secondo i permessi assegnati.
+
+---
+
+# Standard UUID PostgreSQL
+
+## Estensione Consigliata
+
+```sql
+pgcrypto
+```
+
+---
+
+## Generazione UUID
+
+```sql
+gen_random_uuid()
+```
+
+---
+
+## Esempio
+
+```sql
+id UUID PRIMARY KEY
+DEFAULT gen_random_uuid()
+```
+
+---
+
+## Motivazione
+
+Compatibilità completa con PostgreSQL e Supabase.
+
+---
+
+# Conclusione
+
+Queste convenzioni costituiscono lo standard ufficiale del database CollectorVerse.
+
+Ogni nuova tabella dovrà rispettare integralmente queste regole salvo motivazione documentata e approvata.
+
+Le convenzioni rappresentano il riferimento ufficiale per:
+
+- progettazione
+- sviluppo
+- migrazioni
+- manutenzione
+- auditing
+- integrazioni future
+
+---
+
 
