@@ -25352,6 +25352,75 @@ Un Utente possiede molti Oggetti.
 
 # Vista Generale
 
+```text
+users
+│
+├── privacy_settings
+├── user_collections
+│   └── user_items
+│
+├── wishlists
+│   └── wishlist_items
+│
+├── marketplace_listings
+│   └── marketplace_offers
+│       └── marketplace_offer_trade_items
+│
+├── matching_preferences
+├── matching_opportunities
+├── notifications
+│
+├── conversation_threads
+│   ├── conversation_participants
+│   │
+│   └── messages
+│       └── message_attachments
+│
+├── user_reviews
+│
+├── user_scores
+│   ├── user_achievements
+│   ├── user_badges
+│   └── leaderboard_entries
+│
+├── merchant_verifications
+│
+├── scan_sessions
+│   └── scan_results
+│
+└── catalog_contributions
+    ├── catalog_contribution_attachments
+    └── catalog_contribution_votes
+```
+
+---
+
+## Motivazione
+
+Questa vista rappresenta il punto di ingresso principale dell'ecosistema CollectorVerse.
+
+La maggior parte delle funzionalità operative della piattaforma ruota attorno agli utenti e alle loro attività.
+
+---
+
+## Nota
+
+Nel Catalogo Collaborativo il flusso operativo tipico è:
+
+```text
+Creazione Contributo
+
+↓
+
+Aggiunta Allegati
+
+↓
+
+Votazione Community
+```
+
+Per questo motivo gli allegati vengono mostrati prima dei voti.
+
 ---
 
 # Catalogo Universale
@@ -26436,4 +26505,126 @@ translations
 ---
 
 # Livello 17 - Storico e Versionamento
+
+```text
+entity_versions
+→ users
+
+data_restore_requests
+→ users
+
+system_snapshots
+→ users
+```
+
+---
+
+## Motivazione
+
+Queste tabelle sono pensate per:
+
+- storico
+- audit
+- recupero dati
+- backup
+
+---
+
+## Flusso Logico
+
+```text
+users
+
+├── entity_versions
+
+├── data_restore_requests
+
+└── system_snapshots
+```
+
+---
+
+## Nota
+
+Le tre tabelle sono indipendenti tra loro.
+
+Condividono esclusivamente il riferimento agli utenti.
+
+Non esistono Foreign Key dirette tra:
+
+```text
+entity_versions
+
+data_restore_requests
+
+system_snapshots
+```
+
+---
+
+## Versionamento
+
+La tabella:
+
+```text
+entity_versions
+```
+
+viene utilizzata per conservare le versioni storiche delle entità supportate.
+
+Identificazione tramite:
+
+```text
+entity_type
+
+entity_id
+```
+
+---
+
+## Ripristino
+
+La tabella:
+
+```text
+data_restore_requests
+```
+
+gestisce le richieste amministrative di recupero dati.
+
+---
+
+## Backup
+
+La tabella:
+
+```text
+system_snapshots
+```
+
+contiene esclusivamente i metadati degli snapshot e dei backup disponibili.
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+entity_versions
+
+data_restore_requests
+
+system_snapshots
+```
+
+consente di mantenere indipendenti:
+
+- storico modifiche
+- richieste di recupero
+- gestione backup
+
+senza introdurre dipendenze inutili nel database.
+
+---
 
