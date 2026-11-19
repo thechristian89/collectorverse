@@ -25352,15 +25352,121 @@ Un Utente possiede molti Oggetti.
 
 # Vista Generale
 
-
+```text
+users
+│
+├── privacy_settings
+├── user_collections
+│   └── user_items
+│
+├── wishlists
+│   └── wishlist_items
+│
+├── marketplace_listings
+│   └── marketplace_offers
+│       └── marketplace_offer_trade_items
+│
+├── matching_preferences
+├── matching_opportunities
+├── notifications
+│
+├── conversation_threads
+│   ├── conversation_participants
+│   │
+│   └── messages
+│       └── message_attachments
+│
+├── user_reviews
+│
+├── user_scores
+│   ├── user_achievements
+│   ├── user_badges
+│   └── leaderboard_entries
+│
+├── merchant_verifications
+│
+├── scan_sessions
+│   └── scan_results
+│
+└── catalog_contributions
+    ├── catalog_contribution_votes
+    └── catalog_contribution_attachments
 ```
+
+---
+
+## Motivazione
+
+Questa vista rappresenta il punto di ingresso principale dell'ecosistema CollectorVerse.
+
+La maggior parte delle funzionalità operative della piattaforma ruota attorno agli utenti e alle loro attività.
 
 ---
 
 # Catalogo Universale
 
-
+```text
+categories
+│
+└── collections
+    │
+    └── series
+        │
+        └── items
+            │
+            └── item_versions
+                │
+                ├── item_variants
+                │   └── catalog_images
+                │
+                └── catalog_images
 ```
+
+---
+
+## Motivazione
+
+Le immagini non appartengono direttamente agli Item.
+
+Le immagini possono appartenere a:
+
+```text
+Item Version
+```
+
+oppure:
+
+```text
+Item Variant
+```
+
+tramite la tabella:
+
+```text
+catalog_images
+```
+
+---
+
+## Priorità Visualizzazione
+
+```text
+Item Variant
+
+↓
+
+Item Version
+
+↓
+
+Placeholder
+```
+
+---
+
+## Compatibilità Scanner
+
+Lo Scanner può utilizzare immagini provenienti sia dalle Versioni sia dalle Varianti.
 
 ---
 
@@ -25441,6 +25547,80 @@ Costituiscono il livello base dell'intero database.
 
 # Livello 2 - Infrastruttura Base e Dipendenze Dirette
 
+```text
+media_files
+→ users
+
+collections
+→ categories
+
+privacy_settings
+→ users
+
+saved_searches
+→ users
+→ categories
+→ collections
+→ series
+→ items
+→ item_versions
+→ item_variants
+→ currencies
+```
+
+---
+
+## Motivazione
+
+Queste tabelle dipendono direttamente dalle entità fondamentali e costituiscono il primo livello operativo della piattaforma.
+
+---
+
+## Nota
+
+La tabella:
+
+```text
+media_files
+```
+
+viene creata nei livelli iniziali perché molte altre tabelle dipendono direttamente da essa.
+
+---
+
+## Esempi
+
+```text
+catalog_images
+
+message_attachments
+
+media_usages
+```
+
+---
+
+## Nota su saved_searches
+
+Molte Foreign Key di:
+
+```text
+saved_searches
+```
+
+sono opzionali.
+
+Una ricerca salvata può utilizzare:
+
+```text
+nessun filtro
+
+alcuni filtri
+
+tutti i filtri
+```
+
+a seconda delle esigenze dell'utente.
 
 ---
 
@@ -25983,6 +26163,137 @@ merchant_verifications
 
 # Livello 14 - Media e Storage
 
+```text
+media_usages
+→ media_files
+```
+
+---
+
+## Motivazione
+
+Tutti i file della piattaforma vengono centralizzati all'interno della tabella:
+
+```text
+media_files
+```
+
+---
+
+## File Gestiti
+
+```text
+Avatar
+
+Catalog Images
+
+Scanner Images
+
+Merchant Documents
+
+Contribution Attachments
+
+Message Attachments
+
+Badge Icons
+
+Achievement Icons
+```
+
+---
+
+## Flusso Logico
+
+```text
+media_files
+
+↓
+
+media_usages
+```
+
+---
+
+## Nota
+
+La tabella:
+
+```text
+media_usages
+```
+
+utilizza:
+
+```text
+entity_type
+
+entity_id
+```
+
+per collegare un file ad una entità della piattaforma.
+
+---
+
+## Esempio
+
+```text
+media_file
+
+↓
+
+avatar.jpg
+
+↓
+
+entity_type = user
+
+↓
+
+entity_id = UUID utente
+```
+
+---
+
+```text
+media_file
+
+↓
+
+charizard_front.jpg
+
+↓
+
+entity_type = item_variant
+
+↓
+
+entity_id = UUID variante
+```
+
+---
+
+## Motivazione Architetturale
+
+La separazione tra:
+
+```text
+media_files
+```
+
+e
+
+```text
+media_usages
+```
+
+consente:
+
+- riutilizzo dei file
+- eliminazione dei file orfani
+- moderazione centralizzata
+- gestione storage scalabile
+
+senza duplicare contenuti.
 
 ---
 
